@@ -1,0 +1,5 @@
+ModelSize  Unique/ContainerT Unique/ContainerT+IndexableT Ascending/ContainerT Ascending/ContainerT+IndexableT Unique+Ascending/ContainerT Unique+Ascending/ContainerT+IndexableT Descending/ContainerT Descending/ContainerT+IndexableT LIFO/ContainerT+StackT
+3 9.417 10.977 12.931 15.824 16.299 18.445 9.373 8.371 4.068
+5 13.033 14.493 14.657 21.846 21.563 23.314 10.032 9.177 4.146
+7 23.854 25.052 23.465 27.770 37.983 39.979 12.760 16.523 4.316
+9 69.757 72.683 56.793 59.417 110.945 98.570 24.040 22.213 4.650

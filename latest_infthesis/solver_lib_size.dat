@@ -1,0 +1,5 @@
+LibrarySize  Unique/ContainerT Unique/ContainerT+IndexableT Ascending/ContainerT Ascending/ContainerT+IndexableT Unique+Ascending/ContainerT Unique+Ascending/ContainerT+IndexableT Descending/ContainerT Descending/ContainerT+IndexableT LIFO/ContainerT+StackT
+2 3.642	4.956 3.943	6.881 6.221	9.612 2.797	2.779 2.360
+4 7.226	5.912 7.582	9.238 11.514 9.633 4.827 3.965 4.309
+6 9.795	8.478 11.091 12.999 14.063 12.336 7.913	6.823 4.265
+8 13.033 14.493 14.657 21.846 21.563 23.314 10.032 9.177 4.146

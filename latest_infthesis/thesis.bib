@@ -1,0 +1,1362 @@
+% Primrose
+@inproceedings{10.1145/113445.113468, author = {Freeman, Tim and Pfenning, Frank}, title = {Refinement Types for ML}, year = {1991}, isbn = {0897914287}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, url = {https://doi.org/10.1145/113445.113468}, doi = {10.1145/113445.113468}, booktitle = {Proceedings of the ACM SIGPLAN 1991 Conference on Programming Language Design and Implementation}, pages = {268–277}, numpages = {10}, location = {Toronto, Ontario, Canada}, series = {PLDI '91} }
+@inproceedings{quickcheck,
+author = {Claessen, Koen and Hughes, John},
+title = {QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs},
+year = {2000},
+isbn = {1581132026},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+doi = {10.1145/351240.351266},
+booktitle = {Proceedings of the Fifth ACM SIGPLAN International Conference on Functional Programming},
+pages = {268–279},
+numpages = {12},
+series = {ICFP '00}
+}
+@inproceedings{cogentcase,
+author = {Chen, Zilin and O'Connor, Liam and Keller, Gabriele and Klein, Gerwin and Heiser, Gernot},
+title = {The Cogent Case for Property-Based Testing},
+year = {2017},
+isbn = {9781450351539},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+doi = {10.1145/3144555.3144556},
+booktitle = {Proceedings of the 9th Workshop on Programming Languages and Operating Systems},
+pages = {1–7},
+numpages = {7},
+location = {Shanghai, China},
+series = {PLOS'17}
+}
+
+@inproceedings{sle,
+    address          = {New York, NY, USA},
+    author           = {Zilin Chen and Christine Rizkallah and Liam O'Connor and Partha Susarla and Gerwin Klein and Gernot
+                        Heiser and Gabriele Keller},
+    booktitle        = {Proceedings of the 15th ACM SIGPLAN International Conference on Software Language Engineering},
+    doi              = {10.1145/3567512.3567520},
+    location         = {Auckland, New Zealand},
+    month            = dec,
+    nodate           = {December 06–07, 2022},
+    numpages         = {14},
+    paperurl         = {https://trustworthy.systems/publications/papers/Chen_ROSKHK_22.pdf},
+    publisher        = {ACM},
+    series           = {SLE 2022},
+    title            = {Property-Based Testing: Climbing the Stairway to Verification},
+    url              = {https://doi.org/10.1145/3567512.3567520},
+    year             = {2022}
+  }
+@book{vdm,
+author = {Jones, Cliff B.},
+title = {Systematic Software Development Using VDM (2nd Ed.)},
+year = {1990},
+isbn = {0138807337},
+publisher = {Prentice-Hall, Inc.},
+address = {USA}
+}
+@book{alloy,
+  title={Software Abstractions: Logic, Language and Analysis},
+  author={Jackson, Daniel},
+  isbn={978-0262017152},
+  year={2006},
+  publisher={MIT Press}
+}
+@book{znotation,
+author = {Spivey, J. M.},
+title = {The Z Notation: A Reference Manual},
+year = {1989},
+isbn = {013983768X},
+publisher = {Prentice-Hall, Inc.},
+address = {USA}
+}
+
+
+@inproceedings{10.1145/2692915.2628161,
+author = {Vazou, Niki and Seidel, Eric L. and Jhala, Ranjit and Vytiniotis, Dimitrios and Peyton-Jones, Simon},
+title = {Refinement Types for Haskell},
+year = {2014},
+isbn = {9781450328739},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2628136.2628161},
+doi = {10.1145/2628136.2628161},
+abstract = {SMT-based checking of refinement types for call-by-value languages is a well-studied subject. Unfortunately, the classical translation of refinement types to verification conditions is unsound under lazy evaluation. When checking an expression, such systems implicitly assume that all the free variables in the expression are bound to values. This property is trivially guaranteed by eager, but does not hold under lazy, evaluation. Thus, to be sound and precise, a refinement type system for Haskell and the corresponding verification conditions must take into account which subset of binders actually reduces to values. We present a stratified type system that labels binders as potentially diverging or not, and that (circularly) uses refinement types to verify the labeling. We have implemented our system in LIQUIDHASKELL and present an experimental evaluation of our approach on more than 10,000 lines of widely used Haskell libraries. We show that LIQUIDHASKELL is able to prove 96\% of all recursive functions terminating, while requiring a modest 1.7 lines of termination-annotations per 100 lines of code.
+},
+booktitle = {Proceedings of the 19th ACM SIGPLAN International Conference on Functional Programming},
+pages = {269–282},
+numpages = {14},
+location = {Gothenburg, Sweden},
+series = {ICFP '14}
+}
+
+
+@inproceedings{DBLP:conf/esop/VazouRJ13,
+  author    = {Niki Vazou and
+               Patrick Maxim Rondon and
+               Ranjit Jhala},
+  editor    = {Matthias Felleisen and
+               Philippa Gardner},
+  title     = {Abstract Refinement Types},
+  booktitle = {Programming Languages and Systems - 22nd European Symposium on Programming,
+               {ESOP} 2013, Held as Part of the European Joint Conferences on Theory
+               and Practice of Software, {ETAPS} 2013, Rome, Italy, March 16-24,
+               2013. Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7792},
+  pages     = {209--228},
+  publisher = {Springer},
+  year      = {2013},
+  url       = {https://doi.org/10.1007/978-3-642-37036-6\_13},
+  doi       = {10.1007/978-3-642-37036-6\_13},
+  timestamp = {Sun, 25 Oct 2020 23:07:10 +0100},
+  biburl    = {https://dblp.org/rec/conf/esop/VazouRJ13.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@inproceedings{fstar,
+author = {Swamy, Nikhil and Hri\c{t}cu, C\u{a}t\u{a}lin and Keller, Chantal and Rastogi, Aseem and Delignat-Lavaud, Antoine and Forest, Simon and Bhargavan, Karthikeyan and Fournet, C\'{e}dric and Strub, Pierre-Yves and Kohlweiss, Markulf and Zinzindohoue, Jean-Karim and Zanella-B\'{e}guelin, Santiago},
+title = {Dependent Types and Multi-Monadic Effects in F*},
+year = {2016},
+isbn = {9781450335492},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2837614.2837655},
+doi = {10.1145/2837614.2837655},
+booktitle = {Proceedings of the 43rd Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+pages = {256–270},
+numpages = {15},
+keywords = {verification, proof assistants, effectful programming},
+location = {St. Petersburg, FL, USA},
+series = {POPL '16}
+}
+
+
+
+
+@inbook{de_roever_engelhardt_1998, place={Cambridge}, series={Cambridge Tracts in Theoretical Computer Science}, title={Properties of Simulation}, DOI={10.1017/CBO9780511663079.005}, booktitle={Data Refinement: Model-Oriented Proof Methods and their Comparison}, publisher={Cambridge University Press}, author={de Roever, Willem-Paul and Engelhardt, Kai}, year={1998}, pages={73–89}, collection={Cambridge Tracts in Theoretical Computer Science}}
+
+@article{10.1145/363235.363259, author = {Hoare, C. A. R.}, title = {An Axiomatic Basis for Computer Programming}, year = {1969}, issue_date = {Oct. 1969}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, volume = {12}, number = {10}, issn = {0001-0782}, url = {https://doi.org/10.1145/363235.363259}, doi = {10.1145/363235.363259}, abstract = {In this paper an attempt is made to explore the logical foundations of computer programming by use of techniques which were first applied in the study of geometry and have later been extended to other branches of mathematics. This involves the elucidation of sets of axioms and rules of inference which can be used in proofs of the properties of computer programs. Examples are given of such axioms and rules, and a formal proof of a simple theorem is displayed. Finally, it is argued that important advantage, both theoretical and practical, may follow from a pursuance of these topics.}, journal = {Commun. ACM}, month = {oct}, pages = {576–580}, numpages = {5}, keywords = {axiomatic method, formal language definition, programming language design, machine-independent programming, program documentation, theory of programming' proofs of programs} }
+
+
+
+
+@article{DBLP:journals/acta/Bayer72,
+  author    = {Rudolf Bayer},
+  title     = {Symmetric Binary B-Trees: Data Structure and Maintenance Algorithms},
+  journal   = {Acta Informatica},
+  volume    = {1},
+  pages     = {290--306},
+  year      = {1972},
+  url       = {https://doi.org/10.1007/BF00289509},
+  doi       = {10.1007/BF00289509},
+  timestamp = {Sun, 21 Jun 2020 17:38:28 +0200},
+  biburl    = {https://dblp.org/rec/journals/acta/Bayer72.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+
+@book{DBLP:books/daglib/0023376,
+  author    = {Thomas H. Cormen and
+               Charles E. Leiserson and
+               Ronald L. Rivest and
+               Clifford Stein},
+  title     = {Introduction to Algorithms, 3rd Edition},
+  publisher = {{MIT} Press},
+  year      = {2009},
+  url       = {http://mitpress.mit.edu/books/introduction-algorithms},
+  isbn      = {978-0-262-03384-8},
+  timestamp = {Mon, 17 Aug 2020 11:36:12 +0200},
+  biburl    = {https://dblp.org/rec/books/daglib/0023376.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+@misc{proptest,
+    author = {AltSysRq},
+    title = {Proptest: A Rust property testing framework},
+    url = {https://github.com/altsysrq/proptest},
+    year = {2022},
+    note = {Accessed Sep. 2022}
+}
+@misc{conslist,
+    author = {Bodil Stokke},
+    title = {im conslist: A Rust cons-list implementation},
+    url = {https://docs.rs/im/10.2.0/im/conslist/struct.ConsList.html},
+    year = {2022},
+    note = {Accessed Sep. 2022}
+}
+@misc{blog1,
+    author = {Douglas A. H. Orr},
+    title = {Finding unique items - hash vs sort?},
+    url = {https://douglasorr.github.io/2019-09-hash-vs-sort/article.html},
+    year = {2019},
+    note = {Accessed Sep. 2022}
+}
+
+@misc{blog2,
+    author = {Baptiste Wicht},
+    title = {C++ benchmark – std::vector VS std::list VS std::deque},
+    url = {https://baptiste-wicht.com/posts/2012/12/cpp-benchmark-vector-list-deque.html},
+    year = {2012},
+    note = {Accessed Sep. 2022}
+}
+
+@misc{blog3,
+    author = {Paul Cechner},
+    title = {vector vs map performance confusion},
+    url = {https://stackoverflow.com/questions/24542936/vector-vs-map-performance-confusion},
+    year = {2014},
+    note = {Accessed Sep. 2022}
+}
+
+@misc{blog4,
+    author = {Edouard},
+    title = {Using C++ containers efficiently},
+    url = {https://blog.quasar.ai/using-c-containers-efficiently},
+    year = {2020},
+    note = {Accessed Sep. 2022}
+}
+
+@misc{blog5,
+    author = {Martin Ankerl},
+    title = {Hashmaps Benchmarks -- Finding the Fastest; Memory Efficient Hashmap},
+    url = {https://martin.ankerl.com/2019/04/01/hashmap-benchmarks-01-overview/},
+    year = {2019},
+    note = {Accessed Sep. 2022}
+}
+
+@article{MILNER1978348,
+title = {A theory of type polymorphism in programming},
+journal = {Journal of Computer and System Sciences},
+volume = {17},
+number = {3},
+pages = {348-375},
+year = {1978},
+issn = {0022-0000},
+doi = {https://doi.org/10.1016/0022-0000(78)90014-4},
+url = {https://www.sciencedirect.com/science/article/pii/0022000078900144},
+author = {Robin Milner},
+abstract = {The aim of this work is largely a practical one. A widely employed style of programming, particularly in structure-processing languages which impose no discipline of types, entails defining procedures which work well on objects of a wide variety. We present a formal type discipline for such polymorphic procedures in the context of a simple programming language, and a compile time type-checking algorithm W which enforces the discipline. A Semantic Soundness Theorem (based on a formal semantics for the language) states that well-type programs cannot ``go wrong” and a Syntactic Soundness Theorem states that if W accepts a program then it is well typed. We also discuss extending these results to richer languages; a type-checking algorithm based on W is in fact already implemented and working, for the metalanguage ML in the Edinburgh LCF system.}
+}
+
+@article{hindley1969principal,
+  title={The principal type-scheme of an object in combinatory logic},
+  author={Hindley, Roger},
+  journal={Transactions of the American Mathematical Society},
+  volume={146},
+  pages={29--60},
+  year={1969},
+  publisher={JSTOR}
+}
+
+
+@inproceedings{DBLP:conf/programm/Reynolds74,
+  author    = {John C. Reynolds},
+  editor    = {Bernard J. Robinet},
+  title     = {Towards a theory of type structure},
+  booktitle = {Programming Symposium, Proceedings Colloque sur la Programmation,
+               Paris, France, April 9-11, 1974},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {19},
+  pages     = {408--423},
+  publisher = {Springer},
+  year      = {1974},
+  url       = {https://doi.org/10.1007/3-540-06859-7\_148},
+  doi       = {10.1007/3-540-06859-7\_148},
+  timestamp = {Thu, 24 Feb 2022 13:41:39 +0100},
+  biburl    = {https://dblp.org/rec/conf/programm/Reynolds74.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+@article{DBLP:journals/tcs/Girard86,
+  author    = {Jean{-}Yves Girard},
+  title     = {The System {F} of Variable Types, Fifteen Years Later},
+  journal   = {Theor. Comput. Sci.},
+  volume    = {45},
+  number    = {2},
+  pages     = {159--192},
+  year      = {1986},
+  url       = {https://doi.org/10.1016/0304-3975(86)90044-7},
+  doi       = {10.1016/0304-3975(86)90044-7},
+  timestamp = {Wed, 17 Feb 2021 21:58:37 +0100},
+  biburl    = {https://dblp.org/rec/journals/tcs/Girard86.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+@inproceedings{rosette-lang,
+  author    = {Emina Torlak and
+               Rastislav Bod{\'{i}}k},
+  editor    = {Antony L. Hosking and
+               Patrick Th. Eugster and
+               Robert Hirschfeld},
+  title     = {Growing solver-aided languages with rosette},
+  booktitle = {{ACM} Symposium on New Ideas in Programming and Reflections on Software,
+               Onward! 2013, part of {SPLASH} '13, Indianapolis, IN, USA, October
+               26-31, 2013},
+  pages     = {135--152},
+  publisher = {{ACM}},
+  year      = {2013},
+  url       = {https://doi.org/10.1145/2509578.2509586},
+  doi       = {10.1145/2509578.2509586},
+  timestamp = {Mon, 12 Jul 2021 15:34:15 +0200},
+  biburl    = {https://dblp.org/rec/conf/oopsla/TorlakB13.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{10.1145/2666356.2594340,
+author = {Torlak, Emina and Bodik, Rastislav},
+title = {A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages},
+year = {2014},
+isbn = {9781450327848},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2594291.2594340},
+doi = {10.1145/2594291.2594340},
+abstract = {Solver-aided domain-specific languages (SDSLs) are an emerging class of computer-aided programming systems. They ease the construction of programs by using satisfiability solvers to automate tasks such as verification, debugging, synthesis, and non-deterministic execution. But reducing programming tasks to satisfiability problems involves translating programs to logical constraints, which is an engineering challenge even for domain-specific languages.We have previously shown that translation to constraints can be avoided if SDSLs are implemented by (traditional) embedding into a host language that is itself solver-aided. This paper describes how to implement a symbolic virtual machine (SVM) for such a host language. Our symbolic virtual machine is lightweight because it compiles to constraints only a small subset of the host's constructs, while allowing SDSL designers to use the entire language, including constructs for DSL embedding. This lightweight compilation employs a novel symbolic execution technique with two key properties: it produces compact encodings, and it enables concrete evaluation to strip away host constructs that are outside the subset compilable to constraints. Our symbolic virtual machine architecture is at the heart of Rosette, a solver-aided language that is host to several new SDSLs.},
+booktitle = {Proceedings of the 35th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {530–541},
+numpages = {12},
+keywords = {symbolic virtual machine, solver-aided languages},
+location = {Edinburgh, United Kingdom},
+series = {PLDI '14}
+}
+
+
+@article{rustbelt-paper,
+author = {Jung, Ralf and Jourdan, Jacques-Henri and Krebbers, Robbert and Dreyer, Derek},
+title = {RustBelt: Securing the Foundations of the Rust Programming Language},
+year = {2017},
+issue_date = {January 2018},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {2},
+number = {POPL},
+url = {https://doi.org/10.1145/3158154},
+doi = {10.1145/3158154},
+abstract = {Rust is a new systems programming language that promises to overcome the seemingly fundamental tradeoff between high-level safety guarantees and low-level control over resource management. Unfortunately, none of Rust's safety claims have been formally proven, and there is good reason to question whether they actually hold. Specifically, Rust employs a strong, ownership-based type system, but then extends the expressive power of this core type system through libraries that internally use unsafe features. In this paper, we give the first formal (and machine-checked) safety proof for a language representing a realistic subset of Rust. Our proof is extensible in the sense that, for each new Rust library that uses unsafe features, we can say what verification condition it must satisfy in order for it to be deemed a safe extension to the language. We have carried out this verification for some of the most important libraries that are used throughout the Rust ecosystem.},
+journal = {Proc. ACM Program. Lang.},
+month = {dec},
+articleno = {66},
+numpages = {34},
+keywords = {Rust, type systems, concurrency, separation logic, logical relations}
+}
+@inproceedings{rosette-paper,
+author = {Torlak, Emina and Bodik, Rastislav},
+title = {A Lightweight Symbolic Virtual Machine for Solver-Aided Host Languages},
+year = {2014},
+isbn = {9781450327848},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2594291.2594340},
+doi = {10.1145/2594291.2594340},
+abstract = {Solver-aided domain-specific languages (SDSLs) are an emerging class of computer-aided programming systems. They ease the construction of programs by using satisfiability solvers to automate tasks such as verification, debugging, synthesis, and non-deterministic execution. But reducing programming tasks to satisfiability problems involves translating programs to logical constraints, which is an engineering challenge even for domain-specific languages.We have previously shown that translation to constraints can be avoided if SDSLs are implemented by (traditional) embedding into a host language that is itself solver-aided. This paper describes how to implement a symbolic virtual machine (SVM) for such a host language. Our symbolic virtual machine is lightweight because it compiles to constraints only a small subset of the host's constructs, while allowing SDSL designers to use the entire language, including constructs for DSL embedding. This lightweight compilation employs a novel symbolic execution technique with two key properties: it produces compact encodings, and it enables concrete evaluation to strip away host constructs that are outside the subset compilable to constraints. Our symbolic virtual machine architecture is at the heart of Rosette, a solver-aided language that is host to several new SDSLs.},
+booktitle = {Proceedings of the 35th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {530–541},
+numpages = {12},
+keywords = {symbolic virtual machine, solver-aided languages},
+location = {Edinburgh, United Kingdom},
+series = {PLDI '14}
+}
+
+@misc{rust-belt,
+    author = {Derek Dreyer},
+    title = {RustBelt - Programming Languages \& Verification},
+    url = {https://plv.mpi-sws.org/rustbelt/},
+    year = {2021},
+    note = {Accessed Sep. 2022}
+}
+
+@incollection{WIRSING1990675,
+title = {Algebraic Specification},
+editor = {Jan {Van Leeuwen}},
+booktitle = {Formal Models and Semantics},
+publisher = {Elsevier},
+address = {Amsterdam},
+pages = {675-788},
+year = {1990},
+series = {Handbook of Theoretical Computer Science},
+isbn = {978-0-444-88074-1},
+doi = {https://doi.org/10.1016/B978-0-444-88074-1.50018-4},
+url = {https://www.sciencedirect.com/science/article/pii/B9780444880741500184},
+author = {Martin Wirsing},
+}
+
+@inproceedings{10.1145/800237.807124, author = {Guttag, John}, title = {Abstract Data Types and the Development of Data Structures}, year = {1976}, isbn = {9781450378987}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, url = {https://doi.org/10.1145/800237.807124}, doi = {10.1145/800237.807124}, abstract = {Abstract data types can play a significant role in the development of software that is reliable, efficient, and flexible. This paper presents and discusses the application of an algebraic technique for the specification of abstract data types. Among the examples presented is a top-down development of a symbol table for a block structured language, including a discussion of the proof of its correctness. The paper also contains a brief discussion of the problems involved in constructing algebraic specifications that are both consistent and sufficiently-complete.}, booktitle = {Proceedings of the 1976 Conference on Data: Abstraction, Definition and Structure}, pages = {72}, location = {Salt Lake City, Utah, USA} }
+
+@inproceedings{10.1145/942572.807045,
+author = {Liskov, Barbara and Zilles, Stephen},
+title = {Programming with Abstract Data Types},
+year = {1974},
+isbn = {9781450378840},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/800233.807045},
+doi = {10.1145/800233.807045},
+booktitle = {Proceedings of the ACM SIGPLAN Symposium on Very High Level Languages},
+pages = {50–59},
+numpages = {10},
+location = {Santa Monica, California, USA}
+}
+
+
+@inproceedings{DBLP:conf/pldi/ShachamVY09,
+author = {Shacham, Ohad and Vechev, Martin and Yahav, Eran},
+title = {Chameleon: Adaptive Selection of Collections},
+year = {2009},
+isbn = {9781605583921},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1542476.1542522},
+doi = {10.1145/1542476.1542522},
+booktitle = {Proceedings of the 30th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {408–418},
+numpages = {11},
+keywords = {java, collections, semantic profiler, bloat},
+location = {Dublin, Ireland},
+series = {PLDI '09}
+}
+
+@inproceedings{DBLP:conf/pldi/JungRRCP11,
+author = {Jung, Changhee and Rus, Silvius and Railing, Brian P. and Clark, Nathan and Pande, Santosh},
+title = {Brainy: Effective Selection of Data Structures},
+year = {2011},
+isbn = {9781450306638},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1993498.1993509},
+doi = {10.1145/1993498.1993509},
+booktitle = {Proceedings of the 32nd ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {86–97},
+numpages = {12},
+keywords = {application generator, data structure selection, performance counters, training framework},
+location = {San Jose, California, USA},
+series = {PLDI '11}
+}
+
+@inproceedings{DBLP:conf/cgo/CostaA18,
+author = {Costa, Diego and Andrzejak, Artur},
+title = {CollectionSwitch: A Framework for Efficient and Dynamic Collection Selection},
+year = {2018},
+isbn = {9781450356176},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3168825},
+doi = {10.1145/3168825},
+booktitle = {Proceedings of the 2018 International Symposium on Code Generation and Optimization},
+pages = {16–26},
+numpages = {11},
+keywords = {performance, optimization, data structure, adaptive algorithms},
+location = {Vienna, Austria},
+series = {CGO 2018}
+}
+ 
+
+@inproceedings{DBLP:conf/ecoop/Xu13,
+  author    = {Guoqing Xu},
+  editor    = {Giuseppe Castagna},
+  title     = {CoCo: Sound and Adaptive Replacement of Java Collections},
+  booktitle = {{ECOOP} 2013 - Object-Oriented Programming - 27th European Conference,
+               Montpellier, France, July 1-5, 2013. Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7920},
+  pages     = {1--26},
+  publisher = {Springer},
+  year      = {2013},
+  url       = {https://doi.org/10.1007/978-3-642-39038-8\_1},
+  doi       = {10.1007/978-3-642-39038-8\_1},
+  timestamp = {Fri, 04 Jun 2021 16:40:09 +0200},
+  biburl    = {https://dblp.org/rec/conf/ecoop/Xu13.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+@inproceedings{10.1109/CGO.2007.32,
+author = {Cavazos, John and Fursin, Grigori and Agakov, Felix and Bonilla, Edwin and O'Boyle, Michael F. P. and Temam, Olivier},
+title = {Rapidly Selecting Good Compiler Optimizations Using Performance Counters},
+year = {2007},
+isbn = {0769527647},
+publisher = {IEEE Computer Society},
+address = {USA},
+url = {https://doi.org/10.1109/CGO.2007.32},
+doi = {10.1109/CGO.2007.32},
+booktitle = {Proceedings of the International Symposium on Code Generation and Optimization},
+pages = {185–197},
+numpages = {13},
+series = {CGO '07}
+}
+
+@article{fursin2011milepost,
+  title={Milepost gcc: Machine learning enabled self-tuning compiler},
+  author={Fursin, Grigori and Kashnikov, Yuriy and Memon, Abdul Wahid and Chamski, Zbigniew and Temam, Olivier and Namolaru, Mircea and Yom-Tov, Elad and Mendelson, Bilha and Zaks, Ayal and Courtois, Eric and others},
+  journal={International journal of parallel programming},
+  volume={39},
+  number={3},
+  pages={296--327},
+  year={2011},
+  publisher={Springer}
+}
+
+@inproceedings{DBLP:conf/icse/SiegmundKKABRS12,
+  author    = {Norbert Siegmund and
+               Sergiy S. Kolesnikov and
+               Christian K{\"{a}}stner and
+               Sven Apel and
+               Don S. Batory and
+               Marko Rosenm{\"{u}}ller and
+               Gunter Saake},
+  editor    = {Martin Glinz and
+               Gail C. Murphy and
+               Mauro Pezz{\`{e}}},
+  title     = {Predicting performance via automated feature-interaction detection},
+  booktitle = {34th International Conference on Software Engineering, {ICSE} 2012,
+               June 2-9, 2012, Zurich, Switzerland},
+  pages     = {167--177},
+  publisher = {{IEEE} Computer Society},
+  year      = {2012},
+  url       = {https://doi.org/10.1109/ICSE.2012.6227196},
+  doi       = {10.1109/ICSE.2012.6227196},
+  timestamp = {Wed, 16 Oct 2019 14:14:49 +0200},
+  biburl    = {https://dblp.org/rec/conf/icse/SiegmundKKABRS12.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+ 
+ 
+ @inproceedings{DBLP:conf/popl/SwamyHKRDFBFSKZ16,
+  author    = {Nikhil Swamy and
+               Catalin Hritcu and
+               Chantal Keller and
+               Aseem Rastogi and
+               Antoine Delignat{-}Lavaud and
+               Simon Forest and
+               Karthikeyan Bhargavan and
+               C{\'{e}}dric Fournet and
+               Pierre{-}Yves Strub and
+               Markulf Kohlweiss and
+               Jean Karim Zinzindohoue and
+               Santiago Zanella B{\'{e}}guelin},
+  editor    = {Rastislav Bod{\'{\i}}k and
+               Rupak Majumdar},
+  title     = {Dependent types and multi-monadic effects in {F}},
+  booktitle = {Proceedings of the 43rd Annual {ACM} {SIGPLAN-SIGACT} Symposium on
+               Principles of Programming Languages, {POPL} 2016, St. Petersburg,
+               FL, USA, January 20 - 22, 2016},
+  pages     = {256--270},
+  publisher = {{ACM}},
+  year      = {2016},
+  url       = {https://doi.org/10.1145/2837614.2837655},
+  doi       = {10.1145/2837614.2837655},
+  timestamp = {Wed, 23 Jun 2021 15:34:31 +0200},
+  biburl    = {https://dblp.org/rec/conf/popl/SwamyHKRDFBFSKZ16.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{DBLP:journals/pacmpl/ProtzenkoZRRWBD17,
+  author    = {Jonathan Protzenko and
+               Jean Karim Zinzindohou{\'{e}} and
+               Aseem Rastogi and
+               Tahina Ramananandro and
+               Peng Wang and
+               Santiago Zanella B{\'{e}}guelin and
+               Antoine Delignat{-}Lavaud and
+               Catalin Hritcu and
+               Karthikeyan Bhargavan and
+               C{\'{e}}dric Fournet and
+               Nikhil Swamy},
+  title     = {Verified low-level programming embedded in {F}},
+  journal   = {Proc. {ACM} Program. Lang.},
+  volume    = {1},
+  number    = {{ICFP}},
+  pages     = {17:1--17:29},
+  year      = {2017},
+  url       = {https://doi.org/10.1145/3110261},
+  doi       = {10.1145/3110261},
+  timestamp = {Wed, 17 Feb 2021 08:54:01 +0100},
+  biburl    = {https://dblp.org/rec/journals/pacmpl/ProtzenkoZRRWBD17.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{10.1145/1863543.1863560, author = {Bierman, Gavin M. and Gordon, Andrew D. and Hri\c{t}cu, C\u{a}t\u{a}lin and Langworthy, David}, title = {Semantic Subtyping with an SMT Solver}, year = {2010}, isbn = {9781605587943}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, url = {https://doi.org/10.1145/1863543.1863560}, doi = {10.1145/1863543.1863560}, abstract = {We study a first-order functional language with the novel combination of the ideas of refinement type (the subset of a type to satisfy a Boolean expression) and type-test (a Boolean expression testing whether a value belongs to a type). Our core calculus can express a rich variety of typing idioms; for example, intersection, union, negation, singleton, nullable, variant, and algebraic types are all derivable. We formulate a semantics in which expressions denote terms, and types are interpreted as first-order logic formulas. Subtyping is defined as valid implication between the semantics of types. The formulas are interpreted in a specific model that we axiomatize using standard first-order theories. On this basis, we present a novel type-checking algorithm able to eliminate many dynamic tests and to detect many errors statically. The key idea is to rely on an SMT solver to compute subtyping efficiently. Moreover, interpreting types as formulas allows us to call the SMT solver at run-time to compute instances of types.}, booktitle = {Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming}, pages = {105–116}, numpages = {12}, keywords = {type systems, semantic subtyping, data processing, satisfiability modulo theories}, location = {Baltimore, Maryland, USA}, series = {ICFP '10} }
+
+@book{jackson2012software,
+  title={Software Abstractions: logic, language, and analysis},
+  author={Jackson, Daniel},
+  year={2012},
+  publisher={MIT press}
+}
+%end primrose
+%begin shoggoth
+%% This BibTeX bibliography file was created using BibDesk.
+%% https://bibdesk.sourceforge.io/
+
+%% Created for Peter Höfner at 2023-07-07 08:39:06 +1000
+
+
+%% Saved with string encoding Unicode (UTF-8)
+
+% added by Rob:
+@string {springer	= {Springer}}
+@string {lncs           = {{\rm LNCS}}}
+
+@book{NipkowPauWen:IsabelleTut:2002,
+	author = {Tobias Nipkow and Lawrence C. Paulson and Markus Wenzel},
+	date-added = {2023-07-07 08:39:05 +1000},
+	date-modified = {2023-07-07 08:39:05 +1000},
+	publisher = springer,
+	series = lncs,
+	title = {{Isabelle}/{HOL}: A Proof Assistant for {Higher-Order Logic}},
+	volume = 2283,
+        doi = {https://doi.org/10.1007/3-540-45949-9},
+	year = 2002}
+
+@article{KIEBURTZ2001138,
+	abstract = {Rewriting strategies can become quite complex and are not easy to comprehend or reason about when they are expressed in operational terms. This paper develops a weakest precondition logic for reasoning about strategies programmed in the strategy language Stratego. This logic embeds the modal mu-calculus, allowing it to express properties of terms of arbitrary depth. Its use is illustrated by characterizing properties of several reduction strategies for the lambda calculus with explicit substitutions.},
+	author = {Richard B. Kieburtz},
+	doi = {https://doi.org/10.1016/S1571-0661(04)00283-X},
+	issn = {1571-0661},
+	journal = {Electronic Notes in Theoretical Computer Science},
+	note = {STRATEGIES 2001, 4th International Workshop on Strategies in Automated Deduction - Selected Papers (in connection with IJCAR 2001)},
+	number = {2},
+	pages = {138-154},
+	title = {A Logic for Rewriting Strategies},
+	url = {https://www.sciencedirect.com/science/article/pii/S157106610400283X},
+	volume = {58},
+	year = {2001},
+	bdsk-url-1 = {https://www.sciencedirect.com/science/article/pii/S157106610400283X},
+	bdsk-url-2 = {https://doi.org/10.1016/S1571-0661(04)00283-X}}
+
+@article{VISSER1998422,
+	abstract = {System S is a calculus providing the basic abstractions of term rewriting: matching and building terms, term traversal, combining computations and handling failure. The calculus forms a core language for implementation of a wide variety of rewriting languages, or more generally, languages for specifying tree transformations. In this paper we show how a conventional rewriting language based on conditional term rewriting can be implemented straightforwardly in System S. Subsequently we show how this implementation can be extended with features such as matching conditions, negative conditions, default rules, non-strictness annotations and alternative evaluation strategies. We thank Bas Luttik and Andrew Tolmach for many discussions on rewriting strategies and their applications. Jan Bergstra pointed out the problems of non-determinism and conditional rules in languages such as ASF+SDF. Eu-genio Moggi made clear that our semantics does not model programs with global backtracking, but rather local backtracking, which was what we were looking for.},
+	author = {Eelco Visser and Zine El-Abidine Benaissa},
+	doi = {https://doi.org/10.1016/S1571-0661(05)80027-1},
+	issn = {1571-0661},
+	journal = {Electronic Notes in Theoretical Computer Science},
+	note = {International Workshop on Rewriting Logic and its Applications},
+	pages = {422-441},
+	title = {A Core Language for Rewriting},
+	url = {https://www.sciencedirect.com/science/article/pii/S1571066105800271},
+	volume = {15},
+	year = {1998},
+	bdsk-url-1 = {https://www.sciencedirect.com/science/article/pii/S1571066105800271},
+	bdsk-url-2 = {https://doi.org/10.1016/S1571-0661(05)80027-1}}
+
+@inproceedings{10.1007/3-540-45127-7_27,
+	abstract = {Program transformation is used in many areas of software engineering. Examples include compilation, optimization, synthesis, refactoring, migration, normalization and improvement [15]. Rewrite rules are a natural formalism for expressing single program transformations. However, using a standard strategy for normalizing a program with a set of rewrite rules is not adequate for implementing program transformation systems. It may be necessary to apply a rule only in some phase of a transformation, to apply rules in some order, or to apply a rule only to part of a program. These restrictions may be necessary to avoid non-termination or to choose a specific path in a non-con uent rewrite system.},
+	NOaddress = {Berlin, Heidelberg},
+	author = {Visser, Eelco},
+	booktitle = {Rewriting Techniques and Applications},
+	editor = {Middeldorp, Aart},
+	isbn = {978-3-540-45127-3},
+	pages = {357--361},
+	publisher = springer,
+	series = lncs,
+	volume = 2051,
+	title = {Stratego: A Language for Program Transformation Based on Rewriting Strategies System Description of Stratego 0.5},
+        doi = {https://doi.org/10.1007/3-540-45127-7_27},
+	year = {2001}}
+
+@inproceedings{hennessy-plotkin:plotkin-powerdomain,
+	author = {Matthew Hennessy and Gordon D. Plotkin},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/mfcs/HennessyP79.bib},
+	booktitle = {Mathematical Foundations of Computer Science 1979, Proceedings, 8th Symposium, Olomouc, Czechoslovakia, September 3-7, 1979},
+	doi = {10.1007/3-540-09526-8\_8},
+	editor = {Jir{\'{\i}} Becv{\'{a}}r},
+	pages = {108--120},
+	publisher = springer,
+	series = lncs,
+	timestamp = {Tue, 14 May 2019 10:00:37 +0200},
+	title = {Full Abstraction for a Simple Parallel Programming Language},
+	url = {https://doi.org/10.1007/3-540-09526-8\_8},
+	volume = {74},
+	year = {1979},
+	bdsk-url-1 = {https://doi.org/10.1007/3-540-09526-8%5C_8}}
+
+@article{plotkin:powerdomain,
+	author = {Gordon D. Plotkin},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/siamcomp/Plotkin76.bib},
+	doi = {10.1137/0205035},
+	journal = {{SIAM} J. Comput.},
+	number = {3},
+	pages = {452--487},
+	timestamp = {Wed, 14 Nov 2018 10:45:06 +0100},
+	title = {A Powerdomain Construction},
+	url = {https://doi.org/10.1137/0205035},
+	volume = {5},
+	year = {1976},
+	bdsk-url-1 = {https://doi.org/10.1137/0205035}}
+
+@article{DBLP:journals/cacm/HagedornLKQGS23,
+	author = {Bastian Hagedorn and Johannes Lenfers and Thomas Koehler and Xueying Qin and Sergei Gorlatch and Michel Steuwer},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/cacm/HagedornLKQGS23.bib},
+	doi = {10.1145/3580371},
+	journal = {Commun. {ACM}},
+	number = {3},
+	pages = {89--97},
+	timestamp = {Thu, 09 Mar 2023 09:09:00 +0100},
+	title = {Achieving High Performance the Functional Way: Expressing High-Performance Optimizations as Rewrite Strategies},
+	url = {https://doi.org/10.1145/3580371},
+	volume = {66},
+	year = {2023},
+	bdsk-url-1 = {https://doi.org/10.1145/3580371}}
+
+@article{DBLP:journals/pacmpl/HagedornLKQGS20,
+	author = {Bastian Hagedorn and Johannes Lenfers and Thomas Koehler and Xueying Qin and Sergei Gorlatch and Michel Steuwer},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/pacmpl/HagedornLKQGS20.bib},
+	doi = {10.1145/3408974},
+	journal = {Proc. {ACM} Program. Lang.},
+	number = {{ICFP}},
+	pages = {92:1--92:29},
+	timestamp = {Sun, 02 Oct 2022 15:26:02 +0200},
+	title = {Achieving high-performance the functional way: a functional pearl on expressing high-performance optimizations as rewrite strategies},
+	url = {https://doi.org/10.1145/3408974},
+	volume = {4},
+	year = {2020},
+	bdsk-url-1 = {https://doi.org/10.1145/3408974}}
+
+@inproceedings{DBLP:conf/icfp/VisserBT98,
+	author = {Eelco Visser and Zine El{-}Abidine Benaissa and Andrew P. Tolmach},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/icfp/VisserBT98.bib},
+	booktitle = {Proceedings of the third {ACM} {SIGPLAN} International Conference on Functional Programming {(ICFP} '98), Baltimore, Maryland, USA, September 27-29, 1998},
+	doi = {10.1145/289423.289425},
+	editor = {Matthias Felleisen and Paul Hudak and Christian Queinnec},
+	pages = {13--26},
+	publisher = {{ACM}},
+	timestamp = {Thu, 08 Jul 2021 16:04:01 +0200},
+	title = {Building Program Optimizers with Rewriting Strategies},
+	url = {https://doi.org/10.1145/289423.289425},
+	year = {1998},
+	bdsk-url-1 = {https://doi.org/10.1145/289423.289425}}
+
+@article{DBLP:journals/software/WachsmuthKV14,
+	author = {Guido Wachsmuth and Gabri{\"{e}}l D. P. Konat and Eelco Visser},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/software/WachsmuthKV14.bib},
+	doi = {10.1109/MS.2014.100},
+	journal = {{IEEE} Softw.},
+	number = {5},
+	pages = {35--43},
+	timestamp = {Mon, 08 Jun 2020 22:32:42 +0200},
+	title = {Language Design with the Spoofax Language Workbench},
+	url = {https://doi.org/10.1109/MS.2014.100},
+	volume = {31},
+	year = {2014},
+	bdsk-url-1 = {https://doi.org/10.1109/MS.2014.100}}
+
+@inproceedings{DBLP:conf/icalp/SchmidKK021,
+	author = {Todd Schmid and Tobias Kapp{\'{e}} and Dexter Kozen and Alexandra Silva},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/icalp/SchmidKK021.bib},
+	booktitle = {48th International Colloquium on Automata, Languages, and Programming, {ICALP} 2021, July 12-16, 2021, Glasgow, Scotland (Virtual Conference)},
+	doi = {10.4230/LIPIcs.ICALP.2021.142},
+	editor = {Nikhil Bansal and Emanuela Merelli and James Worrell},
+	pages = {142:1--142:14},
+	publisher = {Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik},
+	series = {LIPIcs},
+	timestamp = {Tue, 15 Feb 2022 07:54:27 +0100},
+	title = {Guarded Kleene Algebra with Tests: Coequations, Coinduction, and Completeness},
+	url = {https://doi.org/10.4230/LIPIcs.ICALP.2021.142},
+	volume = {198},
+	year = {2021},
+	bdsk-url-1 = {https://doi.org/10.4230/LIPIcs.ICALP.2021.142}}
+
+@inproceedings{DBLP:conf/esop/WagemakerFKKRS22,
+	author = {Jana Wagemaker and Nate Foster and Tobias Kapp{\'{e}} and Dexter Kozen and Jurriaan Rot and Alexandra Silva},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/esop/WagemakerFKKRS22.bib},
+	booktitle = {Programming Languages and Systems - 31st European Symposium on Programming, {ESOP} 2022, Held as Part of the European Joint Conferences on Theory and Practice of Software, {ETAPS} 2022, Munich, Germany, April 2-7, 2022, Proceedings},
+	doi = {10.1007/978-3-030-99336-8\_21},
+	editor = {Ilya Sergey},
+	pages = {575--602},
+	publisher = springer,
+	series = lncs,
+	timestamp = {Fri, 29 Apr 2022 14:50:41 +0200},
+	title = {Concurrent NetKAT - Modeling and analyzing stateful, concurrent networks},
+	url = {https://doi.org/10.1007/978-3-030-99336-8\_21},
+	volume = {13240},
+	year = {2022},
+	bdsk-url-1 = {https://doi.org/10.1007/978-3-030-99336-8%5C_21}}
+
+@inproceedings{DBLP:conf/popl/AndersonFGJKSW14,
+	author = {Carolyn Jane Anderson and Nate Foster and Arjun Guha and Jean{-}Baptiste Jeannin and Dexter Kozen and Cole Schlesinger and David Walker},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/popl/AndersonFGJKSW14.bib},
+	booktitle = {The 41st Annual {ACM} {SIGPLAN-SIGACT} Symposium on Principles of Programming Languages, {POPL} '14, San Diego, CA, USA, January 20-21, 2014},
+	doi = {10.1145/2535838.2535862},
+	editor = {Suresh Jagannathan and Peter Sewell},
+	pages = {113--126},
+	publisher = {{ACM}},
+	timestamp = {Thu, 24 Jun 2021 16:19:31 +0200},
+	title = {{NetKAT}: semantic foundations for networks},
+	url = {https://doi.org/10.1145/2535838.2535862},
+	year = {2014},
+	bdsk-url-1 = {https://doi.org/10.1145/2535838.2535862}}
+
+@article{DBLP:journals/jlp/HoareMSW11,
+	author = {Tony Hoare and Bernhard M{\"{o}}ller and Georg Struth and Ian Wehrman},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/jlp/HoareMSW11.bib},
+	doi = {10.1016/j.jlap.2011.04.005},
+	journal = {J. Log. Algebraic Methods Program.},
+	number = {6},
+	pages = {266--296},
+	timestamp = {Tue, 16 Feb 2021 15:58:24 +0100},
+	title = {Concurrent Kleene Algebra and its Foundations},
+	url = {https://doi.org/10.1016/j.jlap.2011.04.005},
+	volume = {80},
+	year = {2011},
+	bdsk-url-1 = {https://doi.org/10.1016/j.jlap.2011.04.005}}
+
+@article{DBLP:journals/toplas/Kozen97,
+	author = {Dexter Kozen},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/toplas/Kozen97.bib},
+	doi = {10.1145/256167.256195},
+	journal = {{ACM} Trans. Program. Lang. Syst.},
+	number = {3},
+	pages = {427--443},
+	timestamp = {Thu, 14 Oct 2021 09:12:21 +0200},
+	title = {Kleene Algebra with Tests},
+	url = {https://doi.org/10.1145/256167.256195},
+	volume = {19},
+	year = {1997},
+	bdsk-url-1 = {https://doi.org/10.1145/256167.256195}}
+
+@inproceedings{DBLP:conf/lics/Kozen91,
+	author = {Dexter Kozen},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/lics/Kozen91.bib},
+	booktitle = {Proceedings of the Sixth Annual Symposium on Logic in Computer Science {(LICS} '91), Amsterdam, The Netherlands, July 15-18, 1991},
+	doi = {10.1109/LICS.1991.151646},
+	pages = {214--225},
+	publisher = {{IEEE} Computer Society},
+	timestamp = {Fri, 24 Mar 2023 00:01:50 +0100},
+	title = {A Completeness Theorem for Kleene Algebras and the Algebra of Regular Events},
+	url = {https://doi.org/10.1109/LICS.1991.151646},
+	year = {1991},
+	bdsk-url-1 = {https://doi.org/10.1109/LICS.1991.151646}}
+
+@inproceedings{DBLP:conf/lics/Kozen99,
+	author = {Dexter Kozen},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/lics/Kozen99.bib},
+	booktitle = {14th Annual {IEEE} Symposium on Logic in Computer Science, Trento, Italy, July 2-5, 1999},
+	doi = {10.1109/LICS.1999.782610},
+	pages = {167--172},
+	publisher = {{IEEE} Computer Society},
+	timestamp = {Fri, 24 Mar 2023 00:01:49 +0100},
+	title = {On Hoare Logic and Kleene Algebra with Tests},
+	url = {https://doi.org/10.1109/LICS.1999.782610},
+	year = {1999},
+	bdsk-url-1 = {https://doi.org/10.1109/LICS.1999.782610}}
+
+@inproceedings{DBLP:conf/lics/GoncharovS13,
+	author = {Sergey Goncharov and Lutz Schr{\"{o}}der},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/lics/GoncharovS13.bib},
+	booktitle = {28th Annual {ACM/IEEE} Symposium on Logic in Computer Science, {LICS} 2013, New Orleans, LA, USA, June 25-28, 2013},
+	doi = {10.1109/LICS.2013.33},
+	pages = {273--282},
+	publisher = {{IEEE} Computer Society},
+	timestamp = {Fri, 24 Mar 2023 00:01:49 +0100},
+	title = {A Relatively Complete Generic Hoare Logic for Order-Enriched Effects},
+	url = {https://doi.org/10.1109/LICS.2013.33},
+	year = {2013},
+	bdsk-url-1 = {https://doi.org/10.1109/LICS.2013.33}}
+
+@article{Floyd1967,
+	author = {Floyd, Robert W.},
+	doi = {10.1007/978-94-011-1793-7_4},
+	journal = {Proceedings of Symposium on Applied Mathematics},
+	pages = {19-32},
+	title = {Assigning Meanings to Programs},
+	volume = 19,
+	year = 1967,
+	bdsk-url-1 = {https://doi.org/10.1007/978-94-011-1793-7_4}}
+
+@article{DBLP:journals/cacm/Hoare69,
+	ORGauthor = {C. A. R. Hoare},
+	author = {Tony Hoare},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/cacm/Hoare69.bib},
+	doi = {10.1145/363235.363259},
+	journal = {Commun. {ACM}},
+	number = {10},
+	pages = {576--580},
+	timestamp = {Wed, 14 Nov 2018 10:22:34 +0100},
+	title = {An Axiomatic Basis for Computer Programming},
+	url = {https://doi.org/10.1145/363235.363259},
+	volume = {12},
+	year = {1969},
+	bdsk-url-1 = {https://doi.org/10.1145/363235.363259}}
+
+@article{DBLP:journals/cacm/Dijkstra75,
+	author = {Edsger W. Dijkstra},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/cacm/Dijkstra75.bib},
+	doi = {10.1145/360933.360975},
+	journal = {Commun. {ACM}},
+	number = {8},
+	pages = {453--457},
+	timestamp = {Wed, 14 Nov 2018 10:22:34 +0100},
+	title = {Guarded Commands, Nondeterminacy and Formal Derivation of Programs},
+	url = {https://doi.org/10.1145/360933.360975},
+	volume = {18},
+	year = {1975},
+	bdsk-url-1 = {https://doi.org/10.1145/360933.360975}}
+
+@article{DBLP:journals/siamcomp/Cook78,
+	author = {Stephen A. Cook},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/siamcomp/Cook78.bib},
+	doi = {10.1137/0207005},
+	journal = {{SIAM} J. Comput.},
+	number = {1},
+	pages = {70--90},
+	timestamp = {Sat, 27 May 2017 14:22:59 +0200},
+	title = {Soundness and Completeness of an Axiom System for Program Verification},
+	url = {https://doi.org/10.1137/0207005},
+	volume = {7},
+	year = {1978},
+	bdsk-url-1 = {https://doi.org/10.1137/0207005}}
+
+@book{DBLP:books/daglib/0073499,
+	author = {Carroll Morgan},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/books/daglib/0073499.bib},
+	isbn = {978-0-13-123274-7},
+	publisher = {Prentice Hall},
+	series = {Prentice Hall International series in computer science},
+	timestamp = {Thu, 22 Feb 2018 18:20:56 +0100},
+	title = {Programming from specifications, 2nd Edition},
+	year = {1994}}
+
+@article{DBLP:journals/mscs/AguirreKK22,
+	author = {Alejandro Aguirre and Shin{-}ya Katsumata and Satoshi Kura},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/journals/mscs/AguirreKK22.bib},
+	doi = {10.1017/S0960129522000330},
+	journal = {Math. Struct. Comput. Sci.},
+	number = {4},
+	pages = {472--510},
+	timestamp = {Mon, 26 Jun 2023 20:57:09 +0200},
+	title = {Weakest preconditions in fibrations},
+	url = {https://doi.org/10.1017/S0960129522000330},
+	volume = {32},
+	year = {2022},
+	bdsk-url-1 = {https://doi.org/10.1017/S0960129522000330}}
+
+@inproceedings{DBLP:conf/rex/BonsangueK92,
+	author = {Marcello M. Bonsangue and Joost N. Kok},
+	bibsource = {dblp computer science bibliography, https://dblp.org},
+	biburl = {https://dblp.org/rec/conf/rex/BonsangueK92.bib},
+	booktitle = {Sematics: Foundations and Applications, {REX} Workshop, Beekbergen, The Netherlands, June 1-4, 1992, Proceedings},
+	doi = {10.1007/3-540-56596-5\_30},
+	editor = {J. W. de Bakker and Willem P. de Roever and Grzegorz Rozenberg},
+	pages = {91--109},
+	publisher = springer,
+	series = lncs,
+	timestamp = {Tue, 14 May 2019 10:00:52 +0200},
+	title = {Semantics, Orderings and Recursion in the Weakest Precondition Calculus},
+	url = {https://doi.org/10.1007/3-540-56596-5\_30},
+	volume = {666},
+	year = {1992},
+	bdsk-url-1 = {https://doi.org/10.1007/3-540-56596-5%5C_30}}
+
+@article{DBLP:journals/iandc/Dershowitz85,
+  author       = {Nachum Dershowitz},
+  title        = {Computing with Rewrite Systems},
+  journal      = {Inf. Control.},
+  volume       = {65},
+  number       = {2/3},
+  pages        = {122--157},
+  year         = {1985},
+  url          = {https://doi.org/10.1016/S0019-9958(85)80003-6},
+  doi          = {10.1016/S0019-9958(85)80003-6},
+  timestamp    = {Mon, 18 May 2020 17:45:02 +0200},
+  biburl       = {https://dblp.org/rec/journals/iandc/Dershowitz85.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:journals/entcs/BorovanskyKKMV96,
+  author       = {Peter Borovansk{\'{y}} and
+                  Claude Kirchner and
+                  H{\'{e}}l{\`{e}}ne Kirchner and
+                  Pierre{-}Etienne Moreau and
+                  Marian Vittek},
+  editor       = {Jos{\'{e}} Meseguer},
+  title        = {{ELAN:} {A} logical framework based on computational systems},
+  booktitle    = {First International Workshop on Rewriting Logic and its Applications,
+                  {RWLW} 1996, Asilomar Conference Center, Pacific Grove, CA, USA, September
+                  3-6, 1996},
+  series       = {Electronic Notes in Theoretical Computer Science},
+  volume       = {4},
+  pages        = {35--50},
+  publisher    = {Elsevier},
+  year         = {1996},
+  url          = {https://doi.org/10.1016/S1571-0661(04)00032-5},
+  doi          = {10.1016/S1571-0661(04)00032-5},
+  timestamp    = {Fri, 12 Feb 2021 22:17:49 +0100},
+  biburl       = {https://dblp.org/rec/journals/entcs/BorovanskyKKMV96.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{DBLP:journals/scp/BravenboerKVV08,
+  author       = {Martin Bravenboer and
+                  Karl Trygve Kalleberg and
+                  Rob Vermaas and
+                  Eelco Visser},
+  title        = {{Stratego/XT 0.17.} {A} language and toolset for program transformation},
+  journal      = {Sci. Comput. Program.},
+  volume       = {72},
+  number       = {1-2},
+  pages        = {52--70},
+  year         = {2008},
+  url          = {https://doi.org/10.1016/j.scico.2007.11.003},
+  doi          = {10.1016/j.scico.2007.11.003},
+  timestamp    = {Wed, 17 Feb 2021 21:56:06 +0100},
+  biburl       = {https://dblp.org/rec/journals/scp/BravenboerKVV08.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{DBLP:journals/scp/WinterS04,
+  author       = {Victor L. Winter and
+                  Mahadevan Subramaniam},
+  title        = {The transient combinator, higher-order strategies, and the distributed data problem},
+  journal      = {Sci. Comput. Program.},
+  volume       = {52},
+  pages        = {165--212},
+  year         = {2004},
+  url          = {https://doi.org/10.1016/j.scico.2004.03.006},
+  doi          = {10.1016/j.scico.2004.03.006},
+  timestamp    = {Wed, 17 Feb 2021 21:56:16 +0100},
+  biburl       = {https://dblp.org/rec/journals/scp/WinterS04.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/rule/LammelV02,
+  author       = {Ralf L{\"{a}}mmel and
+                  Joost Visser},
+  editor       = {Bernd Fischer and
+                  Eelco Visser},
+  title        = {Design patterns for functional strategic programming},
+  booktitle    = {Proceedings of the 2002 {ACM} {SIGPLAN} Workshop on Rule-Based Programming,
+                  Pittsburgh, Pennsylvania, USA, 2002},
+  pages        = {1--14},
+  publisher    = {{ACM}},
+  year         = {2002},
+  url          = {https://doi.org/10.1145/570186.570187},
+  doi          = {10.1145/570186.570187},
+  timestamp    = {Fri, 25 Nov 2022 14:50:36 +0100},
+  biburl       = {https://dblp.org/rec/conf/rule/LammelV02.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@article{DBLP:journals/jlp/Lammel03,
+  author       = {Ralf L{\"{a}}mmel},
+  title        = {Typed generic traversal with term rewriting strategies},
+  journal      = {J. Log. Algebraic Methods Program.},
+  volume       = {54},
+  number       = {1-2},
+  pages        = {1--64},
+  year         = {2003},
+  url          = {https://doi.org/10.1016/S1567-8326(02)00028-0},
+  doi          = {10.1016/S1567-8326(02)00028-0},
+  timestamp    = {Tue, 16 Feb 2021 15:58:15 +0100},
+  biburl       = {https://dblp.org/rec/journals/jlp/Lammel03.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/ppdp/KaiserL09,
+  author       = {Markus Kaiser and
+                  Ralf L{\"{a}}mmel},
+  editor       = {Ant{\'{o}}nio Porto and
+                  Francisco Javier L{\'{o}}pez{-}Fraguas},
+  title        = {An {Isabelle/HOL}-based model of {Stratego}-like traversal strategies},
+  booktitle    = {Proceedings of the 11th International {ACM} {SIGPLAN} Conference on
+                  Principles and Practice of Declarative Programming, September 7-9,
+                  2009, Coimbra, Portugal},
+  pages        = {93--104},
+  publisher    = {{ACM}},
+  year         = {2009},
+  url          = {https://doi.org/10.1145/1599410.1599423},
+  doi          = {10.1145/1599410.1599423},
+  timestamp    = {Mon, 20 Sep 2021 08:52:59 +0200},
+  biburl       = {https://dblp.org/rec/conf/ppdp/KaiserL09.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@inproceedings{DBLP:conf/sle/SmitsV20,
+  author       = {Jeff Smits and
+                  Eelco Visser},
+  editor       = {Ralf L{\"{a}}mmel and
+                  Laurence Tratt and
+                  Juan de Lara},
+  title        = {Gradually typing strategies},
+  booktitle    = {Proceedings of the 13th {ACM} {SIGPLAN} International Conference on
+                  Software Language Engineering, {SLE} 2020, Virtual Event, USA, November
+                  16-17, 2020},
+  pages        = {1--15},
+  publisher    = {{ACM}},
+  year         = {2020},
+  url          = {https://doi.org/10.1145/3426425.3426928},
+  doi          = {10.1145/3426425.3426928},
+  timestamp    = {Sun, 02 Oct 2022 16:15:33 +0200},
+  biburl       = {https://dblp.org/rec/conf/sle/SmitsV20.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/birthday/Koppel23,
+  author       = {James Koppel},
+  editor       = {Ralf L{\"{a}}mmel and
+                  Peter D. Mosses and
+                  Friedrich Steimann},
+  title        = {Typed Multi-Language Strategy Combinators},
+  booktitle    = {Eelco Visser Commemorative Symposium, {EVCS} 2023, April 5, 2023,
+                  Delft, The Netherlands},
+  series       = {OASIcs},
+  volume       = {109},
+  pages        = {16:1--16:9},
+  publisher    = {Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik},
+  year         = {2023},
+  url          = {https://doi.org/10.4230/OASIcs.EVCS.2023.16},
+  doi          = {10.4230/OASIcs.EVCS.2023.16},
+  timestamp    = {Thu, 23 Mar 2023 16:56:00 +0100},
+  biburl       = {https://dblp.org/rec/conf/birthday/Koppel23.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/pldi/FlanaganLLNSS02,
+  author       = {Cormac Flanagan and
+                  K. Rustan M. Leino and
+                  Mark Lillibridge and
+                  Greg Nelson and
+                  James B. Saxe and
+                  Raymie Stata},
+  editor       = {Jens Knoop and
+                  Laurie J. Hendren},
+  title        = {Extended Static Checking for Java},
+  booktitle    = {Proceedings of the 2002 {ACM} {SIGPLAN} Conference on Programming
+                  Language Design and Implementation (PLDI), Berlin, Germany, June 17-19,
+                  2002},
+  pages        = {234--245},
+  publisher    = {{ACM}},
+  year         = {2002},
+  url          = {https://doi.org/10.1145/512529.512558},
+  doi          = {10.1145/512529.512558},
+  timestamp    = {Sat, 31 Jul 2021 17:22:17 +0200},
+  biburl       = {https://dblp.org/rec/conf/pldi/FlanaganLLNSS02.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/tphol/CohenDHLMSST09,
+  author       = {Ernie Cohen and
+                  Markus Dahlweid and
+                  Mark A. Hillebrand and
+                  Dirk Leinenbach and
+                  Michal Moskal and
+                  Thomas Santen and
+                  Wolfram Schulte and
+                  Stephan Tobies},
+  editor       = {Stefan Berghofer and
+                  Tobias Nipkow and
+                  Christian Urban and
+                  Makarius Wenzel},
+  title        = {{VCC:} {A} Practical System for Verifying Concurrent {C}},
+  booktitle    = {Theorem Proving in Higher Order Logics, 22nd International Conference,
+                  TPHOLs 2009, Munich, Germany, August 17-20, 2009. Proceedings},
+  volume       = {5674},
+  pages        = {23--42},
+  publisher = springer,
+  series = lncs,
+  year         = {2009},
+  url          = {https://doi.org/10.1007/978-3-642-03359-9\_2},
+  doi          = {10.1007/978-3-642-03359-9\_2},
+  timestamp    = {Tue, 14 May 2019 10:00:48 +0200},
+  biburl       = {https://dblp.org/rec/conf/tphol/CohenDHLMSST09.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@inproceedings{DBLP:conf/lpar/Leino10,
+  author       = {K. Rustan M. Leino},
+  editor       = {Edmund M. Clarke and
+                  Andrei Voronkov},
+  title        = {Dafny: An Automatic Program Verifier for Functional Correctness},
+  booktitle    = {Logic for Programming, Artificial Intelligence, and Reasoning - 16th
+                  International Conference, LPAR-16, Dakar, Senegal, April 25-May 1,
+                  2010, Revised Selected Papers},
+	publisher = springer,
+	series = lncs,
+  volume       = {6355},
+  pages        = {348--370},
+  year         = {2010},
+  url          = {https://doi.org/10.1007/978-3-642-17511-4\_20},
+  doi          = {10.1007/978-3-642-17511-4\_20},
+  timestamp    = {Tue, 14 May 2019 10:00:55 +0200},
+  biburl       = {https://dblp.org/rec/conf/lpar/Leino10.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@inproceedings{sozeau2014proof,
+  title={Proof-relevant rewriting strategies in Coq},
+  author={Sozeau, Matthieu},
+  booktitle={At Coq Workshop},
+  url = {https://www.irif.fr/~letouzey/types2014/abstract-13.pdf},
+  year={2014}
+}
+@article{DBLP:journals/ipl/Leino05,
+  author       = {K. Rustan M. Leino},
+  title        = {Efficient weakest preconditions},
+  journal      = {Inf. Process. Lett.},
+  volume       = {93},
+  number       = {6},
+  pages        = {281--288},
+  year         = {2005},
+  url          = {https://doi.org/10.1016/j.ipl.2004.10.015},
+  doi          = {10.1016/j.ipl.2004.10.015},
+  timestamp    = {Fri, 26 May 2017 22:54:46 +0200},
+  biburl       = {https://dblp.org/rec/journals/ipl/Leino05.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@misc{fu2023traced,
+      title={Traced Types for Safe Strategic Rewriting},
+      author={Rongxiao Fu and Ornela Dardha and Michel Steuwer},
+      year={2023},
+      eprint={2304.14154},
+      archivePrefix={arXiv},
+      primaryClass={cs.PL}
+}
+
+@book{stoy1985denotational,
+  title={Denotational Semantics: The Scott-Strachey Approach to Programming Language Theory},
+  author={Stoy, J.E.},
+  isbn={9780262690768},
+  lccn={77011962},
+  series={Computer Science Series},
+  url={https://books.google.co.uk/books?id=jM0mAAAAMAAJ},
+  year={1985},
+  publisher={MIT Press}
+}
+
+@article{SIMPSON2004207,
+title = {Computational adequacy for recursive types in models of intuitionistic set theory},
+journal = {Annals of Pure and Applied Logic},
+volume = {130},
+number = {1},
+pages = {207-275},
+year = {2004},
+note = {Papers presented at the 2002 IEEE Symposium on Logic in Computer Science (LICS)},
+issn = {0168-0072},
+doi = {https://doi.org/10.1016/j.apal.2003.12.005},
+url = {https://www.sciencedirect.com/science/article/pii/S0168007204000624},
+author = {Alex Simpson},
+keywords = {Domain theory, Algebraic compactness, FPC},
+abstract = {This paper provides a unifying axiomatic account of the interpretation of recursive types that incorporates both domain-theoretic and realizability models as concrete instances. Our approach is to view such models as full subcategories of categorical models of intuitionistic set theory. It is shown that the existence of solutions to recursive domain equations depends upon the strength of the set theory. We observe that the internal set theory of an elementary topos is not strong enough to guarantee their existence. In contrast, as our first main result, we establish that solutions to recursive domain equations do exist when the category of sets is a model of full intuitionistic Zermelo–Fraenkel set theory. We then apply this result to obtain a denotational interpretation of FPC, a recursively typed lambda-calculus with call-by-value operational semantics. By exploiting the intuitionistic logic of the ambient model of intuitionistic set theory, we analyse the relationship between operational and denotational semantics. We first prove an “internal” computational adequacy theorem: the model always believes that the operational and denotational notions of termination agree. This allows us to identify, as our second main result, a necessary and sufficient condition for genuine “external” computational adequacy to hold, i.e. for the operational and denotational notions of termination to coincide in the real world. The condition is formulated as a simple property of the internal logic, related to the logical notion of 1-consistency. We provide useful sufficient conditions for establishing that the logical property holds in practice. Finally, we outline how the methods of the paper may be applied to concrete models of FPC. In doing so, we obtain computational adequacy results for an extensive range of realizability and domain-theoretic models.}
+}
+
+@InProceedings{campos-levy:adequacy,
+author="Devesas Campos, Marco
+and Levy, Paul Blain",
+editor="Baier, Christel
+and Dal Lago, Ugo",
+title="A Syntactic View of Computational Adequacy",
+booktitle="Foundations of Software Science and Computation Structures",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="71--87",
+abstract="When presenting a denotational semantics of a language with recursion, it is necessary to show that the semantics is computationally adequate, i.e. that every divergent term denotes the ``bottom'' element of a domain.",
+isbn="978-3-319-89366-2"
+}
+
+@InProceedings{plotkin-power:adequacy,
+author="Plotkin, Gordon
+and Power, John",
+editor="Honsell, Furio
+and Miculan, Marino",
+title="Adequacy for Algebraic Effects",
+booktitle="Foundations of Software Science and Computation Structures",
+year="2001",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="1--24",
+abstract="Moggi proposed a monadic account of computational effects. He also presented the computational $\lambda$-calculus, $\lambda$c, a core call-by-value functional programming language for effects; the effects are obtained by adding appropriate operations. The question arises as to whether one can give a corresponding treatment of operational semantics. We do this in the case of algebraic effects where the operations are given by a single-sorted algebraic signature, and their semantics is supported by the monad, in a certain sense. We consider call-by-value PCF with--- and without---recursion, an extension of $\lambda$cwith arithmetic. We prove general adequacy theorems, and illustrate these with two examples: non-determinism and probabilistic nondeterminism.",
+isbn="978-3-540-45315-4"
+}
+
+@inproceedings{johann-simpson-voigtlander:adequady,
+  author       = {Patricia Johann and
+                  Alex Simpson and
+                  Janis Voigtl{\"{a}}nder},
+  title        = {A Generic Operational Metatheory for Algebraic Effects},
+  booktitle    = {Proceedings of the 25th Annual {IEEE} Symposium on Logic in Computer
+                  Science, {LICS} 2010, 11-14 July 2010, Edinburgh, United Kingdom},
+  pages        = {209--218},
+  publisher    = {{IEEE} Computer Society},
+  year         = {2010},
+  url          = {https://doi.org/10.1109/LICS.2010.29},
+  doi          = {10.1109/LICS.2010.29},
+  timestamp    = {Fri, 24 Mar 2023 00:01:50 +0100},
+  biburl       = {https://dblp.org/rec/conf/lics/JohannSV10.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+@misc{vG21co,
+  author    =    {Glabbeek, Rob van},
+  title =        {Coinductive Validity},
+  year =         2021,
+  url =          {https://arxiv.org/abs/2104.13021},
+}
+
+@article{LEROY2009284,
+title = {Coinductive big-step operational semantics},
+journal = {Information and Computation},
+volume = {207},
+number = {2},
+pages = {284-304},
+year = {2009},
+note = {Special issue on Structural Operational Semantics (SOS)},
+issn = {0890-5401},
+doi = {https://doi.org/10.1016/j.ic.2007.12.004},
+url = {https://www.sciencedirect.com/science/article/pii/S0890540108001296},
+author = {Xavier Leroy and Hervé Grall},
+keywords = {Coinduction, Operational semantics, Big-step semantics, Natural semantics, Small-step semantics, Reduction semantics, Type soundness, Compiler correctness, Mechanized proofs, The Coq proof assistant},
+abstract = {Using a call-by-value functional language as an example, this article illustrates the use of coinductive definitions and proofs in big-step operational semantics, enabling it to describe diverging evaluations in addition to terminating evaluations. We formalize the connections between the coinductive big-step semantics and the standard small-step semantics, proving that both semantics are equivalent. We then study the use of coinductive big-step semantics in proofs of type soundness and proofs of semantic preservation for compilers. A methodological originality of this paper is that all results have been proved using the Coq proof assistant. We explain the proof-theoretic presentation of coinductive definitions and proofs offered by Coq, and show that it facilitates the discovery and the presentation of the results.}
+}
+
+@article{10.1145/3341707, author = {Swierstra, Wouter and Baanen, Tim}, title = {A Predicate Transformer Semantics for Effects (Functional Pearl)}, year = {2019}, issue_date = {August 2019}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, volume = {3}, number = {ICFP}, url = {https://doi.org/10.1145/3341707}, doi = {10.1145/3341707}, abstract = {Reasoning about programs that use effects can be much harder than reasoning about their pure counterparts. This paper presents a predicate transformer semantics for a variety of effects, including exceptions, state, non-determinism, and general recursion. The predicate transformer semantics gives rise to a refinement relation that can be used to relate a program to its specification, or even calculate effectful programs that are correct by construction.}, journal = {Proc. ACM Program. Lang.}, month = {jul}, articleno = {103}, numpages = {26}, keywords = {program calculation, free monads, programming with dependent types, Agda, weakest precondition semantics, refinement, predicate transformers, effects} }
+
+@article{lammel2013programming,
+  title={Programming errors in traversal programs over structured data},
+  author={L{\"a}mmel, Ralf and Thompson, Simon and Kaiser, Markus},
+  journal={Science of Computer Programming},
+  volume={78},
+  number={10},
+  pages={1770--1808},
+  year={2013},
+  publisher={Elsevier}
+}
+
+@inproceedings{10.1145/1244381.1244385, author = {Cunha, Alcino and Visser, Joost}, title = {Transformation of Structure-Shy Programs: Applied to XPath Queries and Strategic Functions}, year = {2007}, isbn = {9781595936202}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, url = {https://doi.org/10.1145/1244381.1244385}, doi = {10.1145/1244381.1244385}, abstract = {Various programming languages allow the construction of structure-shy programs. Such programs are defined generically for many different datatypes and only specify specific behavior for a few relevant subtypes. Typical examples are XML query languages that allow selection of subdocuments without exhaustively specifying intermediate element tags. Other examples are languages and libraries for polytypic or strategic functional programming and for adaptive object-oriented programming.In this paper, we present an algebraic approach to transformation of declarative structure-shy programs, in particular for strategic functions and XML queries. We formulate a rich set of algebraic laws, not just for transformation of structure-shy programs, but also for their conversion into structure-sensitive programs and vice versa. We show how subsets of these laws can be used to construct effective rewrite systems for specialization, generalization, and optimization of structure-shy programs. We present a type-safe encoding of these rewrite systems in Haskell which itself uses strategic functional programming techniques.}, booktitle = {Proceedings of the 2007 ACM SIGPLAN Symposium on Partial Evaluation and Semantics-Based Program Manipulation}, pages = {11–20}, numpages = {10}, keywords = {point-free program calculation, XML query languages, algebraic program transformation, type specialization, strategic functional programming, type generalization}, location = {Nice, France}, series = {PEPM '07} }
+
+@inproceedings{10.1145/1190216.1190240, author = {L\"{a}mmel, Ralf}, title = {Scrap Your Boilerplate with XPath-like Combinators}, year = {2007}, isbn = {1595935754}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, url = {https://doi.org/10.1145/1190216.1190240}, doi = {10.1145/1190216.1190240}, abstract = {XML programming involves idioms for expressing 'structure shyness' such as the descendant axis of XPath or the default templates of XSLT. We initiate a discussion of the relationships between such XML idioms and generic functional programming, while focusing on the (Haskell-based) 'Scrap your boilerplate' style of generic programming (SYB). This work gives insight into mechanisms for traversal and selection. We compare SYB and XSLT. We approximate XPath in SYB. We make a case for SYB's programmability, when compared to XPath's fixed combinators. We allude to strengthened type checking for SYB traversals so as to reject certain, trivial behaviors.}, booktitle = {Proceedings of the 34th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages}, pages = {137–142}, numpages = {6}, keywords = {generic functional programming, XML programming}, location = {Nice, France}, series = {POPL '07} }
+
+@software{xueying_qin_2023_10125602,
+  author       = {Xueying Qin and
+                  Liam O'Connor and
+                  Rob van Glabbeek and
+                  Peter Höfner and
+                  Ohad Kammar and
+                  Michel Steuwer},
+  title        = {{Artifact for Shoggoth - A Formal Foundation for 
+                   Strategic Rewriting}},
+  month        = nov,
+  year         = 2023,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.10125602},
+  url          = {https://doi.org/10.5281/zenodo.10125602}
+}
+%end shoggoth

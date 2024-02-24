@@ -1,0 +1,92 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{listings-racket}[2022/03/29 Custom Package]
+
+\RequirePackage{color}
+\RequirePackage{listings}
+
+\lstset{% general command to set parameter(s) 
+basicstyle=\ttfamily\footnotesize, % print whole listing small 
+keywordstyle=\bfseries,% bold black keywords 
+identifierstyle=, % nothing happens
+numbers=left,                   % where to put the line-numbers
+%stringstyle=\ttfamily, % typewriter type for strings
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=3pt,                  % how far the line-numbers are from the code
+numberstyle=\tiny\color{gray},
+%xleftmargin=5.0ex,
+escapechar=!,
+commentstyle=\itshape\color{OliveGreen},
+%escapeinside={<@}{@>},
+showstringspaces=false % no special string spaces, because fugly.
+}
+
+\definecolor{light-gray}{gray}{0.40}
+
+% must look at <https://tex.stackexchange.com/questions/8851/how-can-i-highlight-some-lines-from-source-code>
+% for fancy boxes/highlighting in lstlistings
+
+\lstdefinelanguage{racket} {
+  morekeywords={define, define-syntax, define-macro, lambda, define-stream, stream-lambda},
+  morekeywords=[3]{begin, call-with-current-continuation, call/cc,
+    call-with-input-file, call-with-output-file, case, cond,
+    do, else, for-each, if,
+    let*, let, let-syntax, letrec, letrec-syntax,
+    define-context, define-controller, Integer, Boolean, get, when-required, when-provided,
+    maybe_publish, require, submod, or/c, ->, \#\%module-begin,
+    always_publish, with-syntax, define-struct/contract, syntax-case,
+    define/contract,
+    let-values, let*-values,
+    module, provide,
+    and, or, not, delay, force,
+    \#`, \#',
+    \#lang, implement, begin-for-syntax, rename-out,
+    quasiquote, quote, unquote, unquote-splicing,
+    %map, 
+    fold, syntax, syntax-rules, eval, environment, query,
+    \#t, \#f},
+  morekeywords=[3]{import, export},
+  alsoletter={',`,-,/,>,<,\#,\%},
+  morecomment=[l]{;},
+%  literate={lambda}{{\lambdaup}}1, % lambda -- look at https://tex.stackexchange.com/questions/119879/math-symbols-in-tt-font
+  moredelim=**[is][\color{light-gray}]{<<@<<}{>>@>>},
+  moredelim=**[is][\itshape\color{OliveGreen}]{<<;<<}{>>;>>},
+  morecomment=[s]{\#|}{|\#},
+  sensitive=true,
+}
+
+\lstdefinestyle{colouredRacket}%
+{ basicstyle=\ttfamily\footnotesize%\ttfamily%
+, identifierstyle=%
+, commentstyle=\color[gray]{0.4}%
+, stringstyle=\color[rgb]{0, 0, 0.5}%
+, keywordstyle=\color[RGB]{215,72,148} %\bfseries% reserved keywords
+, keywordstyle=[2]\color[RGB]{68,102,191}% import export
+, keywordstyle=[3]\color[RGB]{255, 126, 0}
+, columns=spaceflexible%
+, keepspaces=true%
+, showspaces=false%
+, showtabs=false%
+, showstringspaces=true%
+}%
+
+\lstdefinestyle{boxed}{
+  style=colouredRust%
+, numbers=left%
+, firstnumber=auto%
+, numberblanklines=true%
+, frame=trbL%
+, numberstyle=\tiny%
+, frame=leftline%
+, numbersep=7pt%
+, framesep=5pt%
+, framerule=10pt%
+, xleftmargin=15pt%
+, backgroundcolor=\color[gray]{0.97}%
+, rulecolor=\color[gray]{0.90}%
+}
+\def\inlineracket{\lstinline[basicstyle=\ttfamily\normalsize,language=racket]}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "progfw.main"
+%%% End: 

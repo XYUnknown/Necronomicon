@@ -1,0 +1,142 @@
+\chapter{Climbing Tower of Babel}
+\label{chap1}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=\framesize, minimum height=0.55 *\framesize, fill=white](vecbox){};
+\node[anchor=north west] at (vecbox.north west){% 
+\pgfornament[width=0.1*\framesize]{61}};
+\node[anchor=north east] at (vecbox.north east){% 
+\pgfornament[width=0.1*\framesize,symmetry=v]{61}};
+\node[anchor=south west] at (vecbox.south west){% 
+\pgfornament[width=0.1*\framesize,symmetry=h]{61}};
+\node[anchor=south east] at (vecbox.south east){% 
+\pgfornament[width=0.1*\framesize,symmetry=c]{61}};
+\node[anchor=north] at (vecbox.north){% 
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+};
+
+\node[anchor=south] at (vecbox.south){% 
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+};
+\node[text width=0.85\framesize, align=justify] at (vecbox.center){%
+The \Lord said, ``If as one people speaking the same language they have begun to do this, then nothing they plan to do will be impossible for them. Come, let us go down and confuse their language so they will not understand each other."
+\\
+So the \Lord scattered them from there over all the earth, and they stopped building the city. That is why it was called \emph{Babel} --- because there the \Lord \emph{confused} the language of the whole world. From there the \Lord scattered them over the face of the whole earth.\\
+\rightline{--- Genesis 11:1–9 NRSVUE}};
+\end{tikzpicture}
+
+\noindent
+% Humans are divided into different linguistic groups, therefore, they are unable to understand each other. Yet, there are people trying to understand others, from a linguistic perspective, a cognitive perspective, a psychological perspective, a social perspective etc. Naturally, the gap between humans and machines is wider than the gap between different human linguistic groups. Again, there are people studying different layers of machine languages and the process of translating (i.e., compilation and interpretation) human languages into machine codes. 
+Humans are divided into different linguistic groups, therefore, they are unable to understand each other. That said, ``meaning" is encoded into different conceptual schemes in different languages; without an accurate translation, it is hard for people who speak different languages to communicate with each others. In addition, due to the nature of natural language being ambiguous, it is hard to accurately reason about what others \emph{really mean} even under the context of a same language.
+
+Over decades, there has been various studies concerning the \emph{meaning} of languages. 
+
+- TBC -
+
+From linguistic formal semantics to semantics of programming languages. These two areas are massively overlapped.
+
+- END TBC -
+
+Naturally, the gap between humans and computers is even larger than the gap between different human linguistic groups. Humans tend to encode and express information in terms of structured phrases and sentences, while computers execute binary code containing zeros and ones. Such communication processes between humans and computers are facilitated by compilers, which are responsible for translating information encoded by humans taking the form of \emph{programming languages} into executable machine code. The study of programming languages explores different approaches for effectively expressing better abstractions in various application domains, facilitating accurate and efficient compilation process, and providing better frameworks for humans to understand and reason about the behaviours of computers' executions of programs.
+
+In my three-year short research journey, my fundamental motivations are to gain precise understanding of humans' mental models of computer programs and to improve the design of programming languages in order to allow humans to effectively communicate with computers. Hence, it is important to study the \emph{meaning} of programs expressed using these languages, i.e., the semantics of programming languages.
+% As a computer scientist who is specialised in the study of programming languages, through this three-year short research journey, my fundamental motivations are to gain formal and precise understanding of humans' conceptual scheme of computer programs and to improve the design of programming languages in order to allow humans to effectively communicate with computers. To understand programming languages and communicate with machines via these languages, it is important to study the \emph{meaning} of programs expressed using these languages, i.e., the semantics of programming languages.
+
+Before stepping into the clich\'e of introducing the formal semantics of programming languages, a question is necessary to be asked. We keep saying that the study of semantics is the study of the meaning of languages, however, \emph{what is ``meaning"?} Within the scope of programming language studies, it is: 0) how we \emph{model} and \emph{understand} programs; 1) how we \emph{communicate} what we want computers to do in terms of programs with computers; 2) how we \emph{reason about} the behaviours of programs.
+
+The study of formal semantics of programming languages has been around for decades and three main forms of formal semantics have been used for understanding, expressing, and reasoning about programs. Specifically, \emph{operational semantics} provides meanings to programs by modelling how computations get executed. \emph{Denotational semantics} gives meanings to programs by modelling the result of computations as mathematical objects. Instead of modelling how computations get executed or what are produced by executions of computations, \emph{axiomatic semantics} provides meanings to programs by specifying properties satisfied by the results produced by executions of computations. 
+
+Due to my nature of stupidity, I am in no position to invent yet another way to study the meaning of programming languages. Instead, in my three useless and insignificant projects, I merely ask three conceptual questions and attempt to answer them via studying and making use of existing formal semantics models.
+
+\begin{center}
+\vspace{-0.7em}
+\pgfornament[width=0.08*\framesize]{11}
+\pgfornament[width=0.08*\framesize]{80}
+\pgfornament[width=0.08*\framesize]{14}
+\vspace{-0.3em}
+\end{center}
+
+The first conceptual question asked is: 
+How to design a better abstraction mechanism that allows programmers to effectively express \emph{what} they want a computer to do via some declarative yet accurate \emph{specifications} instead of \emph{how} a computer should accomplish a task via some concrete \emph{implementations}?
+% in order to achieve better automation?
+
+To address this question, a topic has been taken as an instance to study, which is container types in programming languages and their properties. 
+
+Container data types are ubiquitous in computer programming, enabling developers to efficiently store and process collections of data with an easy-to-use programming interface.
+Many programming languages offer a variety of container implementations in their standard libraries based on data structures offering different capabilities and performance characteristics.
+However, choosing the \emph{best} container for an application is not always straightforward, as performance characteristics can change drastically in different scenarios, and as real-world performance is not always correlated to theoretical complexity. Based on this observation, we bring up a research question: How to design a notion of container that truly allows to separate its interface and usage from the implementation and to infer the implementation from its interface and usage?
+
+This question is answered by the project --- \emph{\Primrose{}: Selecting Container Data Types by Their Properties.}
+In this project, we present \Primrose{}, a language-agnostic tool for selecting the best performing valid container implementation from a set of container data types that satisfy \emph{properties} given by application developers.
+\Primrose{} automatically selects the set of valid container implementations for which the \emph{library specifications}, written by the developers of container libraries, satisfies the specified properties.
+Finally, \Primrose{} ranks the valid library implementations based on their runtime performance.
+With \Primrose{}, application developers can specify the expected behaviour of a container as a type refinement with \emph{semantic properties}, e.g., if the container should only contain unique values (such as a \lstinline{set}) or should satisfy the LIFO property of a \lstinline{stack}.
+Semantic properties nicely complement \emph{syntactic properties} (i.e., traits, interfaces, or type classes), together allowing developers to specify a container's programming \emph{interface} and \emph{behaviour} without committing to a concrete implementation.
+We present our prototype implementation of \Primrose{} that preprocesses annotated Rust code, selects valid container implementations and ranks them on their performance. The design of \Primrose{} is, however, language-agnostic, and is easy to integrate into other programming languages that support container data types and traits, interfaces, or type classes. Our implementation encodes properties and library specifications into verification conditions in Rosette, an interface for SMT solvers, which determines the set of valid container implementations. We evaluate \Primrose{} by specifying several container implementations, and measuring the time taken to select valid implementations for various combinations of properties with the solver. We automatically validate that container implementations conform to their library specifications via property-based testing.
+This work provides a novel approach to bring abstract modelling and specification of container types directly into the programmer's workflow.
+Instead of selecting concrete container implementations, application programmers can now work on the level of specification, merely stating the behaviours they require from their container types, and the best implementation can be selected automatically. In chapter~\ref{chap2}, we discuss this project in detail.
+
+\begin{center}
+\vspace{-0.7em}
+\pgfornament[width=0.08*\framesize]{11}
+\pgfornament[width=0.08*\framesize]{80}
+\pgfornament[width=0.08*\framesize]{14}
+\vspace{-0.3em}
+\end{center}
+
+The second conceptual question asked is: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}?
+% How to get a intuitive understanding of distributed programs in order to simplify the process of migrating monolithic programs into distributed setting?
+
+To address this question, a topic has been looked into, which is designing a remote procedural call library for Rust that monolithic programs to be migrated into a distributed setting without massive re-coding, in the meanwhile extends Rust's memory safety guarantees into the distributed setting.
+
+- TBC -
+
+Syntactically, a distributed program is written (almost) the same as a monolithic program. Semantically, a distributed program preserves the semantics of a monolithic program.
+
+- END TBC -
+\begin{center}
+\vspace{-0.7em}
+\pgfornament[width=0.08*\framesize]{11}
+\pgfornament[width=0.08*\framesize]{80}
+\pgfornament[width=0.08*\framesize]{14}
+\vspace{-0.3em}
+\end{center}
+
+The third conceptual question asked is: 
+How do we characterise the relationship between the \emph{syntax} and \emph{semantics} of programming languages?
+% How to gain a formal understanding of and reason about a programming language that performs syntactic transformation? 
+
+-- CITE CHOMSKY --
+
+In the two previous studies, we have already discussed designs concerning syntactic properties of collections of data and minimising the changes in syntax while changing the architecture of programs. Although comparing to modelling semantic properties and reasoning about the semantic preservation, these syntactic constructs seems to be too straightforward to discuss in detail, however, they allow and facilitate programmers to convey the intend semantics of programs. Conceptually, it is still essential to study the relationship between syntax and semantics.
+
+Term rewriting is a practically useful and conceptual intriguing technique. Syntactic transformations can be used to encode the semantics of languages, while the syntactic transformation itself also has interesting semantics to be examined. 
+
+To address this question, we picked System S, which is a core calculus of strategic rewriting languages like Stratego, Elevate, and Strafunski, as the subject to study. We have developed denotational semantics, big-step operational semantics, and axiomatic semantics (i.e., the weakest precondition calculus) for System S in order to formally understand and reason about such a family of strategic rewriting languages.
+
+Rewriting is a versatile and powerful technique used in many domains.
+\emph{Strategic rewriting} allows programmers to control the application of rewrite rules by composing individual rewrite rules into complex rewrite strategies. These strategies are semantically complex, as they may be nondeterministic, they may raise errors that trigger backtracking, and they may not terminate.
+Given such semantic complexity, it is necessary to establish a formal understanding of rewrite strategies and to enable reasoning about them in order to answer questions such as:
+How do we characterise errors and divergence in System S?
+How do we understand and model nondeterminism in 
+How do we know that a rewrite strategy terminates?
+How do we know that a rewrite strategy does not fail because we compose two incompatible rewrites?
+How do we know that a desired property holds after applying a rewrite strategy?
+
+These questions are answered by the project --- \emph{Shoggoth: A Formal Foundation for Strategic Rewriting}. It provides a semantic foundation for understanding, analysing and reasoning about strategic rewriting that is capable of answering these questions.
+We provide a denotational semantics of System S, a core language for strategic rewriting, and prove its equivalence to our big-step operational semantics, which extends existing work by explicitly accounting for divergence.
+We further define a \emph{location-based weakest precondition calculus} to enable formal reasoning about rewriting strategies, and we prove this calculus sound with respect to the denotational semantics.
+We show how this calculus can be used in practice to reason about properties of rewriting strategies, including termination, that they are well-composed, and that desired postconditions hold.
+The semantics and calculus are formalised in Isabelle/HOL and all proofs are mechanised. This project is discussed in detail in chapter~\ref{chap4}.
+
+% This thesis contains three studies which explore different aspects of modelling and reasoning about programming languages:
+% \begin{itemize}
+%     \item The first study is designing property-based container types that allow application programmers to specify their desired properties of a container, enabling a ``best-performing" implementation to be selected from a container library accordingly. (Chapter~\ref{chap2})
+%     \item The second study is the design and implementation of a remote procedural call library in Rust. (Chapter~\ref{chap3})
+%     \item The third study contains the formal semantics of a strategy rewriting language: System S as well as, a weakest precondition calculus for reasoning about strategic rewriting. (Chapter~\ref{chap4})
+% \end{itemize}
