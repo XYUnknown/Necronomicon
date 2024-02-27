@@ -93,15 +93,17 @@
 \definecolor{kirby-green}{RGB}{35,135,37}
 \definecolor{kirby-dp}{RGB}{221,4,89}
 \definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
-\usepackage{listings, listings-rust, listings-racket}
 \usepackage{parcolumns}
 \usepackage[utf8]{inputenc}
 \usepackage[tt = false, type1 = true]{libertine}
 \usepackage{amsmath}
-% \usepackage{newtxmath}
+%\usepackage{newtxmath}
 %\usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage[libertine]{newtxmath}
 \usepackage{mathpartir}
+\usepackage{centernot}
+\usepackage{dsfont}
 \newcommand{\metaDef}{\mathrel{\mathop:}=}
 \newcommand{\metaBound}{<\mathrel{\mathop:}}
 \newcommand{\cmid}{\ \mid \ }
@@ -113,6 +115,7 @@
 \usepackage{graphicx}
 \captionsetup[figure]{font=small,skip=0pt}
 %define listing box
+\usepackage{listings, listings-rust, listings-racket}
 \lstdefinestyle{boxedlst}{
 commentstyle=\color[RGB]{34,139,34}
 , stringstyle=\color[rgb]{0, 0, 0.5}%
@@ -163,6 +166,7 @@ commentstyle=\color[RGB]{34,139,34}
 \newcommand{\try}{\text{\textit{try}}}
 \newcommand{\tdef}{\textbf{def}}
 \newcommand{\tundef}{\textbf{undef}}
+\newcommand{\concat}{\mathrel{\mathop{++}}}
 
 \usetikzlibrary{calc,decorations.pathmorphing}
 \newcounter{squig}
@@ -227,6 +231,7 @@ commentstyle=\color[RGB]{34,139,34}
 \usepackage{pgfornament}
 \newcommand{\framesize}{\textwidth}
 %%
+
 
 %% Information about the title, etc.
 \title{Necronomicon: Studies Concerning the Meaning of Computer Programs}
