@@ -228,6 +228,15 @@ commentstyle=\color[RGB]{34,139,34}
 %%
 
 %% cute stuff
+\usepackage{yfonts,lettrine}
+% \usepackage{setspace}
+\oneandahalfspace
+\renewcommand{\LettrineFont}{\initfamily}
+\setcounter{DefaultLines}{3}
+\AtBeginDocument{\setlength{\DefaultFindent}{0.5em}}
+\setlength{\DefaultNindent}{0pt}
+\renewcommand{\DefaultLraise}{-0.1}
+
 \usepackage{pgfornament}
 \newcommand{\framesize}{\textwidth}
 %%
