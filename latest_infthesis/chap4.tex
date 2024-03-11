@@ -856,7 +856,7 @@ Since our weakest precondition calculus is designed to reason about the executio
 
 \begin{theorem}[Soundness theorem for Weakest Must Succeed Precondition]
 \begin{align*}
-\\[-3.7em]
+\\[-2.5em]
     \inferrule*[]{\forall X\, l\, P. \,\zeta(X, \cdot)\;l\;P = \{e \barr \xi(X)(\pitchforkup_l e) \boxRight_l e \subseteq P  \} \\\land \zeta(X, \uparrow)\;l\;P = \{e \barr \xi(X)(\pitchforkup_l e) \boxRight_l e \subseteq P \cup \{err\}\}}
     {wp_{\zeta \Vdash s@l}(P) = \{e \barr (\llbracket s \rrbracket\xi(\pitchforkup_l e)) \boxRight_l e \subseteq P\}}
 \end{align*}
