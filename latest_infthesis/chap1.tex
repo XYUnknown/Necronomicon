@@ -98,6 +98,7 @@ The first conceptual question asked is:
 How to design a better abstraction mechanism that allows programmers to effectively express \emph{what} they want a computer to do via some declarative yet accurate \emph{specifications} instead of \emph{how} a computer should accomplish a task via some concrete \emph{implementations}?
 % in order to achieve better automation?
 
+
 To address this question, a topic has been taken as an instance to study, which is container types in programming languages and their properties. 
 
 Container data types are ubiquitous in computer programming, enabling developers to efficiently store and process collections of data with an easy-to-use programming interface.
@@ -125,13 +126,15 @@ Instead of selecting concrete container implementations, application programmers
 The second conceptual question asked is: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}?
 % How to get a intuitive understanding of distributed programs in order to simplify the process of migrating monolithic programs into distributed setting?
 
-To address this question, a topic has been looked into, which is designing a remote procedural call library for Rust that monolithic programs to be migrated into a distributed setting without massive re-coding, in the meanwhile extends Rust's memory safety guarantees into the distributed setting.
+To address this question, a topic has been looked into, which is designing a remote procedural call library for Rust, allowing monolithic programs to be migrated into a distributed setting without massive re-coding, in the meanwhile extends Rust's memory safety guarantees into the distributed setting.
 
-- TBC -
+In distributed computing, a remote procedure call (RPC) allows a method invocation to be executed on another computer on a shared network. Such a remote method invocation has the same coding as a local method invocation, without the programmer explicitly encoding the details for the remote interaction. It is hard to support \emph{location transparency}, i.e., in existing RPC frameworks such as Java RMI and Rust tarpc, remote method invocations do not have \emph{the same semantics} as local method invocations. In addition, \emph{memory management} is hard in a distributed setting, for instance, distributed garbage collection is complicated.
 
-Syntactically, a distributed program is written (almost) the same as a monolithic program. Semantically, a distributed program preserves the semantics of a monolithic program.
+To address these issues, we design a \emph{universal method invocation} (UMI) library in Rust supporting location transparency. With the UMI library, syntactically, a distributed program is written (almost) the same as a monolithic program; semantically, a distributed program preserves the semantics of a monolithic program. We choose Rust as a the target language for the UMI framework to utilise Rust's memory safety guarantees. Rust is high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership and borrow checking system} for memory management and tracking object lifetime of all references in a program during compilation. Since Rust has semantics that guarantees memory safety, we can extend such guarantees to the distributed computing setting, allowing our UMI framework to provide safe remote method invocations.
 
-- END TBC -
+We provide a usable \emph{Rust implementation} of the UMI framework and formalise the \emph{small-step operational semantics} for a core calculus of monolithic and distributed Rust programs. In addition, we prove a \emph{location transparency theorem}: With the UMI framework, when a monolithic program is deployed to multiple nodes, its semantics is preserved.
+This project is discussed in detail in chapter~\ref{chap3}.
+
 \begin{center}
 \vspace{-0.7em}
 \pgfornament[width=0.08*\framesize]{11}
@@ -149,7 +152,7 @@ argues that the syntax of a language being independent from the semantics.
 
 In the two previous studies, we have already discussed designs concerning syntactic properties of collections of data and minimising the changes in syntax while changing the architecture of programs. Although comparing to modelling semantic properties and reasoning about the semantic preservation, these syntactic constructs seems to be too straightforward to discuss in detail, however, they allow and facilitate programmers to convey the intend semantics of programs. Conceptually, it is still essential to study the relationship between syntax and semantics.
 
-Term rewriting is a practically useful and conceptual intriguing technique. Syntactic transformations can be used to encode the semantics of languages, while the syntactic transformation itself also has interesting semantics to be examined. 
+Term rewriting is a practically useful and conceptually intriguing technique. Syntactic transformations can be used to encode the semantics of languages, while the syntactic transformation itself also has interesting semantics to be examined. 
 
 To address this question, we picked System S, which is a core calculus of strategic rewriting languages like Stratego, Elevate, and Strafunski, as the subject to study. We have developed denotational semantics, big-step operational semantics, and axiomatic semantics (i.e., the weakest precondition calculus) for System S in order to formally understand and reason about such a family of strategic rewriting languages.
 
