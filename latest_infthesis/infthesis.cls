@@ -566,7 +566,8 @@ Computer Science}}
    except where explicitly stated otherwise in the text,
    and that this work has not been submitted for any other degree or
    professional qualification except as specified.\par
-   \vspace{1in}\raggedleft({\em \@author\/})
+   % \vspace{1in}\raggedleft({\em \@author\/})
+   \vspace{1in}\raggedleft{\em \@author\/}
    \end{declaration}
 }
 
