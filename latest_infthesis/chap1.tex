@@ -152,26 +152,28 @@ In programming languages studies, it is generally agreed that the syntax, which 
 
 While the syntax and semantics concern different aspects of the design of programming languages, they are not completely independent. In the two previous studies, we have already discussed designs concerning syntactic properties of collections of data and minimising the changes in syntax while changing the architecture of programs. There are some perhaps conceptually important observations of the design of the syntactic contracts. Firstly, although comparing to modelling semantic properties and reasoning about the semantic preservation, these syntactic constructs seems to be too straightforward to discuss in detail and it is not straightforward to evaluate how ``well" they have been designed, they are still very important serving as an abstraction that allows and facilitates programmers to convey the intend semantics of programs. In \Primrose{}, we have seen that some semantic properties like LIFO depend on the syntactic properties, giving a characterisation of a container by stating the behaviours of specific operations given by syntactic properties. In the design of the UMI framework, the syntax serves as the abstraction for location transparency, where the location of resources is abstracted away from how programmers interact with them, while the semantics gives meaning to such an abstraction utilising which we are able to reason about that resources are properly used and managed independent from where they are stored.
 
-% Conceptually, it is still essential to study the relationship between syntax and semantics.
+In the third project, we studied the syntax and semantics of programming languages from yet another perspective, via the rewriting.
+Rewriting is a versatile and powerful technique used in many domains including symbolic computation, theorem proving, programming language semantics, and compiler optimisation.
+While being practically useful, rewriting is also conceptually intriguing. In a rewriting system, syntactic transformations is used to systematically encode the semantics of the reduction, simplification and evaluation of expressions. Since these syntactic transformation steps are composible, valid composition of valid syntactic transformation steps form a meaningful program, the process of composing syntactic transformation steps together has its own semantics to be examined. 
 
-Term rewriting is a practically useful and conceptually intriguing technique. Syntactic transformations can be used to encode the semantics of languages, while the syntactic transformation itself also has interesting semantics to be examined. 
-
-To address this question, we picked System S, which is a core calculus of strategic rewriting languages like Stratego, Elevate, and Strafunski, as the subject to study. We have developed denotational semantics, big-step operational semantics, and axiomatic semantics (i.e., the weakest precondition calculus) for System S in order to formally understand and reason about such a family of strategic rewriting languages.
-
-Rewriting is a versatile and powerful technique used in many domains.
-\emph{Strategic rewriting} allows programmers to control the application of rewrite rules by composing individual rewrite rules into complex rewrite strategies. These strategies are semantically complex, as they may be nondeterministic, they may raise errors that trigger backtracking, and they may not terminate.
+In practice, \emph{strategic rewriting} is a systematic technique that allows programmers to control the application of rewrite rules by composing individual rewrite rules into complex rewrite strategies. These strategies have simple and intuitive syntactic constructs simple serve as compositions of syntactic transformations but are semantically complex, as they may be nondeterministic, they may raise errors that trigger backtracking, and they may not terminate.
+% System S, which is a core calculus of strategic rewriting languages like Stratego, Elevate, and Strafunski, as the subject to study. We have developed denotational semantics, big-step operational semantics, and axiomatic semantics (i.e., the weakest precondition calculus) for System S in order to formally understand and reason about such a family of strategic rewriting languages.
+% Rewriting is a versatile and powerful technique used in many domains.
+% \emph{Strategic rewriting} allows programmers to control the application of rewrite rules by composing individual rewrite rules into complex rewrite strategies. These strategies are semantically complex, as they may be nondeterministic, they may raise errors that trigger backtracking, and they may not terminate.
 Given such semantic complexity, it is necessary to establish a formal understanding of rewrite strategies and to enable reasoning about them in order to answer questions such as:
-How do we characterise errors and divergence in System S?
+How do we characterise errors and divergence in a strategic rewriting system?
 How do we understand and model nondeterminism in the executions of strategies?
 How do we know that a rewrite strategy terminates?
 How do we know that a rewrite strategy does not fail because we compose two incompatible rewrites?
 How do we know that a desired property holds after applying a rewrite strategy?
 
 These questions are answered by the project --- \emph{Shoggoth: A Formal Foundation for Strategic Rewriting}. It provides a semantic foundation for understanding, analysing and reasoning about strategic rewriting that is capable of answering these questions.
-We provide a denotational semantics of System S, a core language for strategic rewriting, and prove its equivalence to our big-step operational semantics, which extends existing work by explicitly accounting for divergence.
+We provide a denotational semantics of System S, which is a core calculus of strategic rewriting languages like Stratego~\citep{DBLP:conf/icfp/VisserBT98,10.1007/3-540-45127-7_27}, Elevate~\citep{DBLP:journals/cacm/HagedornLKQGS23,DBLP:journals/pacmpl/HagedornLKQGS20}, and Strafunski, and prove its equivalence to our big-step operational semantics, which extends existing work by explicitly accounting for divergence.
 We further define a \emph{location-based weakest precondition calculus} to enable formal reasoning about rewriting strategies, and we prove this calculus sound with respect to the denotational semantics.
 We show how this calculus can be used in practice to reason about properties of rewriting strategies, including termination, that they are well-composed, and that desired postconditions hold.
 The semantics and calculus are formalised in Isabelle/HOL and all proofs are mechanised. This project is discussed in detail in chapter~\ref{chap4}.
+
+
 
 % This thesis contains three studies which explore different aspects of modelling and reasoning about programming languages:
 % \begin{itemize}
