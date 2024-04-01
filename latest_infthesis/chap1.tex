@@ -169,7 +169,7 @@ How do we know that a desired property holds after applying a rewrite strategy?
 
 These questions are answered by the project --- \emph{Shoggoth: A Formal Foundation for Strategic Rewriting}. It provides a semantic foundation for understanding, analysing and reasoning about strategic rewriting that is capable of answering these questions.
 We provide a denotational semantics of System S, which is a core calculus of strategic rewriting languages like Stratego~\citep{DBLP:conf/icfp/VisserBT98,10.1007/3-540-45127-7_27}, Elevate~\citep{DBLP:journals/cacm/HagedornLKQGS23,DBLP:journals/pacmpl/HagedornLKQGS20}, and Strafunski~\citep{DBLP:conf/rule/LammelV02}, and prove its equivalence to our big-step operational semantics, which extends existing work by explicitly accounting for divergence.
-We further define a \emph{location-based weakest precondition calculus} to enable formal reasoning about rewriting strategies, and we prove this calculus sound with respect to the denotational semantics.
+We further define a \emph{location-based weakest precondition calculus}, which can be seen as an axiomatic semantics of System S~\cite{VISSER1998422}, to enable formal reasoning about rewriting strategies, and we prove this calculus sound with respect to the denotational semantics.
 We show how this calculus can be used in practice to reason about properties of rewriting strategies, including termination, that they are well-composed, and that desired postconditions hold.
 The semantics and calculus are formalised in Isabelle/HOL and all proofs are mechanised. This project is discussed in detail in chapter~\ref{chap4}.
 
