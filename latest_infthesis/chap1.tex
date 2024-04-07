@@ -131,7 +131,7 @@ Back to the conceptual understanding of the relationship between specifications 
 The second conceptual question asked is: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}?
 % How to get a intuitive understanding of distributed programs in order to simplify the process of migrating monolithic programs into distributed setting?
 
-A monolithic architecture is a common software architecture, which features a single unit to be deployed and a single database to be connected to~\citep{Taylor09}. Despite of being inflexible and less scalable, a monolithic architecture is easy to implement, deploy, and test, especially for the development of a light-weight service. 
+In software architecture design, a monolithic system features a single unit to be deployed and a single database to be connected to~\citep{Taylor09}. Despite of being inflexible, more susceptible to failures, and less scalable, a monolithic architecture is easy to implement, deploy, and test, especially for the development of a light-weight service. A distributed system on the other hand contains multiple independent components that can be deployed on different machines, communicate and coordinate with each other over a network. Although it is more scalable and fault-tolerant, it is more complex to develop, deploy and manage. 
 
 To address this question, a topic has been looked into, which is designing a remote procedural call library for Rust, allowing monolithic programs to be migrated into a distributed setting without massive re-coding, in the meanwhile extends Rust's memory safety guarantees into the distributed setting.
 
