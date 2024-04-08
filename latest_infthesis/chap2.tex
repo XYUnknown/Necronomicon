@@ -60,6 +60,8 @@
 \end{tikzpicture}
 \section{Prologue}
 \label{chap2:prologue}
+People often try to \emph{emph} what they \emph{mean}, but there is always a gap between what they say and what they really mean. Likewise, programmers often try to \emph{encode} what they \emph{meant for} a computer to do, however, there is always a gap between what they encode and what they really want a computer to execute. 
+
 \section{Introduction}
 \label{chap2:introduction}
 Container data types, such as sets, lists, and trees, represent collections of data ubiquitous in everyday programming~\citep{DBLP:books/daglib/0023376}. Virtually all programming languages provide a variety of container implementations in their standard libraries.
@@ -99,11 +101,8 @@ In this work, we apply verification and formal methods techniques, including ref
 To summarise, this paper makes the following contributions:
 \begin{itemize}
     \item We present \Primrose{} (section~\ref{chap2:overview}), a language-agnostic tool for selecting valid container implementations (section~\ref{chap2:select}) based on \emph{properties} (section~\ref{chap2:prop}) used to describe their behaviour and programming interface, and ranking them based on their performance.
-    
     \item We show a new application of refinement types not---as previous work did---for verification purposes, but to raise the level of abstraction for developers and to improve the runtime performance of applications with container data types (section~\ref{chap2:prop}).
-
     \item We develop a new methodology to specify container libraries, amenable to our selection process, making use of existing formal methods work such as data abstraction and Hoare logic (section~\ref{chap2:lib}).
-
     \item We show the feasibility of \Primrose{}, selecting container implementations that satisfy various properties from a Rust library of eight container types with library specifications. We validate container implementations against specifications and evaluate the efficiency of the selection process (section~\ref{chap2:evaluation}).
 \end{itemize}
 
