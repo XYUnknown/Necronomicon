@@ -1183,31 +1183,28 @@ None of these techniques, however, provide a general scheme to allow application
 
 \section{Conclusion}
 \label{chap2:conclusion}
+This study presents \Primrose{}, a language-agnostic tool for selecting the best performing container implementation that satisfies a set of desired properties.
+Semantic properties provide application developers with a powerful, novel abstraction to describe the expected behaviour of a container as a refinement of the container data type.
+Semantic properties nicely complement syntactic properties (i.e., traits), allowing developers to specify the programming interface and behaviour of a container without committing to a concrete implementation.
+\Primrose{} automatically selects the set of valid container implementations for which the \emph{library specifications}, written by the developers of container libraries, satisfies the specified properties.
+Finally, \Primrose ranks the valid library implementations based on their runtime performance.
 
-% This paper presents \Primrose{}, a language-agnostic tool for selecting the best performing container implementation that satisfies a set of desired properties.
-% Semantic properties provide application developers with a powerful, novel abstraction to describe the expected behaviour of a container as a refinement of the container data type.
-% Semantic properties nicely complement syntactic properties (i.e., traits), allowing developers to specify the programming interface and behaviour of a container without committing to a concrete implementation.
-% \Primrose{} automatically selects the set of valid container implementations for which the \emph{library specifications}, written by the developers of container libraries, satisfies the specified properties.
-% Finally, \Primrose ranks the valid library implementations based on their runtime performance.
-
-% To summarize, this paper makes the following contributions:
-% \begin{itemize}
-%     \item We present \Primrose{}, a language-agnostic tool for selecting valid container data type implementations based on \emph{properties} used to describe their behaviour and programming interface, and ranking them based on their performance.\\[.25em]
-    
-%     \item We show a new application of refinement types not---as previous work did---for verification purposes, but to raise the level of abstraction for application developers and to improve the runtime performance of applications with container data types.\\[.25em]
-    
-%     \item We present formal specifications of the four \todo{MS: is this true?} most important Rust container data types from the standard library, which could be used in the future also to verify the correctness of their Rust implementations.\\[.25em]
-% \end{itemize}
+To summarise, this study makes the following contributions:
+\begin{itemize}
+    \item We present \Primrose{}, a language-agnostic tool for selecting valid container data type implementations based on \emph{properties} used to describe their behaviour and programming interface, and ranking them based on their performance.
+    \item We show a new application of refinement types not---as previous work did---for verification purposes, but to raise the level of abstraction for application developers and to improve the runtime performance of applications with container data types.
+    \item We present formal specifications of the Rust container data types from the standard library and customised implementations and used them to valid the implementations by property-based testings. These specifications could be used in the future also to formally verify the correctness of their Rust implementations.
+\end{itemize}
 
 We have applied techniques from verification and formal methods in a new way, raising the level of abstraction by freeing developers from the burden of choosing concrete container implementations.
 Instead, application developers can specify their expected behaviour using semantic properties---a highly general abstraction technique.
 We provide a methodology to specify container libraries with library specifications, and describe our mechanism to check semantic properties against these specifications using SMT solvers. 
 We implement \Primrose{} for Rust and specify eight Rust container implementations. We show that \Primrose{} is a practical tool that can be feasibly integrated into a programmer's workflow.
 
-% \Primrose{} is already effective at selecting data types based on \emph{functional requirements}, but significant future work remains in selecting and ranking based on \emph{non-functional} metrics. 
-% We intend to significantly improve the ranking method used by \Primrose{} by using 
-% more sophisticated techniques, including machine-learning-based solutions and techniques that optimise for multiple metrics, such as run time and memory use.
-% Integrating \Primrose{} with a dynamic technique that changes container implementations on-the-fly based on runtime performance measurements would also be interesting.
+\Primrose{} is already effective at selecting data types based on \emph{functional requirements}, but significant future work remains in selecting and ranking based on \emph{non-functional} metrics. 
+We intend to significantly improve the ranking method used by \Primrose{} by using 
+more sophisticated techniques, including machine-learning-based solutions and techniques that optimise for multiple metrics, such as run time and memory use.
+Integrating \Primrose{} with a dynamic technique that changes container implementations on-the-fly based on runtime performance measurements would also be interesting.
 
 \section{Epilogue}
 \label{chap2:epilogue}
