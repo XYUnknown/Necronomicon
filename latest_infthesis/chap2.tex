@@ -62,7 +62,14 @@
 \label{chap2:prologue}
 People often try to \emph{say} what they \emph{mean}, however, there is always a gap between what they say and what they really mean --- \emph{they do not mean what they say.} Likewise, programmers often try to \emph{encode} what they \emph{meant for} a computer to do, however, there is always a gap between what they encode and what they really want a computer to execute --- \emph{they do not mean what they encode.}
 
-One issue we intend to look into in this project is that encoding of container types in an application being ``all too specific". When an application developer wants to use a \emph{unique container} in an application, the application developer \emph{means} that the container does not contain any duplicated elements. However, the application developer often has to \emph{encode} such a required container as a tree, a hash table, a list without duplicated element etc. By choosing a concrete encoding, application developers no longer just expresses what they mean, but additionally committing to certain performance characteristics or memory consumption which may not be desirable. 
+One observation is that in an implementation of an application, what an application developer encode tends to be ``all too specific" comparing to what they have modelled in mind.
+% One issue we intend to look into in this project is that encoding of container types in an application being ``all too specific". 
+Take a container type example which is illustrated in later sections, when an application developer wants to use a \emph{unique container} in an application, the application developer \emph{means} that the container does not contain any duplicated elements. However, the application developer often has to \emph{encode} such a required container as a tree, a hash table, a list without duplicated element etc. By choosing a concrete encoding, application developers no longer just expresses what they mean, but additionally committing to certain performance characteristics or memory consumption which may not be desirable.
+
+Hence, we would like to look into the designing a programming framework, facilitating application developers to better express what they meant for a computer to execute via writing declarative specifications instead of encoding concrete and fixed implementations. 
+
+
+% To address this issue, we propose to design a framework, to allow application programmers to better express what they mean: What properties a container should have, instead of how these properties are implemented.
 
 \section{Introduction}
 \label{chap2:introduction}
