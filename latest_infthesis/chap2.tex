@@ -95,7 +95,7 @@ Application developers are forced to \emph{overspecify}, by having to select a c
 Application developers should primarily care about the \emph{abstract behaviour} of the containers in their application, and not how this is achieved.
 The compiler, or a dedicated tool, should identify those containers that satisfy their functional requirements, and select the best implementation automatically.
 
-In this paper, we propose such an automated tool: \Primrose{}, which allows application developers to specify the expected behaviours and programming interfaces of containers as \emph{properties}.
+In this paper, we propose an automated tool: \Primrose{}, which allows application developers to specify the expected behaviours and programming interfaces of containers as \emph{properties}.
 \emph{Syntactic properties} specify the required programming interface of the container and are expressed as traits of the underlying programming language.
 \emph{Semantic properties} specify the expected behaviour of the container and are written as logical predicates used as refinements of the container type.
 \Primrose{} automatically selects the set of valid implementations for which the \emph{library specifications}, written by the library developers as pre- and post-conditions of the container operations, satisfy the specified syntactic and semantic properties using an SMT solver.
@@ -117,12 +117,12 @@ To summarise, this paper makes the following contributions:
 
 \section{Motivation}
 \label{chap2:motivation}
-Suppose as part of a larger application we want to find and store all the elements of a larger collection, but without duplicates.
+Suppose as part of a larger application, we want to find and store all the elements of a larger collection, but without duplicates.
 We might, for example, use the result of this function to count the number of unique elements or process the elements further, now with the guarantee that each element in the returned collection is unique.
 
 An easy way to implement this is to return a container that only permits unique elements.
-We might think of a \emph{set}, but as discussed in section~\ref{chap2:introduction}, this requires a choice:
-Which implementation of the abstract idea of a mathematical set should we use? 
+We might think of a \emph{set}, however, as discussed in section~\ref{chap2:introduction}, this requires a choice:
+Which concrete implementation of the abstract idea of a mathematical set should we use? 
 
 \begin{figure}[t]
     \centering
@@ -187,7 +187,7 @@ The application developer must choose a concrete container implementation, such 
 other valid choices would be Rust's \lstinline{BTreeSet} (line 2), or perhaps a custom \lstinline{UniqueVect} (line 3) container, which stores all elements in a vector but ensures there are no duplicates, 
 or some other \lstinline{FancySetImpl}ementations (line 4). 
 Whether a container implementation is \emph{valid} is determined by the application developer's \emph{functional requirements}. Our uniqueness requirement, for example, is not met by the Rust \lstinline{HashMultiSet} (line 5). 
-%If the application developer also required elements to be stored in a particular order, this would also rule out the \lstinline|HashSet| implementation.
+If the application developer also required elements to be stored in a particular order, this would also rule out the \lstinline|HashSet| implementation.
 
 Many programming techniques exist to abstract over multiple concrete implementations of a general concept.
 In object-oriented languages, \emph{abstract classes} enable hiding multiple implementations behind a common interface.
@@ -272,8 +272,7 @@ Figure~\ref{overview:design} gives an overview of the design of the \Primrose{} 
 \emph{property specification} describing the syntactic and semantic properties they expect this type to satisfy. The syntactic properties take the form of traits and the semantic 
 properties take the form of type refinements.
 To write a program, the developer only specifies what functional properties must be satisfied by the required container, and does not have to commit to a particular 
-implementation. In figure~\ref{overview:design}, the developer specifies that they require a container (the syntactic property \lstinline{ContainerT}) where all elements are unique (the semantic property \lstinline{unique}). 
-We discuss properties in detail in section~\ref{chap2:prop}.
+implementation. The developer specifies that they require a container (the syntactic property \lstinline{ContainerT}) where all elements are unique (the semantic property \lstinline{unique}). We discuss properties in detail in section~\ref{chap2:prop}.
 
 % The diagram of system here
 \begin{figure}[t]
@@ -298,7 +297,7 @@ figure~\ref{overview:design}, the library specification of the \lstinline{Vec<T>
 We use a satisfiability modulo theories (SMT) solver for the selection process, which we discuss in section~\ref{chap2:select}.
 
 Figure~\ref{overview:design} shows at the bottom a simplified version of the generated programs.
-% Note that in order to make \ref{overview:design} concise, we only show a simplified version of the generated programs with selected implementations that does not reflect how traits constrain available operations for interacting with the container type.
+Note that in order to make \ref{overview:design} concise, we only show a simplified version of the generated programs with selected implementations that does not reflect how traits constrain available operations for interacting with the container type.
 In our implementation, we ensure that only the container operations that the application developer specifies with syntactic properties are accessible in the generated program.
 %
 % After all valid container implementations are selected, \Primrose{} measures and ranks them according to their performance, and then selects the one providing the best performance for the program.
@@ -402,8 +401,7 @@ Traits are defined in Rust and lifted into our property specification language. 
   fn is_empty(&self) -> bool;
   fn insert(&mut self, elt: T);
   fn clear(&mut self);
-  fn remove(&mut self, elt: T) -> Option<T>;
-}
+  fn remove(&mut self, elt: T) -> Option<T>;}
 \end{lstlisting}
 
 By writing \lstinline{c <: ContainerT}, the application developer indicates that they expect the container type selected by \Primrose{} to include implementations for all operations in the trait \lstinline{ContainerT}. 
@@ -448,8 +446,7 @@ Firstly, Liquid Haskell's refinements
 are attached to a \emph{concrete type}, in this case a list (written \lstinline{[a]}), whereas our refinements are attached to an abstract container type, which is then resolved by \Primrose{} into a concrete 
 implementation. Secondly, Liquid Haskell 
 uses type refinements for the purpose of \emph{correctness}: If a list is declared to have type \lstinline{UniqueList}, the Liquid Haskell verifier will check that it satisfies the predicate \lstinline{unique}. 
-For example, it will report an error at compile time if given a list that contains duplicates.
-% Liam: Removed this for now, can re-add it if space.
+The \lstinline{notUniqueList} shows that it will report an error at compile time if a given list contains duplicates.
 \begin{lstlisting}[language=haskell, style=boxedlst, escapechar=!]
 !\tikz[remember picture, overlay]\node [xshift=12.5cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Liquid Haskell}};!{-@ notUniqueList :: UniqueList Int @-}
 notUniqueList::[Int]
@@ -465,20 +462,20 @@ specification language.  In the semantic property \lstinline{unique}, the combin
 The type of the combinator \lstinline{for-all-elems} is $\mathit{Con}\langle\tau\rangle \to (\tau \to \mathit{Bool}) \to \mathit{Bool}$, meaning this combinator takes in two arguments, the first of which is a container and the second of which is a predicate on the elements of that container, and eventually returns a boolean value.
 
 For the purposes of checking, we represent containers $\mathit{Con}\langle\tau\rangle$ abstractly in Rosette as lists. We discuss this list abstraction and justify it in section~\ref{chap2:lib}.
-This means that we can implement our \lstinline{for-all-elems} combinator straightforwardly with a list fold operation:
+With such a list abstraction, we are able to straightforwardly implement our \lstinline{for-all-elems} combinator with a list fold operation:
 \begin{lstlisting}[language=racket, style=boxed, label=prop:combinator-unary, escapechar=!] 
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define (for-all-elems c fn)
     (foldl elem-and #t (map (lambda (a) (fn a)) c)))
 \end{lstlisting}
 
-We also provide some combinators for applying \emph{relations} between elements in a container. For instance, \mylstinline{for-all-consecutive-pairs}:
+We also provide some combinators for applying \emph{relations} between elements in a container. For instance, the combinator \mylstinline{for-all-consecutive-pairs}:
 \begin{align}
     \label{prop:combinator-pair}
     \texttt{for-all-consecutive-pairs}\; :\; \mathit{Con}\langle\tau\rangle \to (\tau \to \tau \to \mathit{Bool}) \to \mathit{Bool}
 \end{align}
-Unlike \lstinline{for-all-elems}, this combinator is given a binary relation between elements, and checks that this relation holds between any two consecutive elements in our container.
+Unlike \lstinline{for-all-elems}, this combinator gives a binary relation between elements, and checks that this relation holds between any two consecutive elements in a container.
 
-With this combinator and the predicates \lstinline{geq?} and \lstinline{leq?}, we can define properties like \lstinline{ascending} and \lstinline{descending}, which specify particular orderings of elements in a container:
+With the combinator \lstinline{for-all-consecutive-pairs} and the predicates \lstinline{geq?} and \lstinline{leq?}, we can define properties like \lstinline{ascending} and \lstinline{descending}, which specify particular orderings of elements in a container:
 \begin{lstlisting}[language=Rust, style=boxed, escapechar=!]
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Primrose}};!property ascending { \c -> (for-all-consecutive-pairs c leq?) }
 property descending { \c -> (for-all-consecutive-pairs c geq?) }
@@ -492,7 +489,7 @@ For instance, to declare a container type with elements arranged in \emph{strict
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Primrose}};!type StrictlyAscendingCon<T> = 
   { c <: (ContainerT) | ((unique c) and (ascending c)) }
 \end{lstlisting}
-The conjunction \lstinline|and| is straightforwardly translated into a conjunction operation in Rosette.
+The conjunction \lstinline|and| is directly translated into a conjunction operation in Rosette.
 
 \subsection{The Interaction between Semantic Properties and Syntactic Properties}
 \label{chap2:prop:semantic-syntactic}
