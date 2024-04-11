@@ -1163,11 +1163,11 @@ While the syntax of Liquid Haskell inspires our design of the syntax of property
 % \noindent
 % \textbf{\textsf{Abstract data types and formal methods}}
 \paragraph*{Abstract Data Types and Formal Methods}
-%An abstract data type is characterised by the operations in its interface, rather than the details of its implementation~\cite{10.1145/942572.807045}. 
-%This data abstraction allows a separation of concerns, freeing application developers from having to consider the internal implementation details of a data type, instead allowing them to consider only the externally observable 
-%semantics of each operation. Our work advances this area of data abstraction, allowing abstraction to be maintained even when creating an instance of the data type, so that programmers can work on the level only of requirements,
-%without needing to consider implementation details.
-%
+An abstract data type is characterised by the operations in its interface, rather than the details of its implementation~\citep{10.1145/942572.807045}. 
+This data abstraction allows a separation of concerns, freeing application developers from having to consider the internal implementation details of a data type, instead allowing them to consider only the externally observable 
+semantics of each operation. Our work advances this area of data abstraction, allowing abstraction to be maintained even when creating an instance of the data type, so that programmers can work on the level only of requirements,
+without needing to consider implementation details.
+
 Existing work in algebraic specifications~\citep{10.1145/800237.807124, WIRSING1990675} provide a formal definition of abstract data types where the semantics of operations are specified with a set of equational axioms.
 By contrast, our library specifications are model-based. As mentioned in section~\ref{chap2:lib:design}, this allows us to easily ensure completeness of library specifications.
 There exist many formal modelling tools that facilitate model-based specification of abstract data types and software systems more generally, for example Z~\citep{znotation}, VDM~\citep{vdm}, and most recently Alloy~\citep{alloy}. While these tools allow 
@@ -1209,3 +1209,5 @@ Integrating \Primrose{} with a dynamic technique that changes container implemen
 \section{Epilogue}
 \label{chap2:epilogue}
 I would like to enclose this chapter with a reflection on what I have learned by conducting this project.
+
+In this project
