@@ -625,8 +625,7 @@ As we discuss in section~\ref{chap2:lib:abstracting}, library specifications abs
 For each specification, we define a suitable abstraction function for forward simulation which, while not needed for selection, is used for property-based testing to justify that a concrete implementation satisfies the intended semantics described by its library specification.
 
 \paragraph*{Completeness of Library Specifications} 
-While it is important to ensure that library specifications indeed convey the intended semantics of the implementation, \emph{completeness} of library specifications is also important. Without completeness, \Primrose{} could possibly rule out perfectly valid implementations because 
-it cannot prove that the required semantic properties are preserved for an incompletely-specified operation. 
+While it is important to ensure that library specifications indeed convey the intended semantics of the implementation, \emph{completeness} of library specifications is also important. Without completeness, \Primrose{} could possibly rule out perfectly valid implementations because it cannot prove that the required semantic properties are preserved for an operation of which the specification is incomplete. 
 
 Our approach easily ensures completeness when each operation is specified by a \emph{deterministic} model operation. Forward simulation states that every execution of the concrete implementation has a corresponding execution in the abstract operation, while determinism states that such correspondence is one-to-one, i.e., each abstract execution also has a corresponding concrete one.
 Thus, just as forward simulation states that each property established for an abstract operation applies also (via the inverse of the abstraction function $\alpha^{-1}$) to a concrete implementation, completeness states that each property established for a concrete implementation applies (via the abstraction function $\alpha$) to the abstract operation. With both completeness and forward simulation, we ensure that \emph{all} valid implementations and \emph{only} the valid implementations are selected by \Primrose{}.
@@ -1208,6 +1207,5 @@ Integrating \Primrose{} with a dynamic technique that changes container implemen
 
 \section{Epilogue}
 \label{chap2:epilogue}
-I would like to enclose this chapter with a reflection on what I have learned by conducting this project.
+I would like to enclose this chapter with a reflection on what I have learned so far by conducting this project.
 
-In this project
