@@ -538,7 +538,7 @@ In the next section, we will discuss how library developers write specifications
 % Rust is a Turing-complete, general purpose programming language with a complex semantics, and its container libraries 
 % are typically highly optimised, making extensive use of unsafe code. Doing such a broad analysis precisely and automatically is very hard even for the most advanced of static analyses.
 % Instead, we write 
-\emph{Library specifications} abstract over Rust implementations, providing a clear definition of intended semantics of each operation, without respect to performance or implementation details. 
+\emph{Library specifications} abstract over Rust container implementations, providing a clear definition of intended semantics of each operation, without respect to performance or implementation details. 
 This approach allows us to select container implementations by simply checking their library specifications, rather than their full implementations, against the properties specified by the application developer.
 Moreover, using specifications which are abstracted from implementations makes \Primrose{} easy to repurpose for programming languages other than Rust, as the same specifications would apply, with minimal or no modification, to container libraries written in any other language. 
 
@@ -589,7 +589,7 @@ of the concrete implementation using a \emph{forward simulation}:
 The abstract operation $\mathsf{op(\textit{A})}$ is the maximal relation satisfying the Hoare triple given in our library specification, and $\alpha$ is a suitable abstraction function that 
 flattens a concrete container into a list. 
 
-If a forward simulation is shown for all operations, we can conclude that each possible execution with the concrete container has a corresponding execution with an abstract list, thus the specification accurately captures the implementation's semantics.
+If a forward simulation is shown for all operations, we can then conclude that each possible execution with the concrete container implementation has a corresponding execution with an abstract list, thus the specification accurately captures the implementation's semantics.
 
 For instance, a binary search tree $T$ can be abstracted to a sorted list $L$ by an abstraction function $\mathit{inorder}$ that does an in-order traversal. For each operation interacting with $T$, there exists a corresponding operation at the abstract level defined using $L$. 
 Take the operation $\mathsf{insert(\textit{T},x)}$, which inserts an element $x$ into a binary search tree $T$. We can abstract such an operation to $\mathsf{insert(\textit{L},x)}$ which inserts $x$ at the right location in a sorted list. The relation between these two operations is shown by this diagram:
@@ -714,7 +714,7 @@ Rust's \lstinline|BTreeSet| is a set implemented using a b-tree.
 All elements are unique and arranged in ascending order. Thus, our list model of the b-tree is simply a sorted list in ascending order, where uniqueness of elements is preserved.
 The abstraction function $\alpha$ that converts the \lstinline|BTreeSet| to our list model is simply an in-order traversal.
 
-Our first example is again the specification of the insertion operation with signature:
+The first example to be illustrated is again the specification of the insertion operation with signature:
 %, caption=The signature of \mylstinline{BTreeSet::insert}, captionpos=b, label=lib:sig-tree-insert
 \begin{lstlisting}[language=Rust, style=boxed, escapechar=!]
 !\tikz[remember picture, overlay]\node [xshift=12.95cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rust}};!pub fn insert(&mut self, value: T) {...}
