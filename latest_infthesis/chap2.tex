@@ -1002,10 +1002,10 @@ Our existing prototype of \Primrose{} focuses on enabling application developers
 \section{Evaluation}
 \label{chap2:evaluation}
 
-For \Primrose{} to be feasibly used as a programming tool, it must be practical to ensure that our library specifications are sound abstractions of our container implementations, and the selection process itself must not take a prohibitively long time.
-Our evaluation demonstrates feasibility in both of these aspects. All measurements are conducted on a MacBook Pro with 32\,GB of RAM and a 2.4\,GHz 8-Core Intel Core i9 processor.
+For \Primrose{} to be feasibly used as a programming tool, it must be practical to ensure that the container implementations indeed satisfy their library specifications, and the selection process itself must not take a prohibitively long time.
+The evaluation demonstrates feasibility in both of these aspects. All measurements are conducted on a MacBook Pro with 32\,GB of RAM and a 2.4\,GHz 8-Core Intel Core i9 processor.
 
-\subsection{Correctness of Library Implementations w.r.t Their\\Library Specifications}
+\subsection{Correctness of Container Implementations w.r.t Their\\Library Specifications}
 \label{chap2:evaluation:testing}
 To ensure the selected implementations are correct, we validate our Rust container library implementations against the library specifications using property-based testing~\citep{quickcheck}. 
 We use the framework proptest~\citep{proptest}
@@ -1013,8 +1013,8 @@ We use the framework proptest~\citep{proptest}
 for encoding and performing the tests.
 
 Firstly, we encode the model list with its operations in Rust. Specifically, we encode the model list from Rosette as an immutable \lstinline|ConsList|~\citep{conslist}
-%\footnote{An immutable proper cons list: \url{https://docs.rs/im/10.2.0/im/conslist/struct.ConsList.html}} 
-in Rust, along with all its operations. Then we implement the abstraction function $\alpha$ for each container implementation, like~\cite{cogentcase,sle}, we encode the forward simulation obligation for the library specification of each operation as assertions in a test.
+% \footnote{An immutable proper cons list: \url{https://docs.rs/im/10.2.0/im/conslist/struct.ConsList.html}} 
+in Rust, along with all its operations. Then we implement the abstraction function $\alpha$ for each container implementation. Like~\cite{cogentcase,sle}, we encode the forward simulation obligation for the library specification of each operation as assertions in a~test.
 
 For each test, 100 test inputs are randomly generated. For our library with eight container implementations, in total 7200 inputs are tested in 7.315 seconds. We conclude that with the existing testing framework, we are able to validate the functional correctness of our container implementations w.r.t. our library specifications efficiently, ensuring that implementations selected by \Primrose{} are correct.
 
