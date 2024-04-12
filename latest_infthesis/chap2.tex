@@ -1119,8 +1119,7 @@ For example, since the definition of \lstinline|lifo| has constant complexity, t
 None of our example containers satisfy the property \lstinline|descending|.
 As SMT solvers are faster at finding a counterexample than exhaustively proving that no counterexample exists, the selection time for \lstinline|descending| is faster than for \lstinline|ascending|, despite both properties having the same algorithmic complexity.
 
-The selection is always completed in less than 30 seconds with a model size of 3 and the full library of 8 implementations.
-Thus, we consider \Primrose{} to be a practically feasible tool.
+The selection process is always completed within 30 seconds with a model size of three and the full library of eight implementations.
 % , especially as 
 % While the selection time increases when the library size increases, the pattern of such increase is linear. 
 % it does not need to be invoked on every compiler run.
@@ -1133,9 +1132,9 @@ Thus, we consider \Primrose{} to be a practically feasible tool.
 % In practice, we suggest a model size of five, as this is large enough to admit counterexamples to most conceivable semantic properties that the application developer may write, without a large increase in selection time.
 % Selection time can be improved by reducing the algorithmic complexity of property specifications, even at our suggested model size of five. Using low-complexity property specifications is particularly useful if large model sizes are required, as selection slows down proportional to the complexity of the property specification.
 % The selection time increases when the model and library size increases, we judge these trends practically manageable.
-An increase in model size raises selection time quickly, but in practice, a model with size of more than five is not required to admit counterexamples for most conceivable semantic properties that the application developer may write. This is based on the small scope hypothesis in Alloy \cite{jackson2012software}.
+Although an increase in model size raises selection time quickly, in practice, a model with size of more than five is not required to admit counterexamples for most conceivable semantic properties that the application developer may write. This is based on the small scope hypothesis in Alloy \cite{jackson2012software}.
 % Increasing the number of container implementations in the library results in a linear increase in selection time, allowing for \Primrose{} to be used for medium-size libraries.
-The experimental results show, that \Primrose{} can easily be used for medium-size libraries.
+We conclude that \Primrose{} is feasible for medium-size libraries.
 
 \section{Discussion of Limitations}
 \label{chap2:limitations}
@@ -1170,11 +1169,10 @@ There exist many formal modelling tools that facilitate model-based specificatio
 application developers to formally analyse and explore the software design space, including formal reasoning about abstract data types, they work purely on the level of models and do not typically connect
 to actual code, as \Primrose{} does. 
 
-% \noindent
-% \textbf{\textsf{Performance-oriented selection techniques}}
 \paragraph*{Performance-Oriented Selection Techniques}
 Many techniques for design space exploration, particularly machine learning techniques, have been applied in compilers~\citep{fursin2011milepost} to selected performance optimization techniques~\citep{10.1109/CGO.2007.32} using various characteristics as features that are then used to rank the performance of multiple implementations~\citep{DBLP:conf/icse/SiegmundKKABRS12}.
 Many dynamic selection techniques have been developed for assisting the selection of performant containers, based on different evaluation criteria such as workload data~\citep{DBLP:conf/cgo/CostaA18}, architectural concerns~\citep{DBLP:conf/pldi/JungRRCP11} and runtime metrics~\citep{DBLP:conf/pldi/ShachamVY09}. In addition to dynamic container selection, CoCo~\citep{DBLP:conf/ecoop/Xu13} is tool allowing safe online switching.
+
 None of these techniques, however, provide a general scheme to allow application developers to specify desired behaviour, instead, they purely focus on selecting between multiple, pre-known, valid container implementations. Such techniques could be incorporated into \Primrose{}'s ranking process, and are highly complementary with our work.
 
 \section{Conclusion}
