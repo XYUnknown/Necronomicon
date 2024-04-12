@@ -634,7 +634,7 @@ However, it is hard to ensure the completeness of algebraic specifications, as i
 \label{chap2:lib:list}
 Rust's \lstinline{LinkedList} is a doubly-linked list. The abstraction function to convert it into a logic list is straightforward: Collect all nodes' values with previous and next pointers.
 
-Firstly, we specify the insertion operation, \lstinline|LinkedList::insert|, whose type signature is:
+Firstly, we specify the insertion operation, \lstinline|LinkedList::insert|, of which the type signature is:
 % caption=The signature of \mylstinline{LinkedList::insert}, captionpos=b, label=lib:sig-list-insert
 \begin{lstlisting}[language=Rust, style=boxed, escapechar=!]
 !\tikz[remember picture, overlay]\node [xshift=12.95cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rust}};!fn insert(&mut self, elt: T) {...}
@@ -650,7 +650,7 @@ We can then provide the specification of \lstinline|LinkedList::insert| with res
 \label{lib:spec-list-insert}
 \{xs_0.\ \texttt{\small true}\}~\texttt{abs-insert}~\{xs_0\ x\ xs.\ xs = \texttt{\small model-insert}\ xs_0\ x\}
 \end{align}
-Here, $xs_0$ refers to the initial value of the container and $xs$ to the resultant container, and $x$ is the element we insert. The function \lstinline|model-insert| is defined in Rosette on lists:
+Here, $xs_0$ refers to the initial value of the container, $xs$ refers to the resultant container, and $x$ is the element we insert. The function \lstinline|model-insert| is defined in Rosette on lists:
 %, caption=The model insertion operation, captionpos=b, label=lib:logic-list-insert
 \begin{lstlisting}[language=racket, style=boxed]
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define (model-insert xs x) (append xs (list x)))
