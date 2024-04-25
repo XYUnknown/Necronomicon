@@ -257,8 +257,13 @@ commentstyle=\color[RGB]{34,139,34}
 
 %% Specify the abstract here.
 \abstract{%
-    This doctoral thesis will present the results of my work into the
-    reanimation of lifeless human tissues.
+    This doctoral thesis will present three studies that concerns the meaning of computer programs in three different aspects, namely, specifications and implementations, monolithic and distributed frameworks, and the formal semantics of syntactic transformations. In general, three conceptual questions are asked and address by these three studies.
+
+    The first conceptual question is: How to design a better abstraction mechanism that allows programmers to effectively express \emph{what} they want a computer to do via some declarative yet accurate \emph{specifications} instead of how a computer should accomplish a task via some concrete \emph{implementations}? The study, ``\emph{\Primrose: Selecting Container Data Types by Their Properties}", tried to addresses this questions by exploring ways to design specification for a container that truly allow to separate its interface and usage from the implementation and to select concrete implementation from its interface and usage. By conducting this study, it can be concluded that such separation of concerns enables automation and optimisation for application developers to use a container data type in their programs.
+
+    The second conceptual question is: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}? The question is address by the study of designing a remote procedural call library --- Universal Method Invocation (UMI) library --- for Rust. The UMI library supports location transparency by encapsulating the message-passing details and provides programmers an interface that allows them to migrate a monolithic program into a distributed setting, while preserving the semantics and without massive changes to the syntax of the program. This study provides a perspective in designing distributed system: A monolithic program can be view as an abstraction of a distributed program, specifying \emph{what} functionalities a distributed program attempts to achieve instead of \emph{how} these functionalities are achieved in a distributed setting by abstracting away the details of distributed memory management and message passing over a network.
+
+    The third conceptual question is: 
 }
 
 %% Now we start with the actual document.
