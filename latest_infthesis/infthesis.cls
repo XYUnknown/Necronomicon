@@ -697,9 +697,21 @@ Computer Science}}
     {}
 %% end of modification
 
+
 %% To make sure we get chapters aligned correctly, we set it here instead.
 \chapterfont{\@chapterfont\@chapteralignment}
 
+\usepackage{lmodern}
+
+\newcommand\Chapter[2]{\chapter
+  [#1\hfil\hbox{}\protect\linebreak{\itshape#2}]%
+  {#1\\\smallskip\smaller\smaller\emph\itshape#2}%
+  \markboth{\chaptername\ \thechapter.\ #1}{}%
+}
+
+% \newcommand\Chapter[2]{
+%   \chapter[#1: {\itshape#2}]{#1\\\smallskip\smaller\emph\itshape#2}
+% }
 %%
 %% EOF: infthesis.cls
 %%
