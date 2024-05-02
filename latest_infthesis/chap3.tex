@@ -5,6 +5,53 @@
 \Chapter{Oxidising Remote Procedure Calls}{A Universal Method Invocation Library for Rust}
 \label{chap3}
 
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+% \node[minimum size=\framesize,fill=white](vecbox){};
+% \node[text width=\framesize,align=center](Text){%
+%     `Then you should encode what you mean', the March Hare went on.
+% \\
+% `I do', Programmer hastily replied; `at least --- at least I mean what I encode --- that's the same thing, you know.'
+% \\
+% `Not the same thing a bit', said the Hatter.};
+\node[minimum width=\framesize, minimum height=0.60 *\framesize, fill=white](vecbox){};
+\node[anchor=north west] at (vecbox.north west){% 
+\pgfornament[width=0.1*\framesize]{61}};
+\node[anchor=north east] at (vecbox.north east){% 
+\pgfornament[width=0.1*\framesize,symmetry=v]{61}};
+\node[anchor=south west] at (vecbox.south west){% 
+\pgfornament[width=0.1*\framesize,symmetry=h]{61}};
+\node[anchor=south east] at (vecbox.south east){% 
+\pgfornament[width=0.1*\framesize,symmetry=c]{61}};
+\node[anchor=north] at (vecbox.north){% 
+\pgfornament[width=0.25*\framesize]{88}
+% \pgfornament[width=0.1*\framesize]{15}
+% \pgfornament[width=0.1*\framesize]{16}
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+};
+
+\node[anchor=south] at (vecbox.south){% 
+% \pgfornament[width=0.25*\framesize]{88}
+% \pgfornament[width=0.1*\framesize,symmetry=h]{15}
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+\pgfornament[width=0.25*\framesize]{88}
+% \pgfornament[width=0.1*\framesize,symmetry=h]{16}
+% \pgfornament[width=0.25*\framesize]{88}
+};
+% \node[anchor=south] at (vecbox.south){% 
+% \pgfornament[width=0.6*\framesize]{46}};
+% \node[anchor=north,rotate=90] at (vecbox.west){% 
+% \pgfornament[width=0.6*\framesize,symmetry=h]{46}};
+% \node[anchor=north,rotate=-90] at (vecbox.east){% 
+% \pgfornament[width=0.6*\framesize,symmetry=h]{46}};
+\node[text width=0.85\framesize,align=justify] at (vecbox.center){%
+The building is circular. The apartments of the prisoners occupy the circumference. You may call them, if you please, the cells. The apartment of the inspector occupies the centre. you may call it if you please the inspector’s lodge. To cut off from each prisoner the view of every other, the partitions are carried on a few feet beyond the grating into the intermediate area, such projecting parts I call the protracted partitions. These windows of the inspector’s lodge open into the intermediate area, in the form of doors, in as many places as shall be deemed necessary to admit of his communicating readily with any of the cells. \\
+\rightline{--- Jeremy Bentham ``Panopticon or the Inspection-House"}};
+\end{tikzpicture}
+
 \section{The Implementation of Rust xRef Library}
 \label{chap3:implementation}
 Utilising the semantics of remote references presented in dFR, we implement a universal method invocation (UMI) library in Rust. With such a library, a monolithic program can be migrated into a distributed program while preserving the semantics of the monolithic program.
