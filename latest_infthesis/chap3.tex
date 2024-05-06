@@ -63,6 +63,7 @@ As a metaphorical illustration, the core idea of our attempt for conceptually mo
 \section{Introduction}
 \label{chap3:introduction}
 
+Distributed architecture vs monolithic architecture.
 
 In summary, we make following contributions:
 \begin{itemize}
@@ -75,6 +76,12 @@ In summary, we make following contributions:
 \label{chap3:background}
 \subsection{Remote Procedure Calls}
 \label{chap3:background:rpc}
+In distributed computing, a remote procedure calls (RPC) allows a computer program to request a service from another program located in a different address space, which could be on the same machine or on a different machine across a network. It is a form of client-server communication, where the requesting program is the client, and the service-providing program is the server.
+
+The basic idea behind RPC is to make a remote procedure call seem like a local procedure call, abstracting away the underlying communication mechanisms and network protocols and simplifying distributed computing by providing a familiar programming model. The client program calls a procedure, and the RPC system handles the task of transferring the procedure call request to the remote server, along with any necessary parameters or data. The server then executes the requested procedure and sends the results back to the client.
+
+RPC is particularly useful in distributed systems, where different components of an application are running on separate machines or processes. It allows these components to communicate and share resources efficiently, as if they were part of a single program. There are many common applications of RPC. For example, in distributed file systems, RPC is used in distributed file systems, such as Network File System (NFS), to enable clients to access and manipulate files on remote servers transparently. In remote database access, RPC facilitates remote access to databases, allowing client applications to execute queries and retrieve data from remote database servers. In designing web services, RPC forms the basis of many web service protocols, such as SOAP (Simple Object Access Protocol), which allows applications to communicate over the internet using XML-based messaging. In modern microservices architectures, RPC is often used for inter-process communication between different microservices, enabling them to collaborate and share functionality. In object-oriented programming, RPC enables objects on different machines to interact with each other, invoking methods and passing data across the network, which is the application domain that we focus on in this study.
+
 \subsection{Rust}
 \label{chap3:background:rust}
 
