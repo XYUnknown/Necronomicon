@@ -54,13 +54,24 @@ The building is circular. The apartments of the prisoners occupy the circumferen
 
 \section{Prologue}
 \label{chap3:prologue}
-The distributed resource management is governed by a monolithic design of ownership and borrow checking system.
+In chapter~\ref{chap1}, we have briefly discussed the conceptual question that we would like to ask: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}? It would be beneficial to view a monolithic programs as an abstraction of distributed program, specifying the intended behaviours of the invocations and resource usage in the distributed program while abstracting away the message-passing details, since it would make the process of migrating monolithic programs into a distributed setting straightforward and simplify the process of implementing a distributed system.
+
+In this chapter, we discuss in detail our design, implementation and formalisation of a universal invocation library in Rust, which supports location transparency, allowing a monolithic program to be migrated into a distributed design with minimal syntactic modification and preserves the semantics of the original program.
+
+As a metaphorical illustration, the core idea of our attempt for conceptually modelling and understanding distributed programs as monolithic programs resembles a \emph{panopticon}, where the distributed resource management is governed by a monolithic design of Rust's ownership and borrow checking system.
 
 \section{Introduction}
 \label{chap3:introduction}
 We have designed and implemented a universal method invocation library for Rust.
 
-\section{The Implementation of Rust xRef Library}
+\section{Background}
+\label{chap3:background}
+\subsection{Remote Procedure Calls}
+\label{chap3:background:rpc}
+\subsection{Rust}
+\label{chap3:background:rust}
+
+\section{The Implementation of Rust UMI Library}
 \label{chap3:implementation}
 In the section, we present our implementation of a universal method invocation (UMI) library in Rust. With such a library, a monolithic program can be migrated into a distributed program while preserving the semantics of the monolithic program.
 
