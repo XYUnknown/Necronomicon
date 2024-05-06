@@ -110,7 +110,7 @@ fn main() {
 
 \subsection{The Design of the Translation}
 \label{impl:proxy}
-In the example discussed in section~\ref{impl:overview}, the syntax is translated by macros. For a declared \texttt{struct}, the macro \texttt{\#[proxy\_me]} performs the translation:
+In the example discussed in section~\ref{chap3:impl:overview}, the syntax is translated by macros. For a declared \texttt{struct}, the macro \texttt{\#[proxy\_me]} performs the translation:
 \[
 \texttt{struct}\; A\;\{\; \mathit{fields}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{Local}\;(\;\mathit{fields}\;), \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
