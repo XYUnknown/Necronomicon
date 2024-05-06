@@ -77,9 +77,15 @@ In summary, we make following contributions:
 
 \section{Background}
 \label{chap3:background}
+In distributed computing, a remote procedure call (RPC) allows a method invocation to be executed on another computer on a shared network. One application of RPC is that in an object-oriented programming paradigm, it enables a method to be invoked on an object stored on a different machine and exchange data across the network. Such a remote method invocation has the same coding as a local invocation, without the programmer explicitly coding the details for the remote interaction.
+However, it is hard to support \emph{location transparency}, i.e., in most existing frameworks (e.g., Java RMI), remote invocations do not have \emph{the same semantics} as local invocations. In addition, \emph{memory management} is hard in a distributed setting, for example, distributed garbage collection is complicated.
+
+Rust is high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership} rules for memory management and \emph{borrow checker} for tracking object lifetime of all references in a program during compilation.
+Since Rust has semantics that guarantees memory safety, we can extend such guarantees to the distributed computing setting, allowing us to design a RPC framework that provides safe remote method invocations.
+
 \subsection{Remote Procedure Calls}
 \label{chap3:background:rpc}
-In distributed computing, a remote procedure calls (RPC) allows a computer program to request a service from another program located in a different address space, which could be on the same machine or on a different machine across a network. It is a form of client-server communication, where the requesting program is the client, and the service-providing program is the server.
+A RPC allows a computer program to request a service from another program located in a different address space, which could be on the same machine or on a different machine across a network. It is a form of client-server communication, where the requesting program is the client, and the service-providing program is the server.
 
 The basic idea behind RPC is to make a remote procedure call seem like a local procedure call, abstracting away the underlying communication mechanisms and network protocols and simplifying distributed computing by providing a familiar programming model. The client program calls a procedure, and the RPC system handles the task of transferring the procedure call request to the remote server, along with any necessary parameters or data. The server then executes the requested procedure and sends the results back to the client.
 
