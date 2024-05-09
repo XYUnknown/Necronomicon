@@ -75,9 +75,11 @@ In summary, we make following contributions:
     \item We prove a \emph{location transparency theorem}: With the UMI framework, when a monolithic program is deployed to multiple nodes, its semantics is preserved (section~\ref{chap3:semantics:loc-transp}).
 \end{itemize}
 
+Before stepping into the detailed discussion of the UMI library, in the next section, we will give a high-level overview of remote procedure calls and Rust.
+
 \section{Background}
 \label{chap3:background}
-In distributed computing, a remote procedure call (RPC) allows a method invocation to be executed on another computer on a shared network. One application of RPC is that in an object-oriented programming paradigm, it enables a method to be invoked on an object stored on a different machine and exchange data across the network. Such a remote method invocation has the same coding as a local invocation, without the programmer explicitly coding the details for the remote interaction.
+In distributed computing, a RPC allows a method invocation to be executed on another computer on a shared network. One application of RPC is that in an object-oriented programming paradigm, it enables a method to be invoked on an object stored on a different machine and exchange data across the network. Such a remote method invocation has the same coding as a local invocation, without the programmer explicitly coding the details for the remote interaction.
 However, it is hard to support \emph{location transparency}, i.e., in most existing frameworks (e.g., Java RMI), remote invocations do not have \emph{the same semantics} as local invocations. In addition, \emph{memory management} is hard in a distributed setting, for example, distributed garbage collection is complicated.
 
 Rust is high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership} rules for memory management and \emph{borrow checker} for tracking object lifetime of all references in a program during compilation.
@@ -105,7 +107,7 @@ The combination of ownership, borrowing, and lifetimes allows Rust to enforce st
 
 \section{The Implementation of Rust UMI Library}
 \label{chap3:implementation}
-In the section, we present our implementation of a universal method invocation (UMI) library in Rust. With such a library, a monolithic program can be migrated into a distributed program while preserving the semantics of the monolithic program.
+In the section, we present our implementation of the universal method invocation (UMI) library in Rust. With such a library, a monolithic program can be migrated into a distributed program while preserving the semantics of the monolithic program.
 
 \subsection{Overview}
 \label{chap3:impl:overview}
