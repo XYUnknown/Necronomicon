@@ -62,7 +62,12 @@ As a metaphorical illustration, the core idea of our attempt for conceptually mo
 
 \section{Introduction}
 \label{chap3:introduction}
-Distributed computing has extensive application in areas such as cloud computing, big data processing, web services, and blockchain systems, driving the development of modern, large-scale, and resilient software systems. Distributed systems offer many significant advantages such as scalability, fault tolerance, resource sharing, and geographical distribution. However, they are complex and challenging to design, implement, and debug due to the necessity for coordination, synchronisation, and communication among distributed components.
+Distributed computing has extensive application in areas such as cloud computing, big data processing, web services, and blockchain systems, driving the development of modern, large-scale, and resilient software systems. Distributed systems offer many significant advantages such as scalability, fault tolerance, resource sharing, and geographical distribution. 
+
+However, distributed systems are complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. In addition, it is a common practice that, to implement a system, a monolithic design is initially adopted since the implementation and deployment of a monolithic system is straightforward. Such a monolithic system only needs to be re-structured and migrated into a distributed design when it needs to be expanded into a larger scale. However, it requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
+
+
+
 
 In summary, we make following contributions:
 \begin{itemize}
@@ -508,7 +513,7 @@ To evaluate a remote heap allocation $\texttt{box}@n'\; v$ on the node $n$, firs
 A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$. It modifies the program state on the node $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$ and assigns the location $\mathscr{l}$ with the new value $v'$. The evaluation of a remote declaration is more complicated. The first step leaves a hole for the substitution of the declared variable $x$. Once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable will be substituted with the remote owned reference $\mathscr{l}_{@n'}^\bullet$.
 
 \begin{figure}
-    \begin{mathparpagebreakable}
+    \begin{mathpar}
         \inferrule*[right={(Copy (s1))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m) }
         {\mathcal{D}, \mathcal{C}_s \concat (n, !\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
         
@@ -550,7 +555,7 @@ A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assi
 
         \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t')}
         {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t@n')}
-    \end{mathparpagebreakable}
+    \end{mathpar}
     \caption{The semantics of dFR}
     \label{semantics:eval-distributed}
 \end{figure}
