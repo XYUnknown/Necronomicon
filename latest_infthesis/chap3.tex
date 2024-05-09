@@ -66,13 +66,13 @@ Distributed computing has extensive application in areas such as cloud computing
 
 However, comparing to monolithic systems, distributed systems are complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. Therefore, it is a common practice to implement a system, a monolithic design is initially adopted as the implementation and deployment of a monolithic system is straightforward. Such a monolithic system needs to later be re-structured and migrated into a distributed design when it needs to be expanded into a larger scale. However, it still requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
 
-To address these issues in the design and implementation of a distributed system as well as migrating a monolithic systems into a distributed setting, we propose our design of a UMI library in Rust. 
+To address these issues in the design and implementation of a distributed system as well as migrating a monolithic systems into a distributed setting, we propose our design of a UMI library in Rust. The design of the UMI library share the same underlying idea of the \emph{remote procedural call} (RPC), where a method invocation on an object can be executed on a different node within the same network, abstracting over the underlying message-passing details. Such a design allows programmers to model a distributed system focusing on \emph{what} functional features are required instead of \emph{how} these functional features are achieved via complicated network communications. Moreover, it allows applications to be migrated from a monolithic design to a distributed architecture without massive changes to source code or the needs of high-level expertise in microservices. In addition, by choosing Rust as the language for implementing the UMI library, we are able to avoid distributed memory management hassles like distributed garbage collecting while extending Rust's memory safety and data-racing free guarantees into the distributed setting.
 
 In summary, we make following contributions:
 \begin{itemize}
-    \item We provide a usable \emph{Rust implementation of the UMI framework}.
-    \item We formalise the \emph{structural operational semantics} for a core calculus of monolithic and distributed Rust programs.
-    \item We prove a \emph{location transparency theorem}: With the UMI framework, when a monolithic program is deployed to multiple nodes, its semantics is preserved.
+    \item We provide a usable \emph{Rust implementation of the UMI framework} (section~\ref{chap3:implementation}).
+    \item We formalise the \emph{structural operational semantics} for a core calculus of monolithic and distributed Rust programs (section~\ref{chap3:semantics}).
+    \item We prove a \emph{location transparency theorem}: With the UMI framework, when a monolithic program is deployed to multiple nodes, its semantics is preserved (section~\ref{chap3:semantics:loc-transp}).
 \end{itemize}
 
 \section{Background}
@@ -324,7 +324,7 @@ Message::Drop(id) => { mvtable.remove(&id); }
 \end{lstlisting}\textbf{}
 
 \section{The Operational Semantics}
-\label{semantics}
+\label{chap3:semantics}
 We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s FR, which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references and lifetimes. We then present dFR, which extends FR to include distributed features of xRef such as remote copy- and move-semantics as well as remote references. We intend to show that such an extension preserves the semantics of FR, therefore the type safety claims of FR is preserved by dFR.
 
 \subsection{The Revised Syntax and Semantics of FR}
@@ -560,6 +560,7 @@ A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assi
 \end{figure}
 
 \subsection{Type Safety of the Extension}
+\label{chap3:semantics:loc-transp}
 By extending FR into dFR, the type system and static checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. This is because with our design, if we flatten a distributed program in a single node program, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. Formally, we state this property of our distributed extension in theorem~\ref{thm:loc-transp}.
 
 Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient.
@@ -576,7 +577,7 @@ For any term $t$, given an initial distributed program state $\mathcal{D}$ and a
     &v@n|_@ = v\\
     &t_d|_@ = t |_@
 \end{align*}
-\label{thm:loc-transp}
+\label{chap3:thm:loc-transp}
 \end{theorem}
 Since a term $t$ is always a closed term, we prove the theorem~\ref{thm:loc-transp} by structural induction on the term $t$.
 \begin{proof}[Case copy]
