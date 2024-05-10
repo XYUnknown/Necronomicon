@@ -114,23 +114,37 @@ In the section, we present our implementation of the universal method invocation
 To give a high-level overview of the design, in figure~\ref{impl:simple-example}, we introduce an example of migrating a monolith application into a distributed setting. In this example, the \emph{macro} \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to remote resources. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local variable is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation those original methods.
 
 An invocation on a proxy is encapsulated in to a serialised message and sent to a receiving node of which the address is the address of the proxy, and then the message is deserialised and the invocation is executed at the destination. After the execution, the result of the is again put into a serialised message and passed back to the calling node to be deserialised.
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
 \begin{lstlisting}[language=Rust, style=boxed]
 #[proxy_me]
 struct A { arg: u32 }
 impl A {
   #[umi_init]
-  new(arg: u32) -> A { A {arg: arg} }
+  new(arg: u32) -> A { 
+    A {arg: arg} }
   #[umi_struct_method]
-  foo1(&self, a: A) {/* do something */}
+  foo1(&self, a: A) {
+    /* do something */}
   #[umi_struct_method]
   foo2(&self, &a: A) {...}
   #[umi_struct_method]
-  foo3(&self, &mut a: A) {...} .....
+  foo3(&self, &mut a: A) {...} ...
 }
 \end{lstlisting}
+    \caption{exmaple}
+    \label{}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+        \centering
 \begin{lstlisting}[language=Rust, style=boxed]
 fn main() {
-  let a_remote = remote!\bang!(addr, A::new(10));
+
+  let a_remote = 
+    remote!\bang!(addr, A::new(10));
   
   let a_local1 = A::new(1);
   let a_local2 = A::new(2);
@@ -139,8 +153,18 @@ fn main() {
   a_remote.foo1(a_local1);
   a_remote.foo2(&a_local2);
   a_remote.foo3(&mut a_local3);
+  
 }
 \end{lstlisting}
+    \caption{example}
+    \label{}
+    \end{subfigure}
+    \vspace{1em}
+    \caption{example}
+    \label{}
+\end{figure}
+
+
 
 \subsection{The Design of the Translation}
 \label{impl:proxy}
@@ -206,7 +230,7 @@ As briefly discussed in section~\ref{impl:overview} and section~\ref{impl:resour
 
 There are different types of messages for passing remote invocations. For instance, a remote invocation sent to an receiving node is represented as an invocation message which taking the form of \texttt{Message::Invoke(fname, variables, invoke\_op)}, where \texttt{fname} is the full path name of the method, each variable is annotated with its ownership information (owned or immutably/mutably borrowed) and \texttt{invoke\_op} specifies the ownership information of the return value. The result of the execution of an remote invocation is passed to the calling node via a return message in the form of \texttt{Message::Return(return\_var)}, where the \texttt{return\_var} is also annotated with its ownership information. Another important type of message is the deallocation messages which takes the form of \texttt{Message::Drop(id)}, where the \texttt{id} corresponds to an entry key in the resource table shown in figure~\ref{impl:tables}. Such a message instructs some remotely owned resources to be deallocated.
 
-\subsection{Extending Borrow Checking Guarantees into the Distributed Setting}
+\subsection{Extending Borrow Checking Guarantees into Distributed Settings}
 \label{impl:borrow}
 To execute a deserialised remote invocation on a receiver, the first step is to gather serialised variable data as well as the ownership information of each variable. In this step, we do not perform any reconstruction of these variables, instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. The implementation of such a process is shown in listing~\ref{impl:invoke}.
 

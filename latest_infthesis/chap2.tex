@@ -181,7 +181,6 @@ for val in input.iter() {
     \label{fig:motivating_example}
 \end{figure}
 
-
 Figure~\ref{fig:motivating_example:rust} shows a Rust code snippet computing a container \lstinline{uniqueElements} that contains the unique elements of the original \lstinline{input} sequence.
 The application developer must choose a concrete container implementation, such as \lstinline{HashSet} in line 1, but
 other valid choices would be Rust's \lstinline{BTreeSet} (line 2), or perhaps a custom \lstinline{UniqueVect} (line 3) container, which stores all elements in a vector but ensures there are no duplicates, 
