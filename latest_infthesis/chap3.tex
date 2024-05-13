@@ -241,33 +241,43 @@ Message::Invoke(fname, variables, invoke_op) => {
   let mut arguments: Vec<Argument> = Vec::new();
   for v in &variables {
     match v {
-      Variable::OwnedLocal(s) => { arguments.push(Argument::Serialised(s.clone())); },
+      Variable::OwnedLocal(s) => 
+        { arguments.push(Argument::Serialised(s.clone())); },
       Variable::OwnedRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let (owned, is_ref) = mvtable.remove(id).unwrap().into_inner();
           let arg_ref = Argument::Owned(owned);
           arguments.push(arg_ref);
-        } else { arguments.push(Argument::Serialised(serialise_remote.to_string())); }
+        } else { 
+          arguments.push(
+            Argument::Serialised(serialise_remote.to_string())); }
       },
       Variable::RefRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let borrow = mvtable.get(id).unwrap().borrow();
           let ptr: *const (Box<dyn Any + Send + Sync>, bool) = &*borrow;
           unsafe {
-            let back: &(Box<dyn Any + Send + Sync>, bool) = ptr.as_ref().unwrap();
+            let back: &(Box<dyn Any + Send + Sync>, bool) 
+              = ptr.as_ref().unwrap();
             let arg_ref = Argument::Ref(&back.0, back.1);
             arguments.push(arg_ref); }
-        } else { arguments.push(Argument::RemoteRef(serialise_remote.to_string())); }
+        } else { 
+          arguments.push(
+            Argument::RemoteRef(serialise_remote.to_string())); }
       },
       Variable::MutRefRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let mut borrow_mut = mvtable.get(id).unwrap().borrow_mut();
-          let ptr: *mut (Box<dyn Any + Send + Sync>, bool) = &mut *borrow_mut;
+          let ptr: *mut (Box<dyn Any + Send + Sync>, bool)
+            = &mut *borrow_mut;
           unsafe {
-            let back: &mut (Box<dyn Any + Send + Sync>, bool) = ptr.as_mut().unwrap();
+            let back: &mut (Box<dyn Any + Send + Sync>, bool) 
+              = ptr.as_mut().unwrap();
             let arg_ref = Argument::MutRef(&mut back.0, back.1);
             arguments.push(arg_ref); }
-        } else { arguments.push(Argument::RemoteMutRef(serialise_remote.clone())); }
+        } else { 
+          arguments.push(Argument::RemoteMutRef(serialise_remote.clone())); 
+        }
   }}}
   ...
 }
