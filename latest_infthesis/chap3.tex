@@ -64,9 +64,9 @@ As a metaphorical illustration, the core idea of our attempt for conceptually mo
 \label{chap3:introduction}
 Distributed computing has extensive application in areas such as cloud computing, big data processing, web services, and blockchain systems, driving the development of modern, large-scale, and resilient software systems. Distributed systems offer many significant advantages such as scalability, fault tolerance, resource sharing, and geographical distribution. 
 
-However, comparing to monolithic systems, distributed systems are complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. Therefore, it is a common practice to implement a system, a monolithic design is initially adopted as the implementation and deployment of a monolithic system is straightforward. Such a monolithic system needs to later be re-structured and migrated into a distributed design when it needs to be expanded into a larger scale. However, it still requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
+However, comparing to monolithic systems, distributed systems are more complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. Therefore, it is a common practice to implement a system, a monolithic design is initially adopted as the implementation and deployment of a monolithic system is straightforward. Such a monolithic system needs to later be re-structured and migrated into a distributed design when it needs to be expanded into a larger scale. However, it still requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
 
-To address these issues in the design and implementation of a distributed system as well as migrating a monolithic systems into a distributed setting, we propose our design of a UMI library in Rust. The design of the UMI library share the same underlying idea of the \emph{remote procedural call} (RPC), where a method invocation on an object can be executed on a different node within the same network, abstracting over the underlying message-passing details. Such a design allows programmers to model a distributed system focusing on \emph{what} functional features are required instead of \emph{how} these functional features are achieved via complicated network communications. Moreover, it allows applications to be migrated from a monolithic design to a distributed architecture without massive changes to source code or the needs of high-level expertise in microservices. In addition, by choosing Rust as the language for implementing the UMI library, we are able to avoid distributed memory management hassles like distributed garbage collecting while extending Rust's memory safety and data-racing free guarantees into the distributed setting.
+To address these issues in the design and implementation of a distributed system as well as migrating a monolithic systems into a distributed setting, we propose our design of a UMI library in Rust. The design of the UMI library share the same underlying idea of the \emph{remote procedural call} (RPC), where a method invocation on an object can be executed on a different node within the same network, abstracting over the underlying message-passing details. Such a design allows programmers to model a distributed system focusing on \emph{what} functional features are required instead of \emph{how} these functional features are achieved via complicated network communications. Moreover, it allows applications to be migrated from a monolithic design to a distributed architecture without massive changes to source code or the needs of high-level expertise in microservices. In addition, by choosing Rust as the language for implementing the UMI framework, we are able to avoid distributed memory management hassles like distributed garbage collection while extending Rust's memory safety and data-racing free guarantees into the distributed setting.
 
 In summary, we make following contributions:
 \begin{itemize}
@@ -111,7 +111,7 @@ In the section, we present our implementation of the UMI library in Rust. With s
 
 \subsection{Overview}
 \label{chap3:impl:overview}
-To give a high-level overview of the design, in figure~\ref{chap3:imp:overview:fig}, we introduce an example of migrating a monolith application into a distributed setting. In this example, the \emph{macro} \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to remote resources. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local variable is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation those original methods.
+To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolith application into a distributed setting. In this example, the \emph{macro} \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to remote resources. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local variable is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation those original methods.
 
 An invocation on a proxy is encapsulated in to a serialised message and sent to a receiving node of which the address is the address of the proxy, and then the message is deserialised and the invocation is executed at the destination. After the execution, the result of the is again put into a serialised message and passed back to the calling node to be deserialised.
 \begin{figure}[t]
@@ -159,7 +159,7 @@ fn main() {
 \end{subfigure}
 \vspace{1em}
 \caption{Migrating A Monolithic Application into A Distributed Setting with UMI}
-\label{chap3:imp:overview:fig}
+\label{chap3:impl:overview:fig}
 \end{figure}
 
 \subsection{The Design of the Translation}
@@ -168,12 +168,12 @@ In the example discussed in section~\ref{chap3:impl:overview}, the syntax is tra
 \[
 \texttt{struct}\; A\;\{\; \mathit{fields}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{Local}\;(\;\mathit{fields}\;), \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
-where the \textit{Address} is the address of the node which stores the resource of a proxy, \textit{ID} is the identifier of a proxy's resource in the resource table discussed in section~\ref{impl:resource} and \textit{IsOwner} denotes if a proxy is a owned reference or a borrow reference.
+where the \textit{Address} is the address of the node which stores the resource of a proxy, \textit{ID} is the identifier of a proxy's resource in the resource table discussed in section~\ref{chap3:impl:resource} and \textit{IsOwner} denotes if a proxy is a owned reference or a borrow reference.
 This macro can also translate an \texttt{enum} to allow it to represent a proxy by adding a new variant which is the proxy:
 \[
 \texttt{enum}\; A\;\{\; \mathit{variants}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{variants}, \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
-The translation of a \texttt{enum} does not affect its initialisation method, however, the translation of a \texttt{struct} requires its initialisation method to be changed accordingly --- instead of creating an instance of a type which is a \texttt{struct}, an instance of a \textit{Local} variant of an \texttt{enum} is created. For instance, in the example shown in figure~\ref{impl:simple-example}, the \texttt{new(arg: u32)} method is translated by \texttt{\#[umi\_init]} into:
+The translation of a \texttt{enum} does not affect its initialisation method, however, the translation of a \texttt{struct} requires its initialisation method to be changed accordingly --- instead of creating an instance of a type which is a \texttt{struct}, an instance of a \textit{Local} variant of an \texttt{enum} is created. For instance, in the example shown in figure~\ref{chap3:impl:overview:fig}, the \texttt{new(arg: u32)} method is translated by \texttt{\#[umi\_init]} into:
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
   new(arg: u32) -> A { A::Local {arg: arg} }
 \end{lstlisting}
@@ -189,11 +189,11 @@ The macro \texttt{\#[umi\_struct\_method]} performs the translation of other met
 As for a method of a translated \texttt{enum}, the macro \texttt{\#[umi\_enum\_method]} adds an additional pattern matching for the proxy invariant to the existing pattern matching.
 
 \subsection{Resource Management}
-\label{impl:resource}
+\label{chap3:impl:resource}
 To be able to use the UMI library for executing programs that access and manipulate memories of different nodes of a network, resources and computations need be made available to and well-managed by all nodes in the network.
 
 Firstly, a node should be able to store resources owned by difference machines and deallocate those resources according to the their lifetime.
-In Rust, if some resources are owned by a reference on the same node, and the reference has reach the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, some resources on a node $n_1$ might be owned by reference on a different node $n_2$. While these resources does not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. To achieve this, on each UMI server, we use a table shown in figure~\ref{impl:tables} with the same lifetime of the server to identify and manage local resources involved in remote computations. Note that the \textit{ID} is a part of the corresponding proxy.
+In Rust, if some resources are owned by a reference on the same node, and the reference has reach the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, some resources on a node $n_1$ might be owned by reference on a different node $n_2$. While these resources does not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. To achieve this, on each UMI server, we use a table shown in figure~\ref{chap3:impl:tables} with the same lifetime of the server to identify and manage local resources involved in remote computations. Note that the \textit{ID} is a part of the corresponding proxy.
 If a variable is created locally, it will be put into the table once it is passed into a remote computation. The entry will not be removed until the remote computation finishes. If a variable is created via a remote call, it will be put into table on creation and will be deallocated when its remote owner decides that it should be dropped.
 \begin{figure}
 \centering
@@ -215,16 +215,16 @@ If a variable is created locally, it will be put into the table once it is passe
 \hline
 \end{tabular}
 \caption{Resource table (L) and registration table (R)}
-\label{impl:tables}
+\label{chap3:impl:tables}
 \end{figure}
 
-Secondly, to make computations available on all nodes, all methods that can be invoked on a proxy should be registered in a method registration table shown in figure~\ref{impl:tables} by a \texttt{register!(name, arg\_types, return\_type)} macro. The registration table holds the full path name, argument types and return type of the method. When a serialised invocation message, which takes the form of a plain string, received by a node, the method is deserialised and reconstructed according to the type information recorded in the registration table.
+Secondly, to make computations available on all nodes, all methods that can be invoked on a proxy should be registered in a method registration table shown in figure~\ref{chap3:impl:tables} by a \texttt{register!(name, arg\_types, return\_type)} macro. The registration table holds the full path name, argument types and return type of the method. When a serialised invocation message, which takes the form of a plain string, received by a node, the method is deserialised and reconstructed according to the type information recorded in the registration table.
 
 \subsection{Passing Remote Invocations via Messages}
 \label{impl:message}
-As briefly discussed in section~\ref{impl:overview} and section~\ref{impl:resource}, remote invocations and results of executions are communicated via serialised and deserialised messages among nodes. We make use of the Serde \citep{serde} framework to serialise and deserialise these messages and Rust data structures.
+As briefly discussed in section~\ref{chap3:impl:overview} and section~\ref{chap3:impl:resource}, remote invocations and results of executions are communicated via serialised and deserialised messages among nodes. We make use of the Serde \citep{serde} framework to serialise and deserialise these messages and Rust data structures.
 
-There are different types of messages for passing remote invocations. For instance, a remote invocation sent to an receiving node is represented as an invocation message which taking the form of \texttt{Message::Invoke(fname, variables, invoke\_op)}, where \texttt{fname} is the full path name of the method, each variable is annotated with its ownership information (owned or immutably/mutably borrowed) and \texttt{invoke\_op} specifies the ownership information of the return value. The result of the execution of an remote invocation is passed to the calling node via a return message in the form of \texttt{Message::Return(return\_var)}, where the \texttt{return\_var} is also annotated with its ownership information. Another important type of message is the deallocation messages which takes the form of \texttt{Message::Drop(id)}, where the \texttt{id} corresponds to an entry key in the resource table shown in figure~\ref{impl:tables}. Such a message instructs some remotely owned resources to be deallocated.
+There are different types of messages for passing remote invocations. For instance, a remote invocation sent to an receiving node is represented as an invocation message which taking the form of \texttt{Message::Invoke(fname, variables, invoke\_op)}, where \texttt{fname} is the full path name of the method, each variable is annotated with its ownership information (owned or immutably/mutably borrowed) and \texttt{invoke\_op} specifies the ownership information of the return value. The result of the execution of an remote invocation is passed to the calling node via a return message in the form of \texttt{Message::Return(return\_var)}, where the \texttt{return\_var} is also annotated with its ownership information. Another important type of message is the deallocation messages which takes the form of \texttt{Message::Drop(id)}, where the \texttt{id} corresponds to an entry key in the resource table shown in figure~\ref{chap3:impl:tables}. Such a message instructs some remotely owned resources to be deallocated.
 
 \subsection{Extending Borrow Checking Guarantees into Distributed Settings}
 \label{impl:borrow}
@@ -232,7 +232,7 @@ To execute a deserialised remote invocation on a receiver, the first step is to 
 
 A serialised variable is labelled to indicate that if it is a piece of data copied or moved from the caller (\texttt{OwnedLocal}), a remote reference owned by the caller (\texttt{OwnedRemote}), a remote reference immutably borrowed by the caller (\texttt{RefRemote}) or a remote reference mutably borrowed by the caller (\texttt{MutRefRemote}). 
 If a variable is serialised data, it will be kept as serialised, since the deserialisation and reconstruction will happen during the invocation of the method. 
-If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table. 
+If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{chap3:impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table. 
 If it is immutably borrowed, then the corresponding entry will be immutably borrowed from the table and if it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution. 
 If an argument is a proxy that is not located at the caller, then the proxy will be passed into the method without any additional change.
 
@@ -283,7 +283,7 @@ Message::Invoke(fname, variables, invoke_op) => {
 }
 \end{lstlisting}
 
-Once the information of all variables are gathered and processed, the invocation can be executed and the result will then be sent back to the caller. The implementation of such operations are shown in listing~\ref{impl:exec-return}. The method data, mainly ownership and type information of the arguments and return value of a method are retrieved from the registration table shown in figure~\ref{impl:tables}. During the execution of the method via \texttt{f.call(arguments)}, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
+Once the information of all variables are gathered and processed, the invocation can be executed and the result will then be sent back to the caller. The implementation of such operations are shown in listing~\ref{impl:exec-return}. The method data, mainly ownership and type information of the arguments and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables}. During the execution of the method via \texttt{f.call(arguments)}, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
 
 The result of an execution is provide in two format, serialised data and a boxed data entry. These two formats are used according to the required ownership information of the return value. If the method produces an owned result annotated with \texttt{InvokeOp::Owned}, no matter the serialised data \texttt{res} is some local resources or a proxy, it will be kept as the serialised form and sent back via a return message. If the method is an initialisation call sent by the macro \texttt{remote!(...)} annotated with \texttt{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and an unique \texttt{id} will be generated. In the return message, the address of the receiver, the \texttt{id}, and the ownership status which is \texttt{true} are included for the caller to construct a proxy that owns such a data entry on the receiver. For a return value that is an immutably or mutably borrowed reference, there are two situations. If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by an generated unique \texttt{id}. Such an \texttt{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference. However, if a borrowed reference is not local to the receiver, meaning it already mirrors a reference on a different node, then it will not be stored in the resource table, instead, the serialised version of it will be sent back to the caller in a return message.
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result}, label=impl:exec-return]
@@ -295,41 +295,55 @@ Message::Invoke(fname, variables, invoke_op) => {
       let ((res, is_local), b) = f.call(arguments);
       let res_message: Message;
       match invoke_op {
-        InvokeOp::Owned => { res_message = Message::Return(ReturnVar::Owned(res)); },
+        InvokeOp::Owned => { 
+          res_message = Message::Return(ReturnVar::Owned(res)); 
+        },
         InvokeOp::Init => {
           let id = (SystemTime::now(), m_id_gen.next());
-          mvtable.insert(id.clone(), RefCell::new((b, false))); // b is the resource
-          res_message = Message::Return(ReturnVar::OwnedInit(local_address, id, true));
+          // b is the resource
+          mvtable.insert(id.clone(), RefCell::new((b, false)));
+          res_message = 
+            Message::Return(ReturnVar::OwnedInit(local_address, id, true));
         },
         InvokeOp::Ref => {
           if is_local {
             let id = (SystemTime::now(), m_id_gen.next());
-            mvtable.insert(id.clone(), RefCell::new((b, true))); // b is a reference
-            res_message = Message::Return(ReturnVar::RefMirror(local_address, id));
-          } else { res_message = Message::Return(ReturnVar::RefBorrow(res)); }
+            // b is a reference
+            mvtable.insert(id.clone(), RefCell::new((b, true)));
+            res_message =
+              Message::Return(ReturnVar::RefMirror(local_address, id));
+          } else { 
+            res_message = Message::Return(ReturnVar::RefBorrow(res)); 
+          }
         },
         InvokeOp::MutRef => {
           if is_local {
             let id = (SystemTime::now(), m_id_gen.next());
-            mvtable.insert(id.clone(), RefCell::new((b, true))); // b is a reference
-            res_message = Message::Return(ReturnVar::MutRefMirror(local_address, id));
-          } else { res_message = Message::Return(ReturnVar::MutRefBorrow(res)); }
+            // b is a reference
+            mvtable.insert(id.clone(), RefCell::new((b, true)));
+            res_message =
+              Message::Return(ReturnVar::MutRefMirror(local_address, id));
+          } else { 
+            res_message = Message::Return(ReturnVar::MutRefBorrow(res)); 
+          }
       }}
       response(stream, res_message);
     },
     None => { /* report unregistered function */ }}
 },
+...
 \end{lstlisting}
 
 \subsection{Extending Lifetime Management into the Distributed Setting}
 \label{impl:lifetime}
-Recall that in section \ref{impl:resource}, we briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program scope, the resources it owns get automatically deallocated. We extends this feature to the distributed setting. As illustrated in listing~\ref{impl:drop-eg}, when the proxy \texttt{a\_proxy} is initialised, some resources are allocated to the node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
+Recall that in section \ref{chap3:impl:resource}, we briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program scope, the resources it owns get automatically deallocated. We extends this feature to the distributed setting. As illustrated in listing~\ref{impl:drop-eg}, when the proxy \texttt{a\_proxy} is initialised, some resources are allocated to the node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=impl:drop-eg]
 // on caller
 fn main() {
   ...
   // the data of a_proxy is in the table on the receiver with addr
-  // but it is owned by the caller and will be deallocated when its owner decides to drop it
+  // but it is owned by the caller and will be deallocated
+  // when its owner decides to drop it
   let a_proxy = remote!\bang!(addr, A::new(10)); 
   ...
   a_proxy.foo1(...)
