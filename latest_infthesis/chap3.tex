@@ -171,12 +171,12 @@ This macro can also translate an \texttt{enum} to allow it to represent a proxy 
 \[
 \texttt{enum}\; A\;\{\; \mathit{variants}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{variants}, \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
-The translation of a \texttt{enum} does not affect its initialisation method, however, the translation of a \texttt{struct} requires its initialisation method to be changed accordingly --- instead of creating an instance of a type which is a \texttt{struct}, an instance of a \textit{Local} variant of an \texttt{enum} is created. For instance, in the example shown in figure~\ref{chap3:impl:overview:fig}, the \texttt{new(arg: u32)} method is translated by \texttt{\#[umi\_init]} into:
+The translation of a \texttt{enum} does not affect its initialisation method, however, the translation of a \texttt{struct} requires its initialisation method to be changed accordingly --- instead of creating an instance of a type which is a \texttt{struct}, an instance of a \textit{Local} variant of an \texttt{enum} is created. For instance, in the example shown in figure~\ref{chap3:impl:overview:fig}, the \texttt{new(arg:u32)} method is translated by \texttt{\#[umi\_init]} into:
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 new(arg: u32) -> A { A::Local {arg: arg} }
 \end{lstlisting}
 
-The macro \texttt{\#[umi\_struct\_method]} performs the translation of other methods of a \texttt{struct}. For instance, the method \texttt{foo1(\&self, a: A)} is translated into:
+The macro \texttt{\#[umi\_struct\_method]} performs the translation of other methods of a \texttt{struct}. For instance, the method \texttt{foo1(\&self, a:A)} is translated into:
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 fn foo1(&self, a: A) {
   match &self {
