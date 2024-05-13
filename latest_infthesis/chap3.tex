@@ -107,17 +107,17 @@ The combination of ownership, borrowing, and lifetimes allows Rust to enforce st
 
 \section{The Implementation of Rust UMI Library}
 \label{chap3:implementation}
-In the section, we present our implementation of the universal method invocation (UMI) library in Rust. With such a library, a monolithic program can be migrated into a distributed program while preserving the semantics of the monolithic program.
+In the section, we present our implementation of the UMI library in Rust. With such a library, a monolithic program can be migrated into a distributed program while preserving the semantics of the monolithic program.
 
 \subsection{Overview}
 \label{chap3:impl:overview}
-To give a high-level overview of the design, in figure~\ref{impl:simple-example}, we introduce an example of migrating a monolith application into a distributed setting. In this example, the \emph{macro} \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to remote resources. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local variable is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation those original methods.
+To give a high-level overview of the design, in figure~\ref{chap3:imp:overview:fig}, we introduce an example of migrating a monolith application into a distributed setting. In this example, the \emph{macro} \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to remote resources. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local variable is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation those original methods.
 
 An invocation on a proxy is encapsulated in to a serialised message and sent to a receiving node of which the address is the address of the proxy, and then the message is deserialised and the invocation is executed at the destination. After the execution, the result of the is again put into a serialised message and passed back to the calling node to be deserialised.
 \begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
     \centering
-    \begin{subfigure}[t]{0.48\textwidth}
-        \centering
 \begin{lstlisting}[language=Rust, style=boxed]
 #[proxy_me]
 struct A { arg: u32 }
@@ -134,12 +134,11 @@ impl A {
   foo3(&self, &mut a: A) {...} ...
 }
 \end{lstlisting}
-    \caption{exmaple}
-    \label{}
+    % \caption{exmaple}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.48\textwidth}
-        \centering
+    \centering
 \begin{lstlisting}[language=Rust, style=boxed]
 fn main() {
 
@@ -156,15 +155,12 @@ fn main() {
   
 }
 \end{lstlisting}
-    \caption{example}
-    \label{}
-    \end{subfigure}
-    \vspace{1em}
-    \caption{example}
-    \label{}
+    % \caption{example}
+\end{subfigure}
+\vspace{1em}
+\caption{Migrating A Monolithic Application into A Distributed Setting with UMI}
+\label{chap3:imp:overview:fig}
 \end{figure}
-
-
 
 \subsection{The Design of the Translation}
 \label{impl:proxy}
