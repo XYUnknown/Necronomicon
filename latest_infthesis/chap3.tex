@@ -82,7 +82,7 @@ Before stepping into the detailed discussion of the UMI library, in the next sec
 In distributed computing, a RPC allows a method invocation to be executed on another computer on a shared network. One application of RPC is that in an object-oriented programming paradigm, it enables a method to be invoked on an object stored on a different machine and exchange data across the network. Such a remote method invocation has the same coding as a local invocation, without the programmer explicitly coding the details for the remote interaction.
 However, it is hard to support \emph{location transparency}, i.e., in most existing frameworks (e.g., Java RMI), remote invocations do not have \emph{the same semantics} as local invocations. In addition, \emph{memory management} is hard in a distributed setting, for example, distributed garbage collection is complicated.
 
-Rust is high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership} rules for memory management and \emph{borrow checker} for tracking object lifetime of all references in a program during compilation.
+Rust~\citep{10.5555/3271463} is high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership} rules for memory management and \emph{borrow checker} for tracking object lifetime of all references in a program during compilation.
 Since Rust has semantics that guarantees memory safety, we can extend such guarantees to the distributed computing setting, allowing us to design a RPC framework that provides safe remote method invocations.
 
 \subsection{Remote Procedure Calls}
@@ -95,9 +95,9 @@ RPC is particularly useful in distributed systems, where different components of
 
 \subsection{Rust}
 \label{chap3:background:rust}
-As a system programming language emphasising on safety, performance, and concurrency, Rust is designed to prevent common programming errors, such as dereferencing null pointers and data races. Rust achieves these goals through its unique features of ownership, borrow checking, and lifetimes.
+As a system programming language emphasising on safety, performance, and concurrency, Rustis designed to prevent common programming errors, such as dereferencing null pointers and data races. Rust achieves these goals through its unique features of ownership, borrow checking, and lifetimes.
 
-In Rust, each value has a variable known as its \emph{owner}. Each value can only have one owner at a time, and when the owner goes out of scope, the value is dropped. This ownership model ensures that resources are managed correctly without the need for a garbage collector (cite rust lang). The ownership system is fundamental to Rust and serves as the basis for its memory safety.
+In Rust, each value has a variable known as its \emph{owner}. Each value can only have one owner at a time, and when the owner goes out of scope, the value is dropped. This ownership model ensures that resources are managed correctly without the need for a garbage collector. The ownership system is fundamental to Rust and serves as the basis for its memory safety.
 
 Rust allows functions and data structures to borrow references to values without taking ownership. This is called \emph{borrowing}. When a value is borrowed, the original owner cannot modify the value until the borrowing ends. The \emph{borrow checker} is part of Rust's compiler, which ensures that references are used safely and do not result in dangling pointers or other memory issues. Borrowing can be either mutable or immutable, but mutable references have additional constraints to prevent data races and undefined behaviours.
 
