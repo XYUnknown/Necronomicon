@@ -103,7 +103,7 @@ Rust allows functions and data structures to borrow references to values without
 
 Lifetimes in Rust express how long references should be valid. They assist the borrow checker in ensuring that references do not outlive the data they point to. Rust uses lifetimes to prevent dangling references, which is vital for memory safety. Lifetimes are explicitly stated or inferred, and they work alongside ownership and borrowing to maintain safety and prevent data races.
 
-The combination of ownership, borrowing, and lifetimes allows Rust to enforce strict memory safety without requiring a garbage collector. These features prevent common bugs and ensure that Rust programmes are free of data races. Memory safety means that all references point to valid memory, and data races are avoided by allowing only one mutable reference at a time or multiple immutable references.
+With the design of ownership, borrowing, and lifetimes, Rust enforces strict memory safety guarantees, i.e., means that all references point to valid memory, without requiring a garbage collector. These features prevent common bugs and ensure that Rust programmes are free of data race by allowing only one mutable reference at a time or multiple immutable references.
 
 \section{The Implementation of Rust UMI Library}
 \label{chap3:implementation}
