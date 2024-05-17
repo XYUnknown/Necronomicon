@@ -337,7 +337,7 @@ Message::Invoke(fname, variables, invoke_op) => {
 
 \subsection{Extending Lifetime Management into Distributed Settings}
 \label{chap3:impl:lifetime}
-Recall that in section \ref{chap3:impl:resource}, we have briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
+Recall that in section~\ref{chap3:impl:resource}, we have briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
 
 In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=chap3:impl:lst:drop-eg]
@@ -379,7 +379,7 @@ We first provide a small-step operational semantics of a core language of Rust b
 
 \subsection{The Revised Syntax and Semantics of FR}
 \label{semantics:fr}
-We present the revised syntax of FR in figure~\ref{syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut }w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state, and different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
+We present the revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut }w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state, and different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
 
 % Note that the $k$ in the block represents the lifetime.
 \begin{figure}
@@ -405,20 +405,22 @@ We present the revised syntax of FR in figure~\ref{syntax:r-syntax-fig}. Note th
     \cmid \quad &\mathscr{l}^\circ &\text{borrowed reference} \\
     \text{Location}\quad  \mathscr{l} \in \mathbb{A}
 \end{alignat*}
-\label{syntax:r-syntax-fig}
 \caption{The revised syntax of FR}
+\label{chap3:syntax:r-syntax-fig}
 \end{figure}
 
-The notion of program state is introduced in figure \ref{semantics:program-state-fig}, which is a mapping from a location to a tuple of value and lifetime. When a value is replaced or its lifetime is expired, it will be removed from the program state.
-\begin{figure}[b]
+\begin{figure}
 \begin{align*}
     &\mathcal{S}: \mathbb{A} \rightharpoonup \mathcal{V} \times \mathcal{L}\\
     &\mathcal{S} \mid \mathscr{l} \mapsto (v, m) \quad \text{where: } \mathscr{l} \in \textbf{dom}\;\mathcal{S} &\text{(update)}\\
     &\mathcal{S} \otimes \mathscr{l} \mapsto (v, m) \quad \text{where: } \mathscr{l} \notin \textbf{dom}\;\mathcal{S} &\text{(extend)}
 \end{align*}
-\label{semantics:program-state-fig}
-\caption{The program state }
+\caption{The program state}
+\label{chap3:semantics:program:state}
 \end{figure}
+
+The notion of program state is introduced in figure~\ref{chap3:semantics:program:state}, which is a mapping from a location to a tuple of value and lifetime. When a value is replaced or its lifetime is expired, it will be removed from the program state.
+
 We provide the operations of recursively removing values based on a location $\mathscr{l}$ and a lifetime $k$ from the state: 
 \begin{align*}
       &\bigl(\mathcal{S}\otimes(\mathscr{l}^\bullet \mapsto (v, k))\bigr)\setminus {\mathscr{l}^\bullet} = \mathcal{S}\setminus v \\
