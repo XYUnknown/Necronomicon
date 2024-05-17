@@ -159,12 +159,12 @@ fn main() {
 \end{figure}
 
 \subsection{The Design of the Translation}
-\label{impl:proxy}
-In the example discussed in section~\ref{chap3:impl:overview}, the syntax is translated by macros. For a declared \texttt{struct}, the macro \texttt{\#[proxy\_me]} performs the translation:
+\label{chap3:impl:proxy}
+As we have seen in the example discussed in section~\ref{chap3:impl:overview}, the syntax of a monolithic program is translated into a distributed program by a set of macros. For a declared \texttt{struct}, the macro \texttt{\#[proxy\_me]} performs the translation:
 \[
 \texttt{struct}\; A\;\{\; \mathit{fields}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{Local}\;(\;\mathit{fields}\;), \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
-where the \textit{Address} is the address of the node which stores the resource of a proxy, \textit{ID} is the identifier of a proxy's resource in the resource table discussed in section~\ref{chap3:impl:resource} and \textit{IsOwner} denotes if a proxy is a owned reference or a borrow reference.
+where the \textit{Address} is the address of the node which stores the resource of a proxy, the \textit{ID} is the identifier of a proxy's resource in the resource table that will be discussed in section~\ref{chap3:impl:resource}, and \textit{IsOwner} denotes whether a proxy is a owned reference or a borrow reference.
 This macro can also translate an \texttt{enum} to allow it to represent a proxy by adding a new variant which is the proxy:
 \[
 \texttt{enum}\; A\;\{\; \mathit{variants}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{variants}, \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
