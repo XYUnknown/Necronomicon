@@ -339,8 +339,8 @@ Message::Invoke(fname, variables, invoke_op) => {
 \label{chap3:impl:lifetime}
 Recall that in section \ref{chap3:impl:resource}, we have briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
 
-In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extends this feature to the distributed setting. As illustrated in listing~\ref{impl:drop-eg}, when the proxy \texttt{a\_proxy} is initialised, some resources are allocated to the node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=impl:drop-eg]
+In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=chap3:impl:lst:drop-eg]
 // on caller
 fn main() {
   ...
@@ -352,9 +352,10 @@ fn main() {
   a_proxy.foo1(...)
 } // a_proxy is out of scope, its data on the remote machine is dropped
 \end{lstlisting}
-For monolithic programs, the deallocation is achieved via the \texttt{drop} method in destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle deallocation of remotely owned resources. The implementation is shown in listing~\ref{impl:drop}.
-When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds the resources. 
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={The implementation of a remote deallocation}, label=impl:drop]
+
+For monolithic programs, the deallocation is achieved via the \texttt{drop} method in destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}.
+When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources. 
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={The implementation of a remote deallocation}, label=chap3:impl:lst:drop]
 ...
 impl Drop for #name {
   fn drop(&mut self) {
@@ -367,7 +368,7 @@ impl Drop for #name {
 }}}
 ...
 \end{lstlisting}
-As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \texttt{id} will be removed from the resource table.
+As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \texttt{id} will be removed from the resource table (i.e., the \texttt{mvtable} in the listing). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 Message::Drop(id) => { mvtable.remove(&id); }
 \end{lstlisting}\textbf{}
