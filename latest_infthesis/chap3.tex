@@ -192,8 +192,8 @@ As for a method of a translated \texttt{enum}, the macro \texttt{\#[umi\_enum\_m
 To be able to use the UMI library for executing programs that access and manipulate memories of different nodes within a network, resources and computations need to be made available to and well-managed by all nodes in the network.
 
 Firstly, a node should be able to store resources owned by different machines and deallocate those resources according to the their lifetime.
-In Rust, if some resources are owned by a reference on the same node, and the reference has reached the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, while some resources on a node $n_1$ is not owned by any reference on the same node, they can be owned by reference on a different node $n_2$. Although these resources do not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. 
-To achieve this, on each UMI server, we use a table shown in figure~\ref{chap3:impl:tables} with the same lifetime of the server to identify and manage local resources involved in remote computations. Note that the \textit{ID} is a part of the corresponding proxy.
+In Rust, if some resources are owned by a reference on the same node, and the reference has reached the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, while some resources on a node $n_1$ is not owned by any reference on the same node, they can be owned by a reference on a different node $n_2$. Although these resources do not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. 
+To achieve this, on each UMI server, we use a \emph{resource table} shown in figure~\ref{chap3:impl:tables} with the same lifetime of the server to identify and manage local resources involved in remote computations. Note that the ID in an entry of the table is the ID field in a corresponding proxy.
 If a variable is created locally, it will be put into the table once it is passed into a remote computation. The entry will not be removed until the remote computation finishes. If a variable is created via a remote call, it will be put into table on creation and will be deallocated when its remote owner decides that it should be dropped.
 \begin{figure}
 \centering
@@ -214,11 +214,11 @@ If a variable is created locally, it will be put into the table once it is passe
 ... & ... \\
 \hline
 \end{tabular}
-\caption{Resource table (L) and registration table (R)}
+\caption{A resource table (L) and a method registration table (R)}
 \label{chap3:impl:tables}
 \end{figure}
 
-Secondly, to make computations available on all nodes, all methods that can be invoked on a proxy should be registered in a method registration table shown in figure~\ref{chap3:impl:tables} by a \texttt{register!(name, arg\_types, return\_type)} macro. The registration table holds the full path name, argument types and return type of the method. When a serialised invocation message, which takes the form of a plain string, received by a node, the method is deserialised and reconstructed according to the type information recorded in the registration table.
+Secondly, to make computations available on all nodes, all methods that can be invoked on a proxy should be registered in a \emph{method registration table} shown in figure~\ref{chap3:impl:tables} by a \texttt{register!(name, arg\_types, return\_type)} macro. The method registration table holds the full path name, argument types, and return type of methods. When a serialised invocation message, which takes the form of a plain string, received by a node, the method to be invoked is deserialised and reconstructed according to the type information recorded in the registration table.
 
 \subsection{Passing Remote Invocations via Messages}
 \label{impl:message}
