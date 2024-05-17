@@ -337,7 +337,9 @@ Message::Invoke(fname, variables, invoke_op) => {
 
 \subsection{Extending Lifetime Management into Distributed Settings}
 \label{chap3:impl:lifetime}
-Recall that in section \ref{chap3:impl:resource}, we have briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program scope, the resources it owns get automatically deallocated. We extends this feature to the distributed setting. As illustrated in listing~\ref{impl:drop-eg}, when the proxy \texttt{a\_proxy} is initialised, some resources are allocated to the node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
+Recall that in section \ref{chap3:impl:resource}, we have briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
+
+In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extends this feature to the distributed setting. As illustrated in listing~\ref{impl:drop-eg}, when the proxy \texttt{a\_proxy} is initialised, some resources are allocated to the node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=impl:drop-eg]
 // on caller
 fn main() {
