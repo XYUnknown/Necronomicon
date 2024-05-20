@@ -62,7 +62,7 @@ The building is circular. The apartments of the prisoners occupy the circumferen
 \node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
 \node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Prologue}};
 \end{tikzpicture}
-\vspace{-0.3em}
+\vspace{-0.7em}
 \end{center}
 % \section{Prologue}
 % \label{chap3:prologue}
@@ -449,9 +449,10 @@ and respectively:
     \end{cases}
 \] % this  is not correct and I will revise it
 
-Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$ and $S', t'$ are the program state and term after the evaluation.
+Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$, and $S', t'$ are the program state and the term after the evaluation.
+
 Evaluating a copy term simply makes a copy of a value $v$ at a given location $\mathscr{l}$, without modifying the program state, whereas evaluating a move term moves a value $v$ out of a given location $\mathscr{l}$.
-A heap allocation $\texttt{box }v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the global lifetime $\top$, which contains all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
+A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the global lifetime $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
 Assignment places a given value $v'$ in the location $\mathscr{l}$, and recursively deallocates the old value $v$ from the program state.
 The evaluation of a declaration allocates a given value $v$ to a fresh location $\mathscr{l}$ and substitutes latter occurrence of the declared variable $x$ with the owned reference $\mathscr{l}^\bullet$.
 
@@ -480,7 +481,7 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
 
     \inferrule*[right={(R-Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
-    {\mathcal{S}, \texttt{let mut }x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[x/\mathscr{l}^\bullet]}\\
+    {\mathcal{S}, \texttt{let}\;\texttt{mut}\;x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[x/\mathscr{l}^\bullet]}\\
 
     \inferrule*[right={(R-Block)}]{ }
     {\mathcal{S}, \{v\} \stackrel k\longrightarrow \mathcal{S}\setminus suc\ k, v}
@@ -520,9 +521,10 @@ An evaluation context is a term with a placeholder $\llbracket\cdot\rrbracket$. 
 \end{figure}
 
 Next, we will discuss the semantics of dFR, which extends the FR with distributed computation features including remote references and values.
+
 \subsection{The Syntax and Semantics of dFR} 
-\label{semantics:dfr}
-Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR extended with the remote declaration $\texttt{let mut}@n\; x = t;t$, remote heap allocation $\texttt{box } t$, remote values $v@n$ and remote terms $t@n$, where $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. 
+\label{chap3:semantics:dfr}
+Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. 
 % $\mathscr{l}^\bullet_{@n}$ denotes a owned reference on the node $n$. 
 \begin{figure}
 \begin{alignat*}{3}
@@ -540,7 +542,6 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
     \cmid \quad &!{w} \quad &\text{copy} \\
     \cmid \quad &v \quad &\text{value} \\
     \cmid \quad &v@n \quad &\text{remote value}\\
-    % \cmid \quad &w\\
     \text{Remote Term} \quad t_d \metaDeff \quad &t@n\\
     \text{LVal} \quad w \ \metaDeff \quad &x \quad &\text{variable} \\
     \cmid \quad &{*}w \quad &\text{dereference} \\
@@ -549,12 +550,11 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
     \cmid \quad &i \quad &\text{integer} \\
     \cmid \quad &\mathscr{l}^\bullet &\text{owned reference} \\
     \cmid \quad &\mathscr{l}^\circ &\text{borrowed reference} \\
-    % \cmid \quad &(n, v) &\text{remote value}\\
-    \text{Location}\quad  \mathscr{l} \in \mathbb{A}\\
-    \text{Node}\quad n \in \mathcal{N}
+    \text{Location}\quad  \mathscr{l} \in \mathbb{A}
+    &\quad\quad\quad\quad\text{Node}\quad n \in \mathcal{N}
 \end{alignat*}
-\label{syntax:d-syntax-fig}
 \caption{The syntax of dFR}
+\label{syntax:d-syntax-fig}
 \end{figure}
 
 Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C}_s \longrightarrow \mathcal{D'}, \mathcal{C}_s'$, where $\mathcal{C}_s$ and $\mathcal{C}_s'$ are configuration stacks. For each reduction, the term on the top of a configuration stack $\mathcal{C}_s$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$).
@@ -566,8 +566,8 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
         &\mathcal{C}_s : (nt)^*
         &\mathrm{Configuration}: \mathcal{D}, \mathcal{C}_s
     \end{align*}
-    \label{d-state}
     \caption{Distributed program state and configuration stack}
+    \label{d-state}
 \end{figure}
 
 Utilising the concepts of distributed program state and configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed}. Firstly, all reductions rules for evaluating terms in FR can be adapted into reduction rules for dFR via the rule Local Term. To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a node with address $n$, the first step is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet_{@n'})$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. And then the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. Similarly, as for the semantics of moving the value out of a remote owned reference, the first step is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. The resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$.
@@ -601,7 +601,13 @@ A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assi
 
         \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
         {\mathcal{D}, \mathcal{C}_s \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, \mathscr{l}^\circ_{@n'})}
+    \end{mathpar}
+    \caption{The semantics of dFR (part one)}
+    \label{semantics:eval-distributed-1}
+\end{figure}
 
+\begin{figure}
+    \begin{mathpar}
         \inferrule*[right={(Assign (s1))}]{ }
         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, \mathscr{l}_{@n'}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
 
@@ -620,8 +626,8 @@ A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assi
         \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t')}
         {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t@n')}
     \end{mathpar}
-    \caption{The semantics of dFR}
-    \label{semantics:eval-distributed}
+    \caption{The semantics of dFR (part two)}
+    \label{semantics:eval-distributed-2}
 \end{figure}
 
 \subsection{Type Safety of the Extension}
