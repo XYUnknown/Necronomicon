@@ -371,7 +371,9 @@ impl Drop for #name {
 As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \texttt{id} will be removed from the resource table (i.e., the \texttt{mvtable} in the listing). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 Message::Drop(id) => { mvtable.remove(&id); }
-\end{lstlisting}\textbf{}
+\end{lstlisting}
+
+After presenting the design and implementation of the UMI library, in the next chapter, we discuss the formalisation of some core concepts of the UMI library based on formalised operational semantics of a core language of Rust, and sketch a proof of the location transparency theorem stating that using the UMI framework, the translation of a monolithic program into a distributed program preserves the semantics of the original program.
 
 \section{The Operational Semantics}
 \label{chap3:semantics}
