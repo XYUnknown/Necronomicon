@@ -51,10 +51,22 @@
 The building is circular. The apartments of the prisoners occupy the circumference. You may call them, if you please, the cells. The apartment of the inspector occupies the centre, you may call it if you please the inspector’s lodge. To cut off from each prisoner the view of every other, the partitions are carried on a few feet beyond the grating into the intermediate area, such projecting parts I call the protracted partitions. These windows of the inspector’s lodge open into the intermediate area, in the form of doors, in as many places as shall be deemed necessary to admit of his communicating readily with any of the cells. \\
 \rightline{--- Jeremy Bentham ``Panopticon or the Inspection-House"}};
 \end{tikzpicture}
-
-\section{Prologue}
-\label{chap3:prologue}
-In chapter~\ref{chap1}, we have briefly discussed the conceptual question that we would like to ask: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}? It would be beneficial to view a monolithic programs as an abstraction of distributed program, specifying the intended behaviours of the invocations and resource usage in the distributed program while abstracting away message-passing details, since it would make the process of migrating monolithic programs into a distributed setting straightforward and simplify the process of implementing a distributed system.
+\noindent
+\begin{center}
+\vspace{0.3em}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=0.35\framesize, minimum height=0.05*\framesize, fill=white](vecbox){};
+\node[anchor=west] at (vecbox.west){\pgfornament[width=0.08*\framesize]{16}};
+\node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
+\node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Prologue}};
+\end{tikzpicture}
+\vspace{-0.3em}
+\end{center}
+% \section{Prologue}
+% \label{chap3:prologue}
+\lettrine{I}{n} chapter~\ref{chap1}, we have briefly discussed the conceptual question that we would like to ask: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}? It would be beneficial to view a monolithic programs as an abstraction of distributed program, specifying the intended behaviours of the invocations and resource usage in the distributed program while abstracting away message-passing details, since it would make the process of migrating monolithic programs into a distributed setting straightforward and simplify the process of implementing a distributed system.
 
 In this chapter, we discuss in detail our design, implementation and formalisation of a \emph{universal method invocation} (UMI) library in Rust, which supports location transparency, allowing a monolithic program to be migrated into a distributed design with minimal syntactic modification and preserves the semantics of the original program.
 
@@ -381,7 +393,7 @@ We first provide a small-step operational semantics of a core language of Rust b
 
 \subsection{The Revised Syntax and Semantics of FR}
 \label{semantics:fr}
-We present the revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut }w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state, and different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
+We present the revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state, and different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
 
 % Note that the $k$ in the block represents the lifetime.
 \begin{figure}

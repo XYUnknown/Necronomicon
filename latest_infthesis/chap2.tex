@@ -58,9 +58,20 @@
 `Not the same thing a bit', said the Hatter.\\
 \rightline{--- Lewis Carroll ``Alice's Adventures in Wonderland"}};
 \end{tikzpicture}
-\section{Prologue}
-\label{chap2:prologue}
-People often try to \emph{say} what they \emph{mean}, however, there is always a gap between what they say and what they really mean --- \emph{they do not mean what they say.} Likewise, programmers often try to \emph{encode} what they \emph{meant for} a computer to do, however, there is always a gap between what they encode and what they really want a computer to execute --- \emph{they do not mean what they encode.}
+\noindent
+\begin{center}
+\vspace{0.3em}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=0.35\framesize, minimum height=0.05*\framesize, fill=white](vecbox){};
+\node[anchor=west] at (vecbox.west){\pgfornament[width=0.08*\framesize]{16}};
+\node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
+\node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Prologue}};
+\end{tikzpicture}
+\vspace{-0.3em}
+\end{center}
+\lettrine{P}{eople} often try to \emph{say} what they \emph{mean}, however, there is always a gap between what they say and what they really mean --- \emph{they do not mean what they say.} Likewise, programmers often try to \emph{encode} what they \emph{meant for} a computer to do, however, there is always a gap between what they encode and what they really want a computer to execute --- \emph{they do not mean what they encode.}
 
 One observation is that in an implementation of an application, what an application developer encode tends to be ``all too specific" comparing to what they have modelled in mind.
 % One issue we intend to look into in this project is that encoding of container types in an application being ``all too specific". 
@@ -1198,8 +1209,21 @@ We implement \Primrose{} for Rust and specify eight Rust container implementatio
 We intend to significantly improve the ranking method used by \Primrose{} by using more sophisticated techniques, including machine-learning-based solutions and techniques that optimise for multiple metrics, such as run time and memory use.
 Integrating \Primrose{} with a dynamic technique that changes container implementations on-the-fly based on runtime performance measurements would also be interesting.
 
-\section{Epilogue}
-\label{chap2:epilogue}
+\noindent
+\begin{center}
+\vspace{0.3em}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=0.35\framesize, minimum height=0.05*\framesize, fill=white](vecbox){};
+\node[anchor=west] at (vecbox.west){\pgfornament[width=0.08*\framesize]{16}};
+\node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
+\node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Epilogue}};
+\end{tikzpicture}
+\vspace{-0.3em}
+\end{center}
+% \section{Epilogue}
+% \label{chap2:epilogue}
 Addressing the issue that application developers are forced to \emph{over-specify} what they mean in a program by committing to choose concrete implementation, the solution proposed by this chapter, which is also the core theme of this chapter, is to design declarative \emph{specifications}. Library specifications specify the functional correctness of implementations, while property specifications including both syntactic specifications and semantic specifications form an abstraction over concrete implementations, allowing application programmers to better express what they want a computer to~do.
 
 In the end, I would like to enclose this chapter with some high-level observations and a reflections.

@@ -51,10 +51,22 @@ And at last we remembered that the daemoniac \emph{shoggoths} --- given life, th
 % \node[text width=0.85\framesize,align=right] at (vecbox.south){%
 %    --- \emph{Altered} Alice's Adventures in Wonderland};
 \end{tikzpicture}
-
-\section{Prologue}
-\label{chap4:prologue}
-As illustrated in the quotation, \emph{Shoggoth} is a Lovecraftian \emph{shape-shifting monster}, making the sound ``Tekeli-li, Tekeli-li" which can no longer be understood by anyone. In this chapter, we thoroughly discuss about a foundational study of a domain specific programming language --- a strategic rewriting language for \emph{syntactic transformations}, which is previously lack of formal treatment. By making a metaphorical connection, we have named study Shoggoth and published it under the title \emph{Shoggoth: A Formal Foundation for Strategic Rewriting}. 
+\noindent
+\begin{center}
+\vspace{0.3em}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=0.35\framesize, minimum height=0.05*\framesize, fill=white](vecbox){};
+\node[anchor=west] at (vecbox.west){\pgfornament[width=0.08*\framesize]{16}};
+\node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
+\node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Prologue}};
+\end{tikzpicture}
+\vspace{-0.3em}
+\end{center}
+% \section{Prologue}
+% \label{chap4:prologue}
+\lettrine{A}{s} illustrated in the quotation, \emph{Shoggoth} is a Lovecraftian \emph{shape-shifting monster}, making the sound ``Tekeli-li, Tekeli-li" which can no longer be understood by anyone. In this chapter, we thoroughly discuss about a foundational study of a domain specific programming language --- a strategic rewriting language for \emph{syntactic transformations}, which is previously lack of formal treatment. By making a metaphorical connection, we have named study Shoggoth and published it under the title \emph{Shoggoth: A Formal Foundation for Strategic Rewriting}. 
 
 In chapter~\ref{chap1}, we have briefly discussed that conceptually it is intriguing to explore the relationship between syntax and semantics within the context of strategic rewriting. Since term rewriting, as syntactic transformations, encodes the semantics of some programs, and the compositions of each individual term rewriting step form strategies, of which the straightforward syntax is given by a strategic rewriting language, whose semantics featuring non-termination and non-deterministic executions is complicated and worth studying to all us to formally understand and reason about the composition of these rewrites.
 
@@ -1084,8 +1096,21 @@ We have presented Shoggoth, a rigorous formal foundation for strategic rewriting
 
 Weakest precondition calculi form the basis of \emph{verification condition generators} (VCGs), which are a key component of many automatic and semi-automatic verification tools such as VCC~\citep{DBLP:conf/tphol/CohenDHLMSST09} and Dafny~\citep{DBLP:conf/lpar/Leino10}, as well as of static analysers such as the popular Extended Static Checking extension for Java~\citep{DBLP:conf/pldi/FlanaganLLNSS02, DBLP:journals/ipl/Leino05}. We envision that our weakest precondition calculus could similarly inform the design of a VCG for automatic verification or static checking of rewriting strategies. We intend to use Shoggoth as a foundation for the development of tools for verification and, potentially, \emph{synthesis} of rewriting strategies.
 
-\section{Epilogue}
-\label{chap4:epilogue}
+\noindent
+\begin{center}
+\vspace{0.3em}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=0.35\framesize, minimum height=0.05*\framesize, fill=white](vecbox){};
+\node[anchor=west] at (vecbox.west){\pgfornament[width=0.08*\framesize]{16}};
+\node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
+\node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Epilogue}};
+\end{tikzpicture}
+\vspace{-0.3em}
+\end{center}
+% \section{Epilogue}
+% \label{chap4:epilogue}
 In this study, we have analysed and designed a reasoning framework for syntactic transformations and their compositions via processing their formal semantics. In the end, I would like to enclose this chapter again with some high-level observations and a reflection.
 
 In a strategic rewriting system, the syntax of manipulating expressions and semantics which is the evaluation of expressions are interdependent. Since the syntactic transformations of expressions encode the process of evaluating the semantics of these expressions and by composing these syntactic transformation steps, we have the syntax of a strategic rewriting language, providing a concise abstractions interface to not only compose but also control the application of these strategies. Again, by analysing the semantics of such syntax for composing strategies, we are able to understand and reason about the execution of these compositions of syntactic transformations. One may find such an process of detailed analysis of some concise language constructions for syntactic transformations against the intuition of reasoning about programs --- normally people utilise some notions like type systems and logic formulae which are more abstract than the encoding of these programs. However, I find it is hard to design some constructs which are even more abstract than the existing syntax of these compositions for reasoning about there executions, rather, the behaviours hidden beneath the syntactic constructs of these compositions are surprisingly complicated and can only be properly assessed by modelling their executions. 
