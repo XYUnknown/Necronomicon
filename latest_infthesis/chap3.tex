@@ -385,27 +385,27 @@ As shown below, once a deallocation message is received by the targeted receiver
 Message::Drop(id) => { mvtable.remove(&id); }
 \end{lstlisting}
 
-After presenting the design and implementation of the UMI library, in the next chapter, we discuss the formalisation of some core concepts of the UMI library based on formalised operational semantics of a core language of Rust, and sketch a proof of the location transparency theorem stating that using the UMI framework, the translation of a monolithic program into a distributed program preserves the semantics of the original program.
+After presenting the design and implementation of the UMI library, in the next chapter, we discuss the formalisation of core concepts of the UMI library base on formalised operational semantics of a core language of Rust, and sketch a proof of the location transparency theorem stating that using the UMI framework, the translation of a monolithic program into a distributed program preserves the semantics of the original program.
 
 \section{The Operational Semantics}
 \label{chap3:semantics}
-We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s FR, which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references and lifetimes. We then present dFR, which extends FR to include distributed features of xRef such as remote copy- and move-semantics as well as remote references. We intend to show that such an extension preserves the semantics of FR, therefore the type safety claims of FR is preserved by dFR.
+We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s FR, which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references, and lexical lifetimes. We then present dFR, which extends FR to include distributed features of the UMI framework such as remote copy- and move-semantics as well as remote references. We intend to show that such an extension preserves the semantics of FR, therefore the type safety claims of FR is preserved by dFR.
 
 \subsection{The Revised Syntax and Semantics of FR}
-\label{semantics:fr}
-We present the revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state, and different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
+\label{chap3:semantics:fr}
+We present the revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
 
 % Note that the $k$ in the block represents the lifetime.
 \begin{figure}
 \begin{alignat*}{3}
-    \text{Term} \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
+    \text{Term} \quad t \ \metaDeff \quad &\texttt{let mut}\;x = t;t &\text{declaration}\\
     \cmid \quad &w \metaDef t &\text{assignment}\\
     \cmid \quad &t;t &\text{sequence}\\
     \cmid \quad &\texttt{()} &\text{unit}\\
     \cmid \quad &\{t\} &\text{block}\\
-    \cmid \quad &\texttt{box } t &\text{heap allocation}\\
+    \cmid \quad &\texttt{box}\;t &\text{heap allocation}\\
     \cmid \quad &\&w \quad &\text{immutable borrow} \\
-    \cmid \quad &\&\texttt{mut } w \quad &\text{mutable borrow} \\
+    \cmid \quad &\&\texttt{mut}\;w \quad &\text{mutable borrow} \\
     \cmid \quad &\#{w} \quad &\text{move} \\
     \cmid \quad &!{w} \quad &\text{copy} \\
     \cmid \quad &v \quad &\text{value} \\
@@ -466,7 +466,7 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
 
     \inferrule*[right={(R-Box)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
     {\mathcal{S}, \texttt{box }v \longrightarrow \mathcal{S}\otimes \mathscr{l}\mapsto (v,\top), \mathscr{l}^\bullet}
-    \vspace{-0.3cm}
+    % \vspace{-0.3cm}
     % \\\text{Heap locations are given global lifetime $\top$ which all other lifetimes are assumes to be inside.}
 
     \inferrule*[right={(R-Borrow)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
@@ -474,8 +474,7 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
 
     \inferrule*[right={(R-Assign (Owned))}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\bullet \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
-    \vspace{-0.3cm}
-    \\\text{Assignment should not change the lifetime of the original location}
+    % \\\text{Assignment should not change the lifetime of the original location}
 
     \inferrule*[right={(R-Assign (mut Borrowed))}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
