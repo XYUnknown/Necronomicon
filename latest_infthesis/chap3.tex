@@ -643,6 +643,7 @@ Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a r
 Lastly, all reduction rules for evaluating terms presented in FR are adapted into reduction rules for evaluating dFR via the rule \textsc{Local Term}. As for the evaluation of remote terms, shown in the rule \textsc{Remote Term}, if a local term $t$ on the node $n'$ is evaluated into $t'$, then when it is treated as a remote term $t@n'$ on the node $n$, it will be evaluated to a remote term $t'@n'$ on the node $n$.
 
 In the next section, we present and prove a location transparency theorem, which states that when translating a monolithic program written in FR into a distributed program written in dFR, the semantics of the monolithic program is preserved.
+
 \subsection{Preservation of Semantics when Translating a FR Program into a dFR Program}
 \label{chap3:semantics:loc-transp}
 By extending FR into dFR, the type system and static checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. This is because with our design, if we flatten a distributed program in a single node program, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. Formally, we state this property of our distributed extension in theorem~\ref{chap3:thm:loc-transp}.
@@ -650,7 +651,7 @@ By extending FR into dFR, the type system and static checking of the validity of
 Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient.
 
 \begin{theorem}[Location Transparency]
-For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. Note that we make locations on all nodes distinct to simplify the proof.
+\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. Note that we make locations on all nodes distinct to simplify the proof.
 \begin{align*}
     % &\forall t \in \Pi_{\mathit{ref}}.\; \phi_\mathcal{D}, [t] \longrightarrow \mathcal{D}, [v] \iff \phi_\mathcal{S},  t|_@ \longrightarrow \mathcal{S}, v' \land \mathcal{S} = |\mathcal{D}| \land v' = v\\
     &\forall t \in \mathrm{Term}.\; \mathcal{D}, [(n, t)] \longrightarrow \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S}  \Rightarrow \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'\\
@@ -660,7 +661,7 @@ For any term $t$, given an initial distributed program state $\mathcal{D}$ and a
     &\texttt{box}@n\; t |_@ = \texttt{box }t\\
     &v@n|_@ = v\\
     &t_d|_@ = t |_@
-\end{align*}
+\end{align*}}
 \label{chap3:thm:loc-transp}
 \end{theorem}
 Since a term $t$ is always a closed term, we prove the theorem~\ref{thm:loc-transp} by structural induction on the term $t$.
