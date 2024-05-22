@@ -642,7 +642,7 @@ A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assi
 
 The evaluation of a remote declaration is more complicated. The first step leaves a hole for the substitution of the declared variable $x$. Once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable will be substituted with the remote owned reference $\mathscr{l}_{@n'}^\bullet$.
 
-\subsection{Type Safety of the Extension}
+\subsection{Semantic Preservation When Translating a FR Program into a dFR Program}
 \label{chap3:semantics:loc-transp}
 By extending FR into dFR, the type system and static checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. This is because with our design, if we flatten a distributed program in a single node program, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. Formally, we state this property of our distributed extension in theorem~\ref{chap3:thm:loc-transp}.
 
