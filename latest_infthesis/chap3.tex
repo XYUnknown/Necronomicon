@@ -528,7 +528,7 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
 % $\mathscr{l}^\bullet_{@n}$ denotes a owned reference on the node $n$. 
 \begin{figure}
 \begin{alignat*}{3}
-    \text{Term} \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
+    \text{Term}(T) \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
     \cmid \quad &\texttt{let mut}@n\; x = t;t &\text{remote declaration}\\
     \cmid \quad &w \metaDef t &\text{assignment}\\
     \cmid \quad &t;t &\text{sequence}\\
@@ -636,7 +636,7 @@ A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assi
 
 \subsection{Type Safety of the Extension}
 \label{chap3:semantics:loc-transp}
-By extending FR into dFR, the type system and static checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. This is because with our design, if we flatten a distributed program in a single node program, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. Formally, we state this property of our distributed extension in theorem~\ref{thm:loc-transp}.
+By extending FR into dFR, the type system and static checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. This is because with our design, if we flatten a distributed program in a single node program, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. Formally, we state this property of our distributed extension in theorem~\ref{chap3:thm:loc-transp}.
 
 Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient.
 
@@ -747,11 +747,22 @@ Since a term $t$ is always a closed term, we prove the theorem~\ref{thm:loc-tran
 \end{proof}
 The proofs for location transparency of the distributed and monolithic executions of local terms and remote terms should then be trivial.
 
-\section{Related Works}
-\label{chap3:related-works}
+\section{Related Work}
+\label{chap3:related-work}
 
 \section{Conclusion}
 \label{chap3:conclusion}
 
-\section{Epilogue}
-\label{chap3:epilogue}
+\noindent
+\begin{center}
+\vspace{0.3em}
+\begin{tikzpicture}[color=black,
+                   transform shape,
+                   every node/.style={inner sep=0pt}]
+\node[minimum width=0.35\framesize, minimum height=0.05*\framesize, fill=white](vecbox){};
+\node[anchor=west] at (vecbox.west){\pgfornament[width=0.08*\framesize]{16}};
+\node[anchor=east] at (vecbox.east){\pgfornament[width=0.08*\framesize]{15}};
+\node[inner sep=6pt] (text) at (vecbox.center){\textbf{\Large Epilogue}};
+\end{tikzpicture}
+\vspace{-0.7em}
+\end{center}
