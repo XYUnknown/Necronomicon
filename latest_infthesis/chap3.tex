@@ -594,7 +594,7 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
         {\mathcal{D}, \mathcal{C}_s \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
 
         \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, \mathscr{l}^\circ_{@n'})}
+        {\mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, \mathscr{l}^\circ_{@n'})}
     \end{mathpar}
     \caption{The semantics of dFR (part one)}
     \label{semantics:eval-distributed-1}
@@ -630,7 +630,7 @@ The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remot
     \label{semantics:eval-distributed-2}
 \end{figure}
 
-On a given node $n$, to borrow a remotely owned reference from a different node $n'$, a remotely borrowed reference $\mathscr{l}^\circ_{@n'}$ is passed back to the node $n$ at the end of the evaluation.
+The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show that on a given node $n$, to borrow a remotely owned reference from a different node $n'$, a remotely borrowed reference $\mathscr{l}^\circ_{@n'}$ is passed back to the node $n$ at the end of the evaluation.
 
 A remote assignment $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$. It modifies the program state on the node $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$ and assigns the location $\mathscr{l}$ with the new value $v'$. The evaluation of a remote declaration is more complicated. The first step leaves a hole for the substitution of the declared variable $x$. Once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable will be substituted with the remote owned reference $\mathscr{l}_{@n'}^\bullet$.
 
