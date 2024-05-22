@@ -453,7 +453,7 @@ Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantic
 
 Evaluating a copy term simply makes a copy of a value $v$ at a given location $\mathscr{l}$, without modifying the program state, whereas evaluating a move term moves a value $v$ out of a given location $\mathscr{l}$.
 A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the global lifetime $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
-Assignment places a given value $v'$ in the location $\mathscr{l}$, and recursively deallocates the old value $v$ from the program state.
+Assignment places a given value $v'$ in the location $\mathscr{l}$, and recursively deallocates the old value $v$ from the program state. Note that assignments to immutably borrowed references are prohibited by the type system provided by \citep{10.1145/3443420}'s original work, the discussion of the type system is omitted here since we would like to focus on the analysis of the SOS of FR programs.
 The evaluation of a declaration allocates a given value $v$ to a fresh location $\mathscr{l}$ and substitutes latter occurrence of the declared variable $x$ with the owned reference $\mathscr{l}^\bullet$.
 
 FR's lifetimes are based on the the lexical structure of programs. A block's lifetime $k$ based on the depth of the block. A block with deeper depth $\mathit{suc}\; k$ lives shorter than a block with depth $k$. The evaluation of a block is the evaluation of the term inside the block. At the end of the evaluation, a single value $v$ is obtained and values that have short lifetime than the current block are deallocated from the program state. The reduction rules for the evaluation of sequences are intuitive. We highlight the case for a sequence of which the first term is an owned reference. After evaluating the owned reference, it is recursively deallocated from the program state.
@@ -477,7 +477,7 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\bullet \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
     % \\\text{Assignment should not change the lifetime of the original location}
 
-    \inferrule*[right={(R-Assign (mut Borrowed))}]{ }
+    \inferrule*[right={(R-Assign (Borrowed))}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
 
     \inferrule*[right={(R-Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
@@ -604,16 +604,20 @@ Utilising the distributed program state and the configuration stack, we provide 
 
 To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a node with address $n$, the first step shown in the rule \textsc{Copy (s1)} is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet_{@n'})$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. It models that the computation is passed to the node $n'$, which stores the resource owned by the reference $\mathscr{l}^\bullet_{@n'}$. Then the rule \textsc{Copy (s2)} indicates that the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. Similarly, as for the semantics of moving the value out of a remote owned reference, the first step is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. The resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$, indicating that the value is moved out of the location $\mathscr{l}$ at the node $n'$.
 
-The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remote heap allocation $\texttt{box}@n'\;v$ on the node $n$. Firstly, the heap allocation is passed to the node $n'$ to be evaluated, and a hole on the node $n$ is created and pushed onto the configuration stack. The value $v$ is stored in a fresh location $\mathscr{l}$ at the program state of the node $n'$ and assigned with the lifetime $\top$ since it is a heap allocation, hence a owned reference $\mathscr{l}^\bullet$ is created in the node $n'$. Such a owned reference is then passed back to the node $n$ allowing the node $n$ to own the location $\mathscr{l}$ created by the heap allocation on the node $n'$. At the end of the evaluation, as shown in the rule \textsc{Box (s2)}, on the top of the configuration stack, the hole create on the node $n$ is filled by the owned remote reference $\mathscr{l}^\bullet_{@n'}$
-
 \begin{figure}
     \begin{mathpar}
-        \inferrule*[right={(Assign (s1))}]{ }
+        \inferrule*[right={(Assign Owned(s1))}]{ }
         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, \mathscr{l}_{@n'}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
 
-        \inferrule*[right={(Assign (s2))}]{ }
+        \inferrule*[right={(Assign Owned (s2))}]{ }
         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C}_s \concat (n, \texttt{()})}
 
+        \inferrule*[right={(Assign Borrowed (s1))}]{ }
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, \mathscr{l}_{@n'}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+
+        \inferrule*[right={(Assign Borrowed (s2))}]{ }
+        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C}_s \concat (n, \texttt{()})}
+        
         \inferrule*[right={(Decl (s1))}]{ }
         {\mathcal{D}, \mathcal{C}_s \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C}_s \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x)}
 
@@ -629,6 +633,8 @@ The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remot
     \caption{The semantics of dFR (part two)}
     \label{semantics:eval-distributed-2}
 \end{figure}
+
+The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remote heap allocation $\texttt{box}@n'\;v$ on the node $n$. Firstly, the heap allocation is passed to the node $n'$ to be evaluated, and a hole on the node $n$ is created and pushed onto the configuration stack. The value $v$ is stored in a fresh location $\mathscr{l}$ at the program state of the node $n'$ and assigned with the lifetime $\top$ since it is a heap allocation, hence a owned reference $\mathscr{l}^\bullet$ is created in the node $n'$. Such a owned reference is then passed back to the node $n$ allowing the node $n$ to own the location $\mathscr{l}$ created by the heap allocation on the node $n'$. At the end of the evaluation, as shown in the rule \textsc{Box (s2)}, on the top of the configuration stack, the hole create on the node $n$ is filled by the owned remote reference $\mathscr{l}^\bullet_{@n'}$
 
 The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of immutable and mutable borrow terms. On a given node $n$, to borrow a remotely owned reference from a different node $n'$, firstly a hole is again created and pushed waiting for a term to be passed back, and the borrow term $\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}$ is passed to the node $n'$ to be evaluated. After it being evaluated on the node $n'$, the resulting remotely borrowed reference $\mathscr{l}^\circ_{@n'}$ is passed back to the node $n$ filling the hole on the configuration stack.
 
