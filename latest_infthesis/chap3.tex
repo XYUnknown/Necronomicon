@@ -557,7 +557,7 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
 \label{syntax:d-syntax-fig}
 \end{figure}
 
-Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C}_s \longrightarrow \mathcal{D'}, \mathcal{C}_s'$, where $\mathcal{C}_s$ and $\mathcal{C}_s'$ are configuration stacks. For each reduction, the term on the top of a configuration stack $\mathcal{C}_s$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$).
+Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C}_s \longrightarrow \mathcal{D'}, \mathcal{C}_s'$, where $\mathcal{C}_s$ and $\mathcal{C}_s'$ are configuration stacks. For each reduction, the term on the top of a configuration stack $\mathcal{C}_s$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
 \begin{figure}
     \begin{align*}
         &\mathcal{D}: \mathcal{N} \rightharpoonup \mathcal{S}
@@ -600,8 +600,6 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
     \label{semantics:eval-distributed-1}
 \end{figure}
 
-Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}. Note that all reduction rules for evaluating terms presented in FR are adapted into reduction rules for dFR via the rule \textsc{Local Term}. 
-
 To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a node with address $n$, the first step shown in the rule \textsc{Copy (s1)} is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet_{@n'})$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. It models that the computation is passed to the node $n'$, which stores the resource owned by the reference $\mathscr{l}^\bullet_{@n'}$. Then the rule \textsc{Copy (s2)} indicates that the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. Similarly, as for the semantics of moving the value out of a remote owned reference, the first step is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. The resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$, indicating that the value is moved out of the location $\mathscr{l}$ at the node $n'$.
 
 \begin{figure}
@@ -627,7 +625,7 @@ To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a 
         \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
         {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t')}
 
-        \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t')}
+        \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C}_s \concat (n', t) \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n', t')}
         {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t'@n')}
     \end{mathpar}
     \caption{The semantics of dFR (part two)}
@@ -641,6 +639,8 @@ The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of i
 A remote assignment to an owned reference $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack. The evaluation of a remote assignment to a borrowed reference is similar. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
 
 Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a remote declaration is more complicated. The first step shown in \textsc{Decl (s1)} leaves a hole to be filled by the resulting term in the substitution of the declared variable $x$. Then the declaration is passed to the node $n'$ to be evaluated. Shown in  \textsc{Decl (s2)}, once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable $x$ on the node $n$ will be substituted with the remote owned reference $\mathscr{l}_{@n'}^\bullet$.
+
+Lastly, all reduction rules for evaluating terms presented in FR are adapted into reduction rules for evaluating dFR via the rule \textsc{Local Term}. As for the evaluation of remote terms, shown in the rule \textsc{Remote Term}, if a local term $t$ on the node $n'$ is evaluated into $t'$, then when it is treated as a remote term $t@n'$ on the node $n$, it will be evaluated to a remote term $t'@n'$ on the node $n$.  
 
 \subsection{Preservation of Semantics when Translating a FR Program into a dFR Program}
 \label{chap3:semantics:loc-transp}
