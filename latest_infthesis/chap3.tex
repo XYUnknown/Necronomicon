@@ -585,10 +585,10 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto \bot), \mathcal{C}_s \concat (n, v@n')}
 
         \inferrule*[right={(Box (s1))}]{ }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, (\texttt{box} @ n' v)) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \texttt{box } v)}
+        {\mathcal{D}, \mathcal{C}_s \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \texttt{box}\;v)}
 
         \inferrule*[right={(Box (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \texttt{box } v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C}_s \concat (n, \mathscr{l}^\bullet_{@n'})} 
+        {\mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C}_s \concat (n, \mathscr{l}^\bullet_{@n'})} 
 
         \inferrule*[right={(Borrow (s1))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
         {\mathcal{D}, \mathcal{C}_s \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
