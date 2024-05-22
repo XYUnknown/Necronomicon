@@ -524,7 +524,7 @@ Next, we will discuss the semantics of dFR, which extends the FR with distribute
 
 \subsection{The Syntax and Semantics of dFR} 
 \label{chap3:semantics:dfr}
-Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. 
+Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. Note that such an extension does not change the type system of FR.
 % $\mathscr{l}^\bullet_{@n}$ denotes a owned reference on the node $n$. 
 \begin{figure}
 \begin{alignat*}{3}
