@@ -459,47 +459,47 @@ The evaluation of a declaration allocates a given value $v$ to a fresh location 
 FR's lifetimes are based on the the lexical structure of programs. A block's lifetime $k$ based on the depth of the block. A block with deeper depth $\mathit{suc}\; k$ lives shorter than a block with depth $k$. The evaluation of a block is the evaluation of the term inside the block. At the end of the evaluation, a single value $v$ is obtained and values that have short lifetime than the current block are deallocated from the program state. The reduction rules for the evaluation of sequences are intuitive. We highlight the case for a sequence of which the first term is an owned reference. After evaluating the owned reference, it is recursively deallocated from the program state.
 \begin{figure}
 \begin{mathparpagebreakable}
-    \inferrule*[right={(R-Copy)}]{\mathcal{S} (\mathscr{l}) = (v , m)}
+    \inferrule*[right={(Copy)}]{\mathcal{S} (\mathscr{l}) = (v , m)}
     {\mathcal{S}, !{\mathscr{l}^\bullet} \longrightarrow \mathcal{S}, v}
     
-    \inferrule*[right={(R-Move)}]{ }
+    \inferrule*[right={(Move)}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \#\mathscr{l}^\bullet \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto \bot, v}
 
-    \inferrule*[right={(R-Box)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
+    \inferrule*[right={(Box)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
     {\mathcal{S}, \texttt{box }v \longrightarrow \mathcal{S}\otimes \mathscr{l}\mapsto (v,\top), \mathscr{l}^\bullet}
     % \vspace{-0.3cm}
     % \\\text{Heap locations are given global lifetime $\top$ which all other lifetimes are assumes to be inside.}
 
-    \inferrule*[right={(R-Borrow)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
+    \inferrule*[right={(Borrow)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
     {\mathcal{S}, \&[\texttt{mut}]\mathscr{l}^\bullet \longrightarrow \mathcal{S}, \mathscr{l}^\circ}
 
-    \inferrule*[right={(R-Assign (Owned))}]{ }
+    \inferrule*[right={(Assign (Owned))}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\bullet \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
     % \\\text{Assignment should not change the lifetime of the original location}
 
-    \inferrule*[right={(R-Assign (Borrowed))}]{ }
+    \inferrule*[right={(Assign (Borrowed))}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
 
-    \inferrule*[right={(R-Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
+    \inferrule*[right={(Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
     {\mathcal{S}, \texttt{let}\;\texttt{mut}\;x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[x/\mathscr{l}^\bullet]}\\
 
-    \inferrule*[right={(R-Block)}]{ }
-    {\mathcal{S}, \{v\} \stackrel k\longrightarrow \mathcal{S}\setminus suc\ k, v}
+    \inferrule*[right={(Block (base))}]{ }
+    {\mathcal{S}, \{v\} \stackrel k\longrightarrow \mathcal{S}\setminus suc\ k, v} 
     
-    \inferrule*[right={(S-Block)}]
+    \inferrule*[right={(Block (suc))}]
     {\mathcal{S}, t \stackrel {suc\ k}\longrightarrow \mathcal{S'}, t'}
     {\mathcal{S}, \{t\} \stackrel k\longrightarrow \mathcal{S'}, \{t'\}}
     
-    \inferrule*[right={(R-Seq-OwnedRef)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
+    \inferrule*[right={(Seq-OwnedRef)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
     {\mathcal{S}, \mathscr{l}^\bullet; t \longrightarrow \mathcal{S}\setminus\mathscr{l}^\bullet, t} 
     
-    \inferrule*[right={(R-Seq-BorrowedRef)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
+    \inferrule*[right={(Seq-BorrowedRef)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
     {\mathcal{S}, \mathscr{l}^\circ; t \longrightarrow \mathcal{S}, t}
 
-    \inferrule*[right={(R-Seq-Int)}]{ }
+    \inferrule*[right={(Seq-Int)}]{ }
     {\mathcal{S}, i; t \longrightarrow \mathcal{S}, t}
     
-    \inferrule*[right={(R-Seq-Unit)}]{ }
+    \inferrule*[right={(Seq-Unit)}]{ }
     {\mathcal{S}, \texttt{()}; t \longrightarrow \mathcal{S}, t}
 \end{mathparpagebreakable}
     \caption{The semantics of revised FR}
@@ -513,7 +513,7 @@ An evaluation context is a term with a placeholder $\llbracket\cdot\rrbracket$. 
         E \metaDeff \llbracket \cdot \rrbracket \cmid E;t \cmid v; E \cmid \texttt{let mut }x=E; t \cmid \texttt{let mut }x = v; E \cmid \{E\} \cmid \texttt{box }E \cmid w = E
     \end{align*}
     \begin{mathpar}
-    \inferrule*[right={(R-Context)}]{ S, t \longrightarrow S, t' }
+    \inferrule*[right={(Context)}]{ S, t \longrightarrow S, t' }
         { S, E\llbracket t \rrbracket \longrightarrow  S', E\llbracket t' \rrbracket }
     \end{mathpar}
     \caption{Evaluation context}
@@ -528,7 +528,7 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
 % $\mathscr{l}^\bullet_{@n}$ denotes a owned reference on the node $n$. 
 \begin{figure}
 \begin{alignat*}{3}
-    \text{Term}(T) \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
+    \text{Term}(\mathcal{T}) \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
     \cmid \quad &\texttt{let mut}@n\; x = t;t &\text{remote declaration}\\
     \cmid \quad &w \metaDef t &\text{assignment}\\
     \cmid \quad &t;t &\text{sequence}\\
@@ -647,9 +647,9 @@ In the next section, we present and prove a location transparency theorem, which
 
 \subsection{Preservation of Semantics when Translating a FR Program into a dFR Program}
 \label{chap3:semantics:loc-transp}
-As we have mentioned in previous sections, by extending FR into dFR, the type system and static checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. By presenting the formal semantics of FR and dFR, we would like to show that, when we flatten a distributed program in dFR into a monolithic program in FR, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. By demonstrating that the distributed program preserves the original semantics of the monolithic program, we can then conclude that the memory safety guarantees provided by FR's type system and static checking can be extended into distributed program in dFR.
+As we have mentioned in previous sections, by extending FR into dFR, the type system and static borrow checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. By formalising the semantics of FR and dFR, we would like to show that, when we flatten a distributed program in dFR into a monolithic program in FR, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. By demonstrating that the distributed program preserves the original semantics of the monolithic program, we can then conclude that the memory safety guarantees provided by FR's type system and static checking can be extended into distributed program in dFR.
 
-Formally, we state this semantic preservation property of our distributed extension in the \emph{location transparency theorem}~\ref{chap3:thm:loc-transp}. Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient.
+Formally, we state this semantic preservation property of the distributed extension dFR in the \emph{location transparency theorem}~\ref{chap3:thm:loc-transp}. Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient.
 
 \begin{theorem}[Location Transparency]
 \emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. Note that we make locations on all nodes distinct to simplify the proof.
@@ -660,24 +660,26 @@ Formally, we state this semantic preservation property of our distributed extens
 \begin{align*}
     &\mathrm{where:}\\
     &|\mathcal{D}| = \bigcup_{\forall n \in \textbf{dom} \mathcal{D}} \mathcal{D}(n)\\
-    &\texttt{let mut }@n\; x=t; t|_@ =  \texttt{let mut } x=t; t
+    &\texttt{let mut}@n\; x=t; t|_@ =  \texttt{let mut } x=t; t
     &\texttt{box}@n\; t |_@ = \texttt{box }t\\
+    &\mathscr{l}^\bullet_{@n} \metaDef v' |_@ = \mathscr{l}^\bullet \metaDef v'
+    &\mathscr{l}^\circ{@n} \metaDef v |_@ = \mathscr{l}^\circ \metaDef v\\
     &v@n|_@ = v
     &t@n|_@ = t |_@
 \end{align*}
 }%
 \label{chap3:thm:loc-transp}
 \end{theorem}
-Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$.
+Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We present the proof of this theorem case by case.
 \begin{proof}[Case copy]
     \begin{align*}
     &\text{We assume:}\\
     &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
     \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
     &|\mathcal{D}| = \mathcal{S}\\
-    &\text{The distributed execution gives:}\\
+    &\text{Following the corresponding reduction rule, the distributed execution gives:}\\
     &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\\
-    &\text{The monolithic execution gives:}\\
+    &\text{Following the corresponding reduction rule, the monolithic execution gives:}\\
     &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\\
     &\text{To conclude, after executions:}\\
     &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad 
