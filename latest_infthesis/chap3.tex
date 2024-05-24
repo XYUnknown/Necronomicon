@@ -542,8 +542,8 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
     \cmid \quad &!{w} \quad &\text{copy} \\
     \cmid \quad &v \quad &\text{value} \\
     \cmid \quad &v@n \quad &\text{remote value}\\
-    \cmid \quad &t@n \quad &\text{remote term}\\
-    % \text{Remote Term} \quad t_d \metaDeff \quad &t@n\\
+    % \cmid \quad &t@n \quad &\text{remote term}\\
+    \text{Remote Term} \quad t_d \metaDeff \quad &t@n\\
     \text{LVal} \quad w \ \metaDeff \quad &x \quad &\text{variable} \\
     \cmid \quad &{*}w \quad &\text{dereference} \\
     \text{Value}(\mathcal{V}) \quad v \ \metaDeff \quad &\bot\\ 
@@ -655,14 +655,14 @@ Formally, we state this semantic preservation property of the distributed extens
 \emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. Note that we make locations on all nodes distinct to simplify the proof.
 % &\forall t \in \Pi_{\mathit{ref}}.\; \phi_\mathcal{D}, [t] \longrightarrow \mathcal{D}, [v] \iff \phi_\mathcal{S},  t|_@ \longrightarrow \mathcal{S}, v' \land \mathcal{S} = |\mathcal{D}| \land v' = v\\
 \begin{gather*}
-    \forall t \in \mathrm{T}.\; \mathcal{D}, [(n, t)] \longrightarrow \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
+    \forall t \in \mathcal{T}.\; \mathcal{D}, [(n, t)] \longrightarrow \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
 \end{gather*}
 \begin{align*}
     &\mathrm{where:}\\
     &|\mathcal{D}| = \bigcup_{\forall n \in \textbf{dom} \mathcal{D}} \mathcal{D}(n)\\
-    &\texttt{let mut}@n\; x=t; t|_@ =  \texttt{let mut } x=t; t
-    &\texttt{box}@n\; t |_@ = \texttt{box }t\\
-    &\mathscr{l}^\bullet_{@n} \metaDef v' |_@ = \mathscr{l}^\bullet \metaDef v'
+    &(\texttt{let mut}@n\;x=t; t)|_@ =  \texttt{let mut}\;x=t; t
+    &\texttt{box}@n\;t |_@ = \texttt{box}\;t\\
+    &\mathscr{l}^\bullet_{@n} \metaDef v |_@ = \mathscr{l}^\bullet \metaDef v
     &\mathscr{l}^\circ{@n} \metaDef v |_@ = \mathscr{l}^\circ \metaDef v\\
     &v@n|_@ = v
     &t@n|_@ = t |_@
@@ -670,7 +670,7 @@ Formally, we state this semantic preservation property of the distributed extens
 }%
 \label{chap3:thm:loc-transp}
 \end{theorem}
-Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We present the proof of this theorem case by case.
+Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We focus on presenting proofs of the cases concerning the remote extensions in dFR's reduction rules given in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
 \begin{proof}[Case copy]
     \begin{align*}
     &\text{We assume:}\\
@@ -758,7 +758,7 @@ Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:lo
     &\text{To conclude, after executions:}\\
     &\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))) \quad 
     \mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k))\\
-    &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \text{and} \quad t[x/\mathscr{l}^\bullet]|_@ = t[x/(\mathscr{l}^\bullet)|_@] = t[x/\mathscr{l}^\bullet]
+    &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \text{and} \quad t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
     \end{align*}
 \end{proof}
 The proofs for location transparency of the distributed and monolithic executions of local terms and remote terms should then be trivial.
