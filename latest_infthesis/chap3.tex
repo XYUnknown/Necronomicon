@@ -671,21 +671,37 @@ Formally, we state this semantic preservation property of the distributed extens
 \label{chap3:thm:loc-transp}
 \end{theorem}
 Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We focus on presenting proofs of the cases concerning the remote extensions in dFR's reduction rules given in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
-\begin{proof}[Case copy]
-    \begin{align*}
-    &\text{We assume:}\\
-    &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
-    \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
-    &|\mathcal{D}| = \mathcal{S}\\
-    &\text{Following the corresponding reduction rule, the distributed execution gives:}\\
-    &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\\
-    &\text{Following the corresponding reduction rule, the monolithic execution gives:}\\
-    &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\\
-    &\text{To conclude, after executions:}\\
-    &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad 
-    \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
-    &|\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
-    \end{align*}
+\begin{proof}[Case \textsc{\emph{copy}}]
+We assume that before the evaluation, given the distributed program state and monolithic program state as below:
+\[\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l}\mapsto (v, m)))\quad
+\mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)) \quad |\mathcal{D}_0| = \mathcal{S}_0\]
+We can say that initially, the flattened distributed program state equals to the monolithic program state: 
+\[|\mathcal{D}| = \mathcal{S}\]
+Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution of the remote copy term gives:
+\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
+Following FR's reduction rule \textsc(Copy), the monolithic execution of the flattened remote copy term gives:
+\[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\]
+After the evaluation, we have updated distributed program state and monolithic program state shown as below:
+\[\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad 
+\mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\]
+To conclude, after the evaluation, the flattened distributed program state and monolithic program store are equal, and the flattened resulting value obtained from the remote evaluation and the value obtained from the monolithic evaluation are equal:
+\[
+|\mathcal{D}'| = \mathcal{S}' \quad v@n'|_@ = v
+\]
+% \begin{align*}
+%     &\text{We assume:}\\
+%     &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
+%     \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
+%     &|\mathcal{D}| = \mathcal{S}\\
+%     &\text{Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution gives:}\\
+%     &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\\
+%     &\text{Following the corresponding reduction rule, the monolithic execution gives:}\\
+%     &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\\
+%     &\text{To conclude, after executions:}\\
+%     &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad 
+%     \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
+%     &|\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
+% \end{align*}
 \end{proof}
 \begin{proof}[Case move]
     \begin{align*}
@@ -738,7 +754,7 @@ Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:lo
     \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
     &|\mathcal{D}| = \mathcal{S}\\
     &\text{The execution of the distributed program gives:}\\
-    &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]\\
+    &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \\&\longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]\\
     &\text{The execution of the monolithic program gives:}\\
     &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}\\
     &\text{To conclude, after executions:}\\
@@ -752,13 +768,13 @@ Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:lo
     &\text{We assume:}\\
     &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
     &\text{The execution of the distributed program gives:}\\
-    &\mathcal{D}, [(n, \texttt{let mut}@n' x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]\\
+    &\mathcal{D}, [(n, \texttt{let mut}@n' x = v;t)] \\&\longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]\\
     &\text{The execution of the monolithic program gives:}\\
     &\mathcal{S}, (\texttt{let mut}@n' x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[x/\mathscr{l}^\bullet]\\
     &\text{To conclude, after executions:}\\
     &\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))) \quad 
     \mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k))\\
-    &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \text{and} \quad t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
+    &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \\&\text{and} \quad t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
     \end{align*}
 \end{proof}
 The proofs for location transparency of the distributed and monolithic executions of local terms and remote terms should then be trivial.
