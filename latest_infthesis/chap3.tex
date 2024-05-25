@@ -473,11 +473,11 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
     \inferrule*[right={(Borrow)}]{\mathscr{l} \in \textbf{dom}\; \mathcal{S}}
     {\mathcal{S}, \&[\texttt{mut}]\mathscr{l}^\bullet \longrightarrow \mathcal{S}, \mathscr{l}^\circ}
 
-    \inferrule*[right={(Assign (Owned))}]{ }
+    \inferrule*[right={(Assign Owned)}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\bullet \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
     % \\\text{Assignment should not change the lifetime of the original location}
 
-    \inferrule*[right={(Assign (Borrowed))}]{ }
+    \inferrule*[right={(Assign Borrowed)}]{ }
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
 
     \inferrule*[right={(Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
@@ -818,21 +818,44 @@ Hence:
     % |\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
     % \end{align*}
 \end{proof}
-\begin{proof}[Case assign]
-    \begin{align*}
-    &\text{We assume:}\\
-    &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
-    \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
-    &|\mathcal{D}| = \mathcal{S}\\
-    &\text{The execution of the distributed program gives:}\\
-    &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \\&\longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]\\
-    &\text{The execution of the monolithic program gives:}\\
-    &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}\\
-    &\text{To conclude, after executions:}\\
-    &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))) \quad 
-    \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m))\\
-    &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}' \quad \text{and} \quad \texttt{()}@n'|_@ = \texttt{()}
-    \end{align*}
+\begin{proof}[Case \textsc{\emph{Assign Owned}}]
+We assume that before the evaluation, given the distributed program state and monolithic program state as below:
+\[\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l}\mapsto (v, m)))\quad\quad
+\mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\quad\quad
+|\mathcal{D}_0| = \mathcal{S}_0\]
+We can say that, initially, the flattened distributed program state equals to the monolithic program state:
+\[|\mathcal{D}| = \mathcal{S}\]
+Following the dFR's reduction rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}, the distributed execution of a remote assignment to an owned reference gives:
+\[
+\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
+\]
+Following FR's reduction rule \textsc{Assign Owned}, the monolithic execution of the flattened remote assignment to an owned reference gives:
+\[
+\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
+\]
+After the evaluation, the updated distributed program state and monolithic program state are shown as below:
+\[
+\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))) \quad\quad 
+\mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m))
+\]
+To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the flatted unit value obtained from the distributed execution and the unit value obtained from the monolithic execution are trivially equal:
+\[
+|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}' \quad\quad \texttt{()}@n'|_@ = \texttt{()}
+\]
+    % \begin{align*}
+    % &\text{We assume:}\\
+    % &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
+    % \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
+    % &|\mathcal{D}| = \mathcal{S}\\
+    % &\text{The execution of the distributed program gives:}\\
+    % &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \\&\longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]\\
+    % &\text{The execution of the monolithic program gives:}\\
+    % &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}\\
+    % &\text{To conclude, after executions:}\\
+    % &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))) \quad 
+    % \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m))\\
+    % &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}' \quad \text{and} \quad \texttt{()}@n'|_@ = \texttt{()}
+    % \end{align*}
 \end{proof}
 \begin{proof}[Case decl]
     \begin{align*}
