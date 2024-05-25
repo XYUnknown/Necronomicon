@@ -890,19 +890,44 @@ Hence:
 \mathcal{D}, [(n, \mathscr{l}^\circ_{@n'} \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
 \end{proof}
-\begin{proof}[Case decl]
-    \begin{align*}
-    &\text{We assume:}\\
-    &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
-    &\text{The execution of the distributed program gives:}\\
-    &\mathcal{D}, [(n, \texttt{let mut}@n' x = v;t)] \\&\longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]\\
-    &\text{The execution of the monolithic program gives:}\\
-    &\mathcal{S}, (\texttt{let mut}@n' x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[x/\mathscr{l}^\bullet]\\
-    &\text{To conclude, after executions:}\\
-    &\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))) \quad 
-    \mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k))\\
-    &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \\&\text{and} \quad t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
-    \end{align*}
+\begin{proof}[Case \textsc{\emph{Decl}}]
+We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, we take a fresh location $\mathscr{l}$:
+\[
+|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}
+\]
+Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, the distributed execution of a remote declaration gives:
+\[
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]
+\]
+Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
+\[
+\mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[x/\mathscr{l}^\bullet]
+\]
+After the evaluation, the updated distributed program state and monolithic program state are shown as below:
+\[
+\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))) \quad\quad
+\mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k))
+\]
+To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the substitution with the flattened owned reference obtained from the distributed execution and the substitution with the owned reference obtained from the monolithic execution are trivially equal:
+\[
+|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}'\]\[ t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
+\]
+Hence:
+\begin{gather*}
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D'}, [(n, t[x/\mathscr{l}^\bullet_{@n'}])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[x/\mathscr{l}^\bullet] \land |\mathcal{D}'| = \mathcal{S}' \land t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/\mathscr{l}^\bullet]
+\end{gather*}
+    % \begin{align*}
+    % &\text{We assume:}\\
+    % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
+    % &\text{The execution of the distributed program gives:}\\
+    % &\mathcal{D}, [(n, \texttt{let mut}@n' x = v;t)] \\&\longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]\\
+    % &\text{The execution of the monolithic program gives:}\\
+    % &\mathcal{S}, (\texttt{let mut}@n' x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[x/\mathscr{l}^\bullet]\\
+    % &\text{To conclude, after executions:}\\
+    % &\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))) \quad 
+    % \mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k))\\
+    % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \\&\text{and} \quad t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
+    % \end{align*}
 \end{proof}
 The proofs for location transparency of the distributed and monolithic executions of local terms and remote terms should then be trivial.
 
