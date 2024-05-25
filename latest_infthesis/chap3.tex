@@ -688,6 +688,12 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \[
 |\mathcal{D}'| = \mathcal{S}' \quad\quad v@n'|_@ = v
 \]
+Hence:
+\begin{gather*}
+\mathcal{D}, [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\end{gather*}
+
+
 % \begin{align*}
 %     &\text{We assume:}\\
 %     &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
@@ -718,6 +724,10 @@ After the evaluation, the updated distributed program state and monolithic progr
 \[\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot)) \quad\quad \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot)\]
 To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the flatted resulting value obtained from the distributed execution and the resulting value obtained from the monolithic execution are equal:
 \[|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad\quad v@n'|_@ = v\]
+Hence:
+\begin{gather*}
+\mathcal{D}, [(n, \#\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  \#\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
     % &\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (l\mapsto (v, m)))\quad
@@ -757,6 +767,10 @@ Since we have $|\mathcal{D}| = \mathcal{S}$, we can conclude that the flattened 
 \[|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}'\]
 Also, the flattened remote owned reference obtained from the distributed execution equals to the owned reference obtained from the monolithic execution:
 \[\mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet\]
+Hence:
+\begin{gather*}
+\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D'}, [(n, \mathscr{l}^\bullet)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet
+\end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
     % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
@@ -787,6 +801,10 @@ To conclude, after the evaluation, the distributed program state and the monolit
 \[
 \mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
 \]
+Hence:
+\begin{gather*}
+\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ{@n'}|_@ = \mathscr{l}^\circ
+\end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
     % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \in \textbf{dom}\; \mathcal{S}\\
