@@ -684,7 +684,7 @@ Following FR's reduction rule \textsc{Copy}, the monolithic execution of the fla
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad\quad 
 \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\]
-To conclude, after the evaluation, the updated flattened distributed program state and the updated monolithic program state are equal, and the flattened resulting value obtained from the remote evaluation and the value obtained from the monolithic evaluation are equal:
+To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program state are equal, and the flattened resulting value obtained from the distributed execution and the value obtained from the monolithic execution are equal:
 \[
 |\mathcal{D}'| = \mathcal{S}' \quad\quad v@n'|_@ = v
 \]
@@ -716,7 +716,7 @@ Following FR's reduction rule \textsc{Move}, the monolithic execution of the fla
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot)) \quad\quad \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot)\]
-To conclude, after the evaluation, the updated flatten distributed program state and the updated monolithic program are equal, and the flatted resulting value obtained from the remote evaluation and the resulting value obtained from the monolithic evaluation are equal:
+To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the flatted resulting value obtained from the distributed execution and the resulting value obtained from the monolithic execution are equal:
 \[|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad\quad v@n'|_@ = v\]
     % \begin{align*}
     % &\text{We assume:}\\
@@ -733,19 +733,42 @@ To conclude, after the evaluation, the updated flatten distributed program state
     % &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
     % \end{align*}
 \end{proof}
-\begin{proof}[Case box]
-    \begin{align*}
-    &\text{We assume:}\\
-    &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
-    &\text{The execution of the distributed program gives:}\\
-    &\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet_{@n'})]\\
-    &\text{The execution of the monolithic program gives:}\\
-    &\mathcal{S}, (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top)), \mathscr{l}^\bullet\\
-    &\text{To conclude, after executions:}\\
-    &\mathcal{D}' = \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top)) \quad 
-    \mathcal{S}' =  \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))\\
-    &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet
-    \end{align*}
+\begin{proof}[Case \textsc{\emph{box}}]
+We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, we take a fresh location $\mathscr{l}$:
+\[
+|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}
+\]
+Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of the remote heap allocation term gives:
+\[
+\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet_{@n'})]
+\]
+Following FR's reduction rule \textsc{Box}, the monolithic execution of the flattened remote heap allocation term gives:
+\[
+\mathcal{S}, (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top)), \mathscr{l}^\bullet
+\]
+After the evaluation, the updated distributed program state and monolithic program state are shown as below:
+\[
+\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))) \quad\quad 
+\mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))
+\]
+The updated distributed program state can be flatten into:
+\[|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top))\]
+Since we have $|\mathcal{D}| = \mathcal{S}$, we can conclude that the flattened updated distributed program state and the updated monolithic program state are equal:
+\[|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}'\]
+Also, the flattened remote owned reference obtained from the distributed execution equals to the owned reference obtained from the monolithic execution:
+\[\mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet\]
+    % \begin{align*}
+    % &\text{We assume:}\\
+    % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
+    % &\text{The execution of the distributed program gives:}\\
+    % &\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet_{@n'})]\\
+    % &\text{The execution of the monolithic program gives:}\\
+    % &\mathcal{S}, (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top)), \mathscr{l}^\bullet\\
+    % &\text{To conclude, after executions:}\\
+    % &\mathcal{D}' = \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top)) \quad 
+    % \mathcal{S}' =  \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))\\
+    % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet
+    % \end{align*}
 \end{proof}
 \begin{proof}[Case borrow]
     \begin{align*}
