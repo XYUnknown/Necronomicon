@@ -671,13 +671,13 @@ Formally, we state this semantic preservation property of the distributed extens
 \label{chap3:thm:loc-transp}
 \end{theorem}
 Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We focus on presenting proofs of the cases concerning the remote extensions in dFR's reduction rules given in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
-\begin{proof}[Case \textsc{\emph{copy}}]
+\begin{proof}[Case \textsc{\emph{Copy}}]
 We assume that before the evaluation, given the distributed program state and monolithic program state as below:
 \[\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l}\mapsto (v, m)))\quad\quad
 \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)) \quad\quad |\mathcal{D}_0| = \mathcal{S}_0\]
 We can say that, initially, the flattened distributed program state equals to the monolithic program state: 
 \[|\mathcal{D}| = \mathcal{S}\]
-Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution of the remote copy term gives:
+Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution of a remote copy term gives:
 \[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
 Following FR's reduction rule \textsc{Copy}, the monolithic execution of the flattened remote copy term gives:
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\]
@@ -703,14 +703,14 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 %     &|\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
 % \end{align*}
 \end{proof}
-\begin{proof}[Case \textsc{\emph{move}}]
+\begin{proof}[Case \textsc{\emph{Move}}]
 We assume that before the evaluation, given the distributed program state and monolithic program state as below:
 \[\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l}\mapsto (v, m)))\quad\quad
 \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\quad\quad
 |\mathcal{D}_0| = \mathcal{S}_0\]
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
-Following the dFR's reduction rule \textsc{Move (s1)} and \textsc{Move (s2)}, the distributed execution of the remote move term gives:
+Following the dFR's reduction rule \textsc{Move (s1)} and \textsc{Move (s2)}, the distributed execution of a remote move term gives:
 \[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\]
 Following FR's reduction rule \textsc{Move}, the monolithic execution of the flattened remote move term gives:
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\]
@@ -733,12 +733,12 @@ To conclude, after the evaluation, the flattened updated distributed program sta
     % &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
     % \end{align*}
 \end{proof}
-\begin{proof}[Case \textsc{\emph{box}}]
+\begin{proof}[Case \textsc{\emph{Box}}]
 We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, we take a fresh location $\mathscr{l}$:
 \[
 |\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}
 \]
-Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of the remote heap allocation term gives:
+Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of a remote heap allocation term gives:
 \[
 \mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet_{@n'})]
 \]
@@ -770,19 +770,35 @@ Also, the flattened remote owned reference obtained from the distributed executi
     % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet
     % \end{align*}
 \end{proof}
-\begin{proof}[Case borrow]
-    \begin{align*}
-    &\text{We assume:}\\
-    &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \in \textbf{dom}\; \mathcal{S}\\
-    &\text{The execution of the distributed program gives:}\\
-    &\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D} [(n, \mathscr{l}^\circ_{@n'})]\\
-    &\text{The execution of the monolithic program gives:}\\
-    &\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ\\
-    &\text{To conclude, after executions:}\\
-    &\mathcal{D}' = \mathcal{D}\quad 
-    \mathcal{S}' =  \mathcal{S}\quad
-    |\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
-    \end{align*}
+\begin{proof}[Case \textsc{\emph{Borrow}}]
+We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, $\mathscr{l}$ is a location with an allocated value:
+\[
+|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \in \textbf{dom}\; \mathcal{S}
+\]
+Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}, the distributed execution of a remote borrow term gives:
+\[
+\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ_{@n'})]
+\]
+Following FR's reduction rule \textsc{Borrow}, the monolithic execution of the flattened remote borrow term gives:
+\[
+\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ
+\]
+To conclude, after the evaluation, the distributed program state and the monolithic program state remain unchanged, hence they are still equal. In addition, the flattened remote borrowed reference obtained from the distributed execution equals to the borrowed reference obtained from the monolithic execution:
+\[
+\mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
+\]
+    % \begin{align*}
+    % &\text{We assume:}\\
+    % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \in \textbf{dom}\; \mathcal{S}\\
+    % &\text{The execution of the distributed program gives:}\\
+    % &\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D} [(n, \mathscr{l}^\circ_{@n'})]\\
+    % &\text{The execution of the monolithic program gives:}\\
+    % &\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ\\
+    % &\text{To conclude, after executions:}\\
+    % &\mathcal{D}' = \mathcal{D}\quad 
+    % \mathcal{S}' =  \mathcal{S}\quad
+    % |\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
+    % \end{align*}
 \end{proof}
 \begin{proof}[Case assign]
     \begin{align*}
