@@ -861,6 +861,35 @@ Hence:
     % &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}' \quad \text{and} \quad \texttt{()}@n'|_@ = \texttt{()}
     % \end{align*}
 \end{proof}
+\begin{proof}[Case \textsc{\emph{Assign Borrowed}}]
+We assume that before the evaluation, given the distributed program state and monolithic program state as below:
+\[\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l}\mapsto (v, m)))\quad\quad
+\mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\quad\quad
+|\mathcal{D}_0| = \mathcal{S}_0\]
+We can say that, initially, the flattened distributed program state equals to the monolithic program state:
+\[|\mathcal{D}| = \mathcal{S}\]
+Following the dFR's reduction rule \textsc{Assign Borrowed (s1)} and \textsc{Assign Borrowed (s2)}, the distributed execution of a remote assignment to a (mutably) borrowed reference gives:
+\[
+\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\circ_{@n'} \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
+\]
+Following FR's reduction rule \textsc{Assign Borrowed}, the monolithic execution of the flattened remote assignment to a (mutably) borrowed reference gives:
+\[
+\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\circ_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
+\]
+After the evaluation, the updated distributed program state and monolithic program state are shown as below:
+\[
+\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))) \quad\quad 
+\mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m))
+\]
+To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the flatted unit value obtained from the distributed execution and the unit value obtained from the monolithic execution are trivially equal:
+\[
+|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)) = \mathcal{S}' \quad\quad \texttt{()}@n'|_@ = \texttt{()}
+\]
+Hence:
+\begin{gather*}
+\mathcal{D}, [(n, \mathscr{l}^\circ_{@n'} \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\end{gather*}
+\end{proof}
 \begin{proof}[Case decl]
     \begin{align*}
     &\text{We assume:}\\
