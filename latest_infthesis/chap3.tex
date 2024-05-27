@@ -931,9 +931,13 @@ Hence:
 \end{proof}
 The proofs for location transparency of the distributed and monolithic executions of local terms and remote terms should then be trivial.
 
+\subsection{Summary}
+\label{chap3:semantics:summary}
+In section~\ref{chap3:implementation}, we have discussed the design and implementation of a UMI framework as a library in Rust. The core designed concepts of such a library --- extending Rust's memory safety guarantees into a distributed setting --- is presented in the formalisation of a distributed extension of a core calculus of Rust in this section. By proving the location transparency theorem~\ref{chap3:thm:loc-transp}, we demonstrate that a distributed program developed using the UMI framework preserves the semantics of a monolithic program from which it is translated. Therefore, with our UMI framework, Rust's memory safety guarantees provided by its type system, lifetime and ownership system, and borrow checking mechanism are indeed extended into a distributed setting.
+
 \section{Related Work}
 \label{chap3:related-work}
-\paragraph*{Remote Procedural Call Libraries }
+\paragraph*{Remote Procedural Call Libraries}
 \paragraph*{Formalisation of Rust}
 
 \section{Conclusion}
