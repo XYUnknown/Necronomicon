@@ -559,6 +559,12 @@ Computer Science}}
    {\renewcommand{\abstractname}{Declaration}\begin{mainabs}}
    {\end{mainabs}\renewcommand{\abstractname}{Abstract}}   
 
+% Add  by XY
+\newenvironment{laysummary}
+   {\renewcommand{\abstractname}{Lay Summary}\begin{mainabs}}
+   {\end{mainabs}\renewcommand{\abstractname}{Abstract}}  
+% end add
+
 \newcommand{\standarddeclaration}{
    \begin{declaration}
    I declare that this thesis was composed by myself,
