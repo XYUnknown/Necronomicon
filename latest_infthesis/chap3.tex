@@ -66,7 +66,7 @@ The building is circular. The apartments of the prisoners occupy the circumferen
 \end{center}
 % \section{Prologue}
 % \label{chap3:prologue}
-\lettrine{I}{n} chapter~\ref{chap1}, we have briefly discussed the conceptual question that we would like to ask: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}? It would be beneficial to view a monolithic programs as an abstraction of distributed program, specifying the intended behaviours of the invocations and resource usage in the distributed program while abstracting away message-passing details, since it would make the process of migrating monolithic programs into a distributed setting straightforward and simplify the process of implementing a distributed system.
+\lettrine{R}{ecall} that in chapter~\ref{chap1}, we have briefly discussed the conceptual question that we would like to ask: How to intuitively understand \emph{distributed programs} using the same conceptual model as \emph{monolithic programs}? It would be beneficial to view a monolithic programs as an abstraction of distributed program, specifying the intended behaviours of the invocations and resource usage in the distributed program while abstracting away message-passing details, since it would make the process of migrating monolithic programs into a distributed setting straightforward and simplify the process of implementing a distributed system.
 
 In this chapter, we discuss in detail our design, implementation and formalisation of a \emph{universal method invocation} (UMI) library in Rust, which supports location transparency, allowing a monolithic program to be migrated into a distributed design with minimal syntactic modification and preserves the semantics of the original program.
 
@@ -943,7 +943,7 @@ In section~\ref{chap3:implementation}, we have discussed the design and implemen
 
 \section{Conclusion}
 \label{chap3:conclusion}
-In this chapter, we present our design, implementation, and formalisation of a UMI framework for Rust. This UMI framework allows programmers to express distributed computation in the same form of monolithic computation, abstracting away the internet communication complications and message passing details. 
+In this chapter, we firstly present our design, implementation, and formalisation of a UMI framework for Rust. This UMI framework allows programmers to express distributed computation in the same form of monolithic computation, abstracting away the internet communication complications and message passing details. To demonstrate as a distributed extension of Rust, our UMI framework extends Rust's memory safety guarantees into a distributed setting, we present the formalism of a core calculus focusing on the core features relating to distributed memory management mechanisms in the UMI framework. We present FR, which is a core calculus of the surface language of Rust, formalising the key concepts of Rust's ownership and lifetime in memory management. Then we extend FR into dFR, to include distributed features of the UMI framework.
 
 \section{Limitation and Further Work}
 \label{chap3:limitation-further-work}
