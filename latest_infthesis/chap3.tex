@@ -940,10 +940,19 @@ In section~\ref{chap3:implementation}, we have discussed the design and implemen
 \paragraph*{Remote Procedural Call Libraries}
 \paragraph*{Distributed Memory Management}
 \paragraph*{Formalisation of Rust}
+The formalism of a core calculus of the UMI framework presented in this chapter is based on a formalisation of a core calculus of Rust described by~\citet{10.1145/3443420}. Although we are not satisfied with this formalism, it is the most suitable choice comparing to all common approaches of formalisation of Rust's semantics we have surveyed.
 
-\section{Limitation and Further Work}
-\label{chap3:limitation-further-work}
-There are some limitations of both the practical implementation and the formalisation of the semantics worth discussing. As for the design and implementation of the UMI library, mechanisms of handling internet communication errors are not presented in the design of the framework.
+% Rust is high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership} rules for memory management and \emph{borrow checker} for tracking object lifetime of all references in a program during compilation. 
+
+There are many different approaches to formalise Rust, from different perspectives and aiming for different application domains. RustBelt~\citep{10.1145/3158154} provide a formalised continuation-passing style MIR --- $\lambda_{\textit{Rust}}$ --- mechanised using Iris. However, such an approach does not provide a formal model which is close to the source-level language of Rust. 
+
+Different from RustBelt, Oxide~\citep{weiss2021oxide} attempts to formalise near-complete source-level Rust language features, providing a type system and small-step operational semantics. An implementation of Oxide is provided on GitHub although the formal claims are not mechanised. We argue that due to the level of the complexity and obscurity of this formalism, it is rather hard for us to gain a clear understanding of the modelling of Rust's borrow checking and non-lexical lifetime. In addition, without a concise and consistent presentation of the syntax, type system and formal semantics of the core features of Rust, it is again hard for us to use such a formalism to reason about properties of Rust programs and be convinced that the type system is indeed sound.
+
+Instead of modelling the full Rust language, \citet{10.1145/3443420} formalises a core calculus of Rust, which is FR, emphasising on the understanding of borrowing and lifetime of Rust. However, this formalism does not include essential Rust language features such as tuples, structs, functions and closures which makes it too minimalist. One may argue that \citet{10.1145/3443420} does discuss the possible extensions of FR to include tuples and functions hence it is unfair to criticise such an approach being ``too minimalist", however, I insist that these features are fundamental building blocks of a core language and should not be treated as extensions of a core language. Besides, the way that the let-binding is modelled made it hard to do substitutions, which is in my opinion the obstacle of having functions as a part of the formalism. In addition, its lexical treatment of Rust's lifetime is already obsolete.
+
+% \section{Limitation and Further Work}
+% \label{chap3:limitation-further-work}
+% There are some limitations of both the practical implementation and the formalisation of the semantics worth discussing. As for the design and implementation of the UMI library, mechanisms of handling internet communication errors are not presented in the design of the framework.
 
 \section{Conclusion}
 \label{chap3:conclusion}
