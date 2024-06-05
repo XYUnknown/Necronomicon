@@ -1213,6 +1213,25 @@ series = {COOTS'96}
 
 @article{10.1145/292469.292471, author = {Abdullahi, Saleh E. and Ringwood, Graem A.}, title = {Garbage collecting the Internet: a survey of distributed garbage collection}, year = {1998}, issue_date = {Sept. 1998}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, volume = {30}, number = {3}, issn = {0360-0300}, url = {https://doi.org/10.1145/292469.292471}, doi = {10.1145/292469.292471}, abstract = {Internet programming languages such as Java present new challenges to garbage-collection design. The spectrum of garbage-collection schema for linked structures distributed over a network are reviewed here. Distributed garbage collectors are classified first because they evolved from single-address-space collectors. This taxonomy is used as a framework to explore distribution issues: locality of action, communication overhead and indeterministic communication latency.}, journal = {ACM Comput. Surv.}, month = {sep}, pages = {330–373}, numpages = {44}, keywords = {reference counting, object-oriented databases, network communication, memory management, distributed object-oriented management, distributed memories, distributed file systems, distributed, automatic storage reclamation} }
 
+@article{10.1145/3133896,
+author = {Clebsch, Sylvan and Franco, Juliana and Drossopoulou, Sophia and Yang, Albert Mingkun and Wrigstad, Tobias and Vitek, Jan},
+title = {Orca: GC and type system co-design for actor languages},
+year = {2017},
+issue_date = {October 2017},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {1},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3133896},
+doi = {10.1145/3133896},
+abstract = {ORCA is a concurrent and parallel garbage collector for actor programs, which does not require any STW steps, or synchronization mechanisms, and that has been designed to support zero-copy message passing and sharing of mutable data. ORCA is part of a runtime for actor-based languages, which was co-designed with the Pony programming language, and in particular, with its data race free type system. By co-designing an actor language with its runtime, it was possible to exploit certain language properties in order to optimize performance of garbage collection. Namely, ORCA relies on the guarantees of absence of race conditions in order to avoid read/write barriers, and it leverages the actor message passing, for synchronization among actors.  In this paper we briefly describe Pony and its type system. We use pseudo-code in order to introduce how ORCA allocates and deallocates objects, how it shares mutable data without requiring barriers upon data mutation, and how can immutability be used to further optimize garbage collection. Moreover, we discuss the advantages of co-designing an actor language with its runtime, and we demonstrate that ORCA can be implemented in a performant and scalable way through a set of micro-benchmarks, including a comparison with other well-known collectors.},
+journal = {Proc. ACM Program. Lang.},
+month = {oct},
+articleno = {72},
+numpages = {28},
+keywords = {messages, actors}
+}
+
 @inproceedings{10.1145/3600006.3613165,
 author = {Kwon, Woosuk and Li, Zhuohan and Zhuang, Siyuan and Sheng, Ying and Zheng, Lianmin and Yu, Cody Hao and Gonzalez, Joseph and Zhang, Hao and Stoica, Ion},
 title = {Efficient Memory Management for Large Language Model Serving with PagedAttention},
