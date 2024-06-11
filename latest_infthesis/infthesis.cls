@@ -577,6 +577,20 @@ Computer Science}}
    \end{declaration}
 }
 
+% begin add by XY
+\newcommand{\extendedstandarddeclaration}{
+   \begin{declaration}
+   I declare that this thesis was composed by myself,
+   that the work contained herein is my own 
+   except where explicitly stated otherwise in the text,
+   and that this work has not been submitted for any other degree or
+   professional qualification except as specified.\par
+   % \vspace{1in}\raggedleft({\em \@author\/})
+   \vspace{1in}\raggedleft{\em \@author\/}
+   \end{declaration}
+}
+% end add
+
 %%
 %% Now let's look at the format for the title page of the
 %% thesis. This is done by redefining \maketitle, and allowing
