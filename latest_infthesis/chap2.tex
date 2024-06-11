@@ -106,19 +106,18 @@ Application developers are forced to \emph{overspecify}, by having to select a c
 Application developers should primarily care about the \emph{abstract behaviour} of the containers in their application, and not how this is achieved.
 The compiler, or a dedicated tool, should identify those containers that satisfy their functional requirements, and select the best implementation automatically.
 
-In this paper, we propose an automated tool: \Primrose{}, which allows application developers to specify the expected behaviours and programming interfaces of containers as \emph{properties}.
+In this chapter, we propose an automated tool: \Primrose{}, which allows application developers to specify the expected behaviours and programming interfaces of containers as \emph{properties}.
 \emph{Syntactic properties} specify the required programming interface of the container and are expressed as traits of the underlying programming language.
 \emph{Semantic properties} specify the expected behaviour of the container and are written as logical predicates used as refinements of the container type.
 \Primrose{} automatically selects the set of valid implementations for which the \emph{library specifications}, written by the library developers as pre- and post-conditions of the container operations, satisfy the specified syntactic and semantic properties using an SMT solver.
 Finally, \Primrose{} ranks the valid library implementations based on 
 their runtime performance.
 
-% feels like i might be repeating something here..
-To select the best container implementation, firstly, those container implementations which meet the functional requirements of the application developer must be determined, and then those valid container implementations must be evaluated based on non-functional requirements. While \Primrose{} does include functionality for ranking based on benchmarks, the focus of this paper is on the first of these two problems. There are many existing sophisticated techniques for selecting based on non-functional requirements, and they are highly complementary with \Primrose{}.
+To select the best container implementation, firstly, those container implementations which meet the functional requirements of the application developer must be determined, and then those valid container implementations must be evaluated based on non-functional requirements. While \Primrose{} does include functionality for ranking based on benchmarks, the focus of this study is on the first of these two problems. There are many existing sophisticated techniques for selecting based on non-functional requirements, and they are highly complementary with \Primrose{}.
 
 In this work, we apply verification and formal methods techniques, including refinement types, formal library specifications, and SMT solvers, in an innovative way to raise the level of abstraction for developers, freeing them from the burden of choosing container implementations, and opening up the possibility to automatically improve the performance of applications.
 
-To summarise, this paper makes the following contributions:
+To summarise, this study makes the following contributions:
 \begin{itemize}
     \item We present \Primrose{} (section~\ref{chap2:overview}), a language-agnostic tool for selecting valid container implementations (section~\ref{chap2:select}) based on \emph{properties} (section~\ref{chap2:prop}) used to describe their behaviour and programming interface, and ranking them based on their performance.
     \item We show a new application of refinement types not---as previous work did---for verification purposes, but to raise the level of abstraction for developers and to improve the runtime performance of applications with container data types (section~\ref{chap2:prop}).
