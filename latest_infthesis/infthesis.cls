@@ -584,8 +584,13 @@ Computer Science}}
    that the work contained herein is my own 
    except where explicitly stated otherwise in the text,
    and that this work has not been submitted for any other degree or
-   professional qualification except as specified.\par
-   % \vspace{1in}\raggedleft({\em \@author\/})
+   professional qualification except as specified. This thesis contains published papers, specifically: 
+   \begin{itemize}
+   \item Chapter~\ref{chap2} is based on the paper: Qin, X., O’Connor, L., and Steuwer, M. (2023). \Primrose{}: Selecting Container Data Types by Their Properties. Art Sci. Eng. Program., 7(3)
+   \item Chapter~\ref{chap4} is based on the paper: Qin, X., O’Connor, L., van Glabbeek, R., H\"{o}fner, P., Kammar, O., and Steuwer, M. (2024). Shoggoth: A Formal Foundation for Strategic Rewriting. Proc. ACM Program. Lang., 8(POPL)
+   \end{itemize}
+   I declare that I made most significant contributions amongst all my co-authors, including proposing these projects, designing and implementing the frameworks, conducting experiments and case studies, major formalisation work, writing papers, and preparing artifacts.
+   \par
    \vspace{1in}\raggedleft{\em \@author\/}
    \end{declaration}
 }
