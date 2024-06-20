@@ -277,19 +277,45 @@ commentstyle=\color[RGB]{34,139,34}
 \begin{laysummary}
 This doctoral thesis delves into the meaning of computer programs through three distinct studies, each addressing a key conceptual question related to software design and programming languages.
 
+\begin{wrapfigure}{r}{0.37\textwidth}
+  \vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{Primrose.png}
+  \end{center}
+\end{wrapfigure}
 Specification and Implementation: The first study investigates how programmers can more effectively articulate what they want a computer to do (specifications) rather than how it should do it (implementations). It introduces Primrose, a system that allows programmers to define what a container should accomplish without being concerned about how it achieves it. This separation enables more efficient and automated selection of container data types in software development.
 
-Monolithic and Distributed Programmes: The second study explores how to understand and manage distributed programmes using the same principles as monolithic (single, unified) programmes. It presents the Universal Method Invocation (UMI) library for the Rust programming language. UMI simplifies the transition from monolithic to distributed programmes by concealing the complexities of message-passing and distributed memory management, thereby allowing programmers to maintain the same programme structure and functionality across different computing environments.
+\begin{wrapfigure}{l}{0.37\textwidth}
+  \vspace{-15pt}
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{SpiderCrab.png}
+  \end{center}
+\end{wrapfigure}
+Monolithic and Distributed Programs: The second study explores how to understand and manage distributed programs using the same principles as monolithic (single, unified) programs. It presents the Universal Method Invocation (UMI) library for the Rust programming language. UMI simplifies the transition from monolithic to distributed programs by concealing the complexities of message-passing and distributed memory management, thereby allowing programmers to maintain the same program structure and functionality across different computing environments.
 
-Syntax and Semantics: The third study examines the relationship between the structure (syntax) and meaning (semantics) of programming languages. It introduces Shoggoth, a framework for formalising the process of strategic rewriting in programming languages. This study demonstrates that the way expressions are written (syntax) and their meaning (semantics) are closely interlinked, and understanding this relationship is crucial for accurately predicting and reasoning about the behaviour of programmes.
+\begin{wrapfigure}{r}{0.37\textwidth}
+  \vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{Shoggoth.png}
+  \end{center}
+\end{wrapfigure}
+Syntax and Semantics: The third study examines the relationship between the structure (syntax) and meaning (semantics) of programming languages. It introduces Shoggoth, a framework for formalising the process of strategic rewriting in programming languages. This study demonstrates that the way expressions are written (syntax) and their meaning (semantics) are closely interlinked, and understanding this relationship is crucial for accurately predicting and reasoning about the behaviour of programs.
 
-In summary, these studies provide insights into designing more effective programming tools and languages, emphasising the importance of clear specifications, seamless transitions between different programme architectures, and the interplay between syntax and semantics.
+In summary, these studies provide insights into designing more effective programming tools and languages, emphasising the importance of clear specifications, seamless transitions between different program architectures, and the interplay between syntax and semantics.
 \end{laysummary}
 
 
 %% Acknowledgements
 \begin{acknowledgements}
-This thesis is assembled during my visit to different universities, including EPFL, TU Berlin and University of Cambridge, and different cities, including Lausanne, Paris, Berlin, Cambridge, Vienna, and Budapest.
+Firstly, I would like to thank my supervisor Michel Steuwer. Having him as my supervisor is one of the best things could ever happen in my life.
+
+I sincerely thank Tianyi Li and Leyang Xue for being my supportive and caring friends. Especially, I would like to thank Tianyi Li, who studies computational linguistics, for his vitally important contributions to my understanding of the conceptual correspondence and theoretical connections between formalism and analysis of natural languages and programming languages. I would like to thank Leyang Xue, for providing me delicious food and taking care of my Venus flytrap Medusa.
+
+I would like to thank my therapist Paulina Nowak. During the past two years, we have worked closely together to understand my PTSD. 
+
+I would like to thank my parents for being supportive to all life decisions I have made, and for their financial support for me to build a safe base that I could call ``home" in Edinburgh.
+
+This thesis is assembled during my visit to different universities, including EPFL, TU Berlin, and University of Cambridge, as well as different cities, including Lausanne, Geneva, Montreux, Paris, Berlin, Cambridge, Vienna, and Budapest.
 
 % I thank myself for not being able to end my life.
 
