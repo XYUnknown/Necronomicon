@@ -397,13 +397,8 @@ Properties may also be composed. For multiple syntactic properties, we specify a
 Figure~\ref{prop:syntax} shows the syntax of the \Primrose{} property specification language. Formally, the specification language is a variant of the polymorphic $\lambda$-calculus~\citep{DBLP:conf/programm/Reynolds74, DBLP:journals/tcs/Girard86}, with 
 restrictions on the use of polymorphism to enable implicit type inference~\citep{hindley1969principal, MILNER1978348}.
 This type system guarantees termination, making specifications easier to analyse and straightforward to translate into SMT verification conditions in Rosette.
-The translation into Rosette is straightforward, as terms in the \Primrose{} property specification language (literals, variables, lambdas, and function application) are translated into their counterparts in the functional Rosette language. 
-
-\subsection{Syntactic Properties as Traits}
-\label{chap2:prop:syntactic}
-In our \Primrose{} prototype, we encode syntactic properties as Rust traits, specifying the operations needed by the application developer to interact with a container. 
-Traits are defined in Rust and lifted into our property specification language. For instance, the trait \lstinline|ContainerT| introduced above is implemented as:
-\begin{lstlisting}[language=Rust, style=boxed, escapechar=!]
+The translation into Rosette is straightforward, as terms in the \Primrose{} property specification language (literals, variables, lambdas, and function application) are translated into their counterparts in the functional Rosette language.
+\begin{lstlisting}[language=Rust, style=boxed, caption={The implementation of a container trait}, label=chap2:prop:syntactic:con-trait, escapechar=!]
 !\tikz[remember picture, overlay]\node [xshift=12.95cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rust}};!pub trait ContainerT<T> {
   fn len(&self) -> usize;
   fn contains(&self, x: &T) -> bool;
@@ -412,6 +407,11 @@ Traits are defined in Rust and lifted into our property specification language. 
   fn clear(&mut self);
   fn remove(&mut self, elt: T) -> Option<T>;}
 \end{lstlisting}
+
+\subsection{Syntactic Properties as Traits}
+\label{chap2:prop:syntactic}
+In our \Primrose{} prototype, we encode syntactic properties as Rust traits, specifying the operations needed by the application developer to interact with a container.
+Traits are defined in Rust and lifted into our property specification language. For instance, listing~\ref{chap2:prop:syntactic:con-trait} shows the trait \lstinline|ContainerT| introduced above.
 
 By writing \lstinline{c <: ContainerT}, the application developer indicates that they expect the container type selected by \Primrose{} to include implementations for all operations in the trait \lstinline{ContainerT}. 
 Thus, after executing \Primrose{}, \mylstinline{UniqueCon<T>} will be resolved into a concrete container type that implements the trait \lstinline{ContainerT}.
@@ -740,13 +740,13 @@ The specification of \lstinline{abs-insert} for \lstinline|BTreeSet|, however, d
 \label{lib:spec-tree-insert}
 \{xs_0.\ xs_0 = \texttt{\small dedup}\ (\texttt{\small sort}\ xs_0\ \texttt{\small<})\}~\texttt{abs-insert}~\{xs_0\ x\ xs.\ xs = \texttt{\small model-insert}\ xs_0\ x\}
 \end{align}
-As before, $x$ is the element to be inserted, and $xs_0$ and $xs$ are lists modelling the container (via the in-order traversal function $\alpha$) before and after the \lstinline|abs-insert| operation respectively. 
+Again, $x$ is the element to be inserted, and $xs_0$ and $xs$ are lists modelling the container (via the in-order traversal function $\alpha$) before and after the \lstinline|abs-insert| operation respectively. 
 We place an assertion $xs_0 = \texttt{\small dedup}\ (\texttt{\small sort}\ xs_0\ \texttt{\small<})$ in the precondition requiring that the model $xs_0$ to be a sorted list of unique elements. 
 While this precondition should always be satisfied by an in-order traversal of a valid b-tree, we do not want our abstraction to constrain the implementation's behaviour if the data invariants of the b-tree are violated --- given a malformed b-tree, the 
 implementation should be free to return any result. Because the semantics of \lstinline{abs-insert} are the maximal relation satisfying this specification, this abstract operation contains all possible behaviours of the concrete implementation if this precondition is violated. The \lstinline|model-insert| here is simply an insertion operation defined on a sorted list of unique elements:
 %, caption=The unique and sorted list's model insertion operation, captionpos=b, label=lib:unique-sorted-list-insert
 \begin{lstlisting}[language=racket, style=boxed]
-!\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define (model-insert xs x) (dedup (sort (append xs (list x)) <)))
+!\tikz[remember picture, overlay]\node [xshift=13.0cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define (model-insert xs x) (dedup (sort (append xs (list x)) <)))
 \end{lstlisting}
 % \todo[author=XY]{I guess we don't need to talk about the efficiency here?} (Michel: Agree)
 % Note that because our specifications do not need to be efficient, we can na\"ively implement this function simply by appending the new element to the list, then sorting and removing duplicates from it.
