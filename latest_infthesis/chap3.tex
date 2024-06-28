@@ -179,7 +179,7 @@ As we have seen in the example discussed above, the syntax of a monolithic progr
 \texttt{struct}\; A\;\{\; \mathit{fields}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{Local}\;(\;\mathit{fields}\;), \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
 where the \textit{Address} is the address of the node which stores the resource of a proxy, the \textit{ID} is the identifier of a proxy's resource in the resource table that will be discussed in section~\ref{chap3:impl:resource}, and \textit{IsOwner} denotes whether a proxy is a owned reference or a borrow reference.
-This macro can also translate an \texttt{enum} to allow it to represent a proxy by adding a new variant which is the proxy:
+This macro can translates an \texttt{enum} to allow it to represent a proxy by adding a new variant which is the proxy:
 \[
 \texttt{enum}\; A\;\{\; \mathit{variants}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{variants}, \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
@@ -205,9 +205,9 @@ As for a method of a translated \texttt{enum}, the macro \texttt{\#[umi\_enum\_m
 \label{chap3:impl:resource}
 To be able to use the UMI library for executing programs that access and manipulate memories of different nodes within a network, resources and computations need to be made available to and well-managed by all nodes in the network.
 
-Firstly, a node should be able to store resources owned by different machines and deallocate those resources according to the their lifetime.
+Firstly, a node should be able to store resources owned by different machines and deallocate those resources according to their lifetime.
 In Rust, if some resources are owned by a reference on the same node, and the reference has reached the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, while some resources on a node $n_1$ is not owned by any reference on the same node, they can be owned by a reference on a different node $n_2$. Although these resources do not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. 
-To achieve this goal, on each UMI server, we design a \emph{resource table} shown in figure~\ref{chap3:impl:tables}, which has the same lifetime of the server. We used it to identify and manage local resources involved in remote computations. Note that the ID in an entry of the table is the ID field in a corresponding proxy.
+To achieve this goal, on each UMI server, we design a \emph{resource table} shown in figure~\ref{chap3:impl:tables} on the left, which has the same lifetime of the server. We used it to identify and manage local resources involved in remote computations. Note that the ID in an entry of the table is the ID field in a corresponding proxy.
 If a variable is created locally, it will be put into the table once it is passed into a remote computation. The entry will not be removed until the remote computation finishes. If a variable is created via a remote call, it will be put into table on creation and will be deallocated when its remote owner decides that it should be dropped.
 \begin{figure}
 \centering
@@ -232,7 +232,7 @@ If a variable is created locally, it will be put into the table once it is passe
 \label{chap3:impl:tables}
 \end{figure}
 
-Secondly, we need to make all nodes be aware of all methods that can be invoked on a proxy in order to make computations available on all nodes. To achieve this goal, we register all methods that are available for remote invocations in a \emph{method registration table} shown in figure~\ref{chap3:impl:tables} by a \texttt{register!(name, arg\_types, return\_type)} macro. The method registration table holds the full path name, argument types, and return type of methods. When a serialised invocation message, which takes the form of a plain string, received by a node, the method to be invoked is deserialised and reconstructed according to the type information recorded in the registration table.
+Secondly, we need to make all nodes aware of all methods that can be invoked on a proxy in order to make computations available on all nodes. To achieve this goal, we register all methods that are available for remote invocations in a \emph{method registration table} shown in figure~\ref{chap3:impl:tables} on the right, using the \texttt{register!(name, arg\_types, return\_type)} macro. The method registration table holds the full path name, argument types, and return type of methods. When a serialised invocation message, which takes the form of a plain string, is received by a node, the method to be invoked is deserialised and reconstructed according to the type information recorded in the registration table.
 
 \subsection{Passing Remote Invocations via Messages}
 \label{impl:message}
@@ -351,9 +351,9 @@ Message::Invoke(fname, variables, invoke_op) => {
 
 \subsection{Extending Lifetime Management into Distributed Settings}
 \label{chap3:impl:lifetime}
-Recall that in section~\ref{chap3:impl:resource}, we have briefly introduced storing and deallcating remoted owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
+Recall that in section~\ref{chap3:impl:resource}, we have briefly introduced storing and deallocating remotely owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
 
-In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr}. Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime. 
+In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime (line 10). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=chap3:impl:lst:drop-eg]
 // on caller
 fn main() {
@@ -367,7 +367,7 @@ fn main() {
 } // a_proxy is out of scope, its data on the remote machine is dropped
 \end{lstlisting}
 
-For monolithic programs, the deallocation is achieved via the \texttt{drop} method in destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}.
+For monolithic programs, the deallocation is achieved via the \texttt{drop} method in the destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}.
 When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources. 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={The implementation of a remote deallocation}, label=chap3:impl:lst:drop]
 ...
@@ -391,11 +391,11 @@ After presenting the design and implementation of the UMI library, in the next c
 
 \section{The Operational Semantics}
 \label{chap3:semantics}
-We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s FR, which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references, and lexical lifetimes. We then present dFR, which extends FR to include distributed features of the UMI framework such as remote copy- and move-semantics as well as remote references. We intend to show that such an extension preserves the semantics of FR, therefore the type safety claims of FR is preserved by dFR.
+We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s featherweight Rust (FR), which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references, and lexical lifetimes. We then present dFR, which extends FR to include distributed features of the UMI framework such as remote copy- and move-semantics as well as remote references. We intend to show that such an extension preserves the semantics of FR, and therefore, the type safety claims of FR is preserved by dFR.
 
 \subsection{The Revised Syntax and Semantics of FR}
 \label{chap3:semantics:fr}
-We present the revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
+We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
 
 % Note that the $k$ in the block represents the lifetime.
 \begin{figure}
