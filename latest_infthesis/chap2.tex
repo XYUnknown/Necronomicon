@@ -845,12 +845,13 @@ with the property specifications provided by the application developer.
 \label{chap2:select:syntactic}
 The first step of selecting valid implementations is to select concrete container implementations from the library that satisfy required syntactic properties in a property specification, which is straightforward. \Primrose{} simply picks concrete container implementations that implement the traits required by the property specifications. 
 
-For instance, suppose that in a property specification, an application developer requires a container type implementing traits \lstinline|ContainerT| and \lstinline|IndexableT|, the elements of which are sorted in ascending order:
 \begin{lstlisting}[language=Rust, style=boxed, caption={A property specification composing semantic and syntactic properties: \mylstinline{ascending}, \mylstinline{ContainerT}, and \mylstinline{IndexableT}}, captionpos=t, label=select:ascending-random-eg]
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Primrose}};!property ascending { \c -> (for-all-consecutive-pairs c leq?) }
 type AscendingIndexableCon<T>
   = { c <: (ContainerT, IndexableT) | (ascending c) }
 \end{lstlisting}
+For instance, shown in listing~\ref{select:ascending-random-eg}, suppose that in a property specification, an application developer requires a container type implementing traits \lstinline|ContainerT| and \lstinline|IndexableT|, the elements of which are sorted in ascending order.
+
 In Rust's collections library, there are four concrete container implementations \lstinline|Vec|, \lstinline|LinkedList|, \lstinline|BTreeSet|, and \lstinline|HashSet|, where \lstinline|Vec|, \lstinline|LinkedList|, and \lstinline|BTreeSet| implement both required traits while \lstinline|HashSet| does not implement the trait \lstinline|IndexableT|. Clearly, \lstinline|HashSet| does not satisfy all required syntactic properties. Therefore, \lstinline|HashSet| is ruled out as a possible implementation for \lstinline{AscendingIndexableCon<T>}. 
 The implementation for \lstinline{AscendingIndexableCon<T>} is then selected from the remaining \lstinline|Vec|, \lstinline|LinkedList| and \lstinline|BTreeSet| types by checking if the library specifications satisfy the required semantic property, \lstinline|ascending|.
 
