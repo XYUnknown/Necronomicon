@@ -137,11 +137,12 @@ impl A {
   #[umi_init]
   new(arg: u32) -> A { A {arg: arg} }
   #[umi_struct_method]
-  foo1(&self, a: A) { ... }
+  by_value(&self, a: A) {...}
   #[umi_struct_method]
-  foo2(&self, &a: A) { ...}
+  by_ref(&self, &a: A) {...}
   #[umi_struct_method]
-  foo3(&self, &mut a: A) {...} ...
+  by_mut_ref(&self, &mut a: A) {...}
+  ...
 }
 \end{lstlisting}
     % \caption{exmaple}
@@ -158,9 +159,10 @@ fn main() {
   let a_local2 = A::new(2);
   let mut a_local3 = A::new(3);
   
-  a_remote.foo1(a_local1);
-  a_remote.foo2(&a_local2);
-  a_remote.foo3(&mut a_local3);
+  a_remote.by_value(a_local1);
+  a_remote.by_ref(&a_local2);
+  a_remote
+   .by_mut_ref(&mut a_local3);
 }
 \end{lstlisting}
     % \caption{example}
