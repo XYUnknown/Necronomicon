@@ -242,14 +242,9 @@ There are different types of messages for passing remote invocations. For instan
 
 \subsection{Extending Borrow Checking into Distributed Settings}
 \label{chap3:impl:borrow}
-To execute a deserialised remote method invocation on the node which receives the invocation, the first step is to gather serialised data as well as the ownership information of each variable involved in the method. In this step, we do not perform any reconstruction of these variables, instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. The implementation of this step is shown in listing~\ref{chap3:impl:lst:invoke}.
+To execute a deserialised remote method invocation on the node which receives the invocation, the first step is to gather serialised data as well as the ownership information of each variable involved in the method. In this step, we do not perform any reconstruction of these variables, instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. Such an format is implemented as \texttt{Argument}, which keeps the information of the variables related to borrow checking, and stores the data of the variable. The detailed implementation of this step is shown in listing~\ref{chap3:impl:lst:invoke}.
 
-A serialised variable has a label indicating that if it is a piece of data copied or moved from the caller (\texttt{OwnedLocal}), a remote reference owned by the caller (\texttt{OwnedRemote}), a remote reference immutably borrowed by the caller (\texttt{RefRemote}), or a remote reference mutably borrowed by the caller (\texttt{MutRefRemote}). 
-
-If a variable is serialised data, which is copied or moved from the caller, it will be kept as serialised, since the deserialisation and reconstruction process will happen during the invocation of the method. 
-If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{chap3:impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table. 
-If it is immutably borrowed, then the corresponding entry will be immutably borrowed from the table. If it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution. 
-If an argument is a proxy that is not located at the caller, then the proxy will be passed into the method without any additional modification.
+As shown in listing~\ref{chap3:impl:lst:invoke}, a serialised variable has a label indicating that if it is a piece of data copied or moved from the caller (\texttt{OwnedLocal}), a remote reference owned by the caller (\texttt{OwnedRemote}), a remote reference immutably borrowed by the caller (\texttt{RefRemote}), or a remote reference mutably borrowed by the caller (\texttt{MutRefRemote}).
 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message}, label=chap3:impl:lst:invoke]
 Message::Invoke(fname, variables, invoke_op) => {
@@ -265,8 +260,7 @@ Message::Invoke(fname, variables, invoke_op) => {
           arguments.push(arg_ref);
         } else { 
           arguments.push(
-            Argument::Serialised(serialise_remote.to_string())); }
-      },
+            Argument::Serialised(serialise_remote.to_string())); }},
       Variable::RefRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let borrow = mvtable.get(id).unwrap().borrow();
@@ -278,8 +272,7 @@ Message::Invoke(fname, variables, invoke_op) => {
             arguments.push(arg_ref); }
         } else { 
           arguments.push(
-            Argument::RemoteRef(serialise_remote.to_string())); }
-      },
+            Argument::RemoteRef(serialise_remote.to_string())); }},
       Variable::MutRefRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let mut borrow_mut = mvtable.get(id).unwrap().borrow_mut();
@@ -291,12 +284,16 @@ Message::Invoke(fname, variables, invoke_op) => {
             let arg_ref = Argument::MutRef(&mut back.0, back.1);
             arguments.push(arg_ref); }
         } else { 
-          arguments.push(Argument::RemoteMutRef(serialise_remote.clone())); 
-        }
-  }}}
-  ...
+          arguments.push(
+            Argument::RemoteMutRef(serialise_remote.to_string())); }
+  }}} ...
 }
 \end{lstlisting}
+
+If a variable is serialised data, which is copied or moved from the caller, it will be kept as serialised, since the deserialisation and reconstruction process will happen during the invocation of the method (line 5 --- line 6).
+If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{chap3:impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table (line 7 --- line 11). 
+If it is immutably borrowed, then the corresponding entry will be immutably borrowed from the table (line 16 --- line 24). If it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution (line 29 --- line 38). 
+If an argument is a proxy that is not located at the caller, as shown in three \texttt{else}-cases, from line 12 to line 14, from line 25 to line 27, and from line 39 to line 41, then the proxy will be passed into the method without any additional modification.
 
 Once the information of all variables are gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables}. During the execution of the method via \texttt{f.call(arguments)}, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
 
