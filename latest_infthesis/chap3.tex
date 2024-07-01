@@ -295,9 +295,16 @@ If a variable is a proxy which is located at the receiver, then it will be obtai
 If it is immutably borrowed, then the corresponding entry will be immutably borrowed from the table (line 15 --- line 23). If it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution (line 27 --- line 36). 
 If an argument is a proxy that is not located at the caller, as shown in three \texttt{else}-cases, from line 12 to line 14, from line 24 to line 26, and from line 37 to line 39, then the proxy will be passed into the method without any additional modification.
 
-Once the information of all variables are gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables}. During the execution of the method via \texttt{f.call(arguments)}, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
+Once the information of all variables are gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables} on the right. During the execution of the method via \texttt{f.call(arguments)} shown in line 6, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
 
-The result of an execution is provided in two formats, serialised data and a boxed data entry. These two formats are used according to the required ownership information of the return value. If the method produces an owned result annotated with \texttt{InvokeOp::Owned}, no matter the serialised data \texttt{res} is some local resources or a proxy, it will be kept as the serialised form and sent back via a return message. If the method is an initialisation call sent by the macro \texttt{remote!(...)} annotated with \texttt{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and an unique \texttt{id} will be generated. In the return message, the address of the receiver, the \texttt{id}, and the ownership status which is \texttt{true} are included for the caller to construct a proxy that owns such a data entry on the receiver. For a return value that is an immutably or mutably borrowed reference, there are two situations. If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by an generated unique \texttt{id}. Such an \texttt{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference. However, if a borrowed reference is not local to the receiver, meaning it already mirrors a reference on a different node, then it will not be stored in the resource table, instead, the serialised version of it will be sent back to the caller in a return message.
+The result of an execution is provided in two formats, serialised data and a boxed data entry. These two formats are used according to the required ownership information of the return value. 
+If the method produces an owned result annotated with \texttt{InvokeOp::Owned}, no matter the serialised data \texttt{res} represents some local resources or a proxy, it will be kept as the serialised form and sent back via a return message (line 9 --- line 11). 
+
+If the method is an initialisation call sent by the macro \texttt{remote!(...)} annotated with \texttt{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and an unique \texttt{id} will be generated. In the return message, the address of the receiver, the \texttt{id}, and the ownership status which is \texttt{true} are included for the caller to construct a proxy that owns such a data entry on the receiver (line 12 --- line 18).
+
+For a return value that is an immutably or mutably borrowed reference, there are two situations. 
+If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by an generated unique \texttt{id}. Such an \texttt{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference (line 20 --- line 25 and line 31 --- line 36). 
+However, if a borrowed reference is not local to the receiver, meaning it already mirrors a reference on a different node, then it will not be stored in the resource table, instead, the serialised version of it will be sent back to the caller in a return message (line 26 --- line 27 and line 37 --- line 38).
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result}, label=chap3:impl:lst:exec-return]
 Message::Invoke(fname, variables, invoke_op) => {
   ...
@@ -342,8 +349,7 @@ Message::Invoke(fname, variables, invoke_op) => {
       response(stream, res_message);
     },
     None => { /* report unregistered function */ }}
-},
-...
+}, ...
 \end{lstlisting}
 
 \subsection{Extending Lifetime Management into Distributed Settings}
