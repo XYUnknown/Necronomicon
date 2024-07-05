@@ -563,14 +563,14 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
 \label{syntax:d-syntax-fig}
 \end{figure}
 
-Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C}_s \longrightarrow \mathcal{D'}, \mathcal{C}_s'$, where $\mathcal{C}_s$ and $\mathcal{C}_s'$ are configuration stacks. For each reduction, the term on the top of a configuration stack $\mathcal{C}_s$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
+Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are configuration stacks. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
 \begin{figure}
     \begin{align*}
         &\mathcal{D}: \mathcal{N} \rightharpoonup \mathcal{S}
         %&\mathit{nt} \in  \mathcal{N} \times\mathds{1} + \mathcal{N}\times T\\
         &\mathit{nt} \in  \mathcal{N} \times\mathds{1} + \mathcal{N}\times T\\
-        &\mathcal{C}_s : (nt)^*
-        &\mathrm{Configuration}: \mathcal{D}, \mathcal{C}_s
+        &\mathcal{C} : (nt)^*
+        &\mathrm{Configuration}: \mathcal{D}, \mathcal{C}
     \end{align*}
     \caption{Distributed program state and configuration stack}
     \label{d-state}
@@ -579,28 +579,28 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
 \begin{figure}
     \begin{mathpar}
         \inferrule*[right={(Copy (s1))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m) }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, !\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
+        {\mathcal{D}, \mathcal{C} \concat (n, !\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
         
         \inferrule*[right={(Copy (s2))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m)}
-        {\mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n',!\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, v@n')}
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n',!\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, v@n')}
 
         \inferrule*[right={(Move (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, \#\mathscr{l}^\bullet_{@n'}) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet)}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \#\mathscr{l}^\bullet_{@n'}) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet)}
 
         \inferrule*[right={(Move (s2))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto \bot), \mathcal{C}_s \concat (n, v@n')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto \bot), \mathcal{C} \concat (n, v@n')}
 
         \inferrule*[right={(Box (s1))}]{ }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \texttt{box}\;v)}
+        {\mathcal{D}, \mathcal{C} \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v)}
 
         \inferrule*[right={(Box (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C}_s \concat (n, \mathscr{l}^\bullet_{@n'})} 
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C} \concat (n, \mathscr{l}^\bullet_{@n'})} 
 
         \inferrule*[right={(Borrow (s1))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
+        {\mathcal{D}, \mathcal{C} \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
 
         \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C}_s \concat (n, \mathscr{l}^\circ_{@n'})}
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, \mathscr{l}^\circ_{@n'})}
     \end{mathpar}
     \caption{The semantics of dFR (part one)}
     \label{semantics:eval-distributed-1}
@@ -611,28 +611,28 @@ To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a 
 \begin{figure}
     \begin{mathpar}
         \inferrule*[right={(Assign Owned (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, \mathscr{l}_{@n'}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}_{@n'}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
 
         \inferrule*[right={(Assign Owned (s2))}]{ }
-        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C}_s \concat (n, \texttt{()})}
+        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
 
         \inferrule*[right={(Assign Borrowed (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, \mathscr{l}_{@n'}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}_{@n'}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
 
         \inferrule*[right={(Assign Borrowed (s2))}]{ }
-        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C}_s \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C}_s \concat (n, \texttt{()})}
+        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
         
         \inferrule*[right={(Decl (s1))}]{ }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C}_s \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x)}
+        {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x)}
 
         \inferrule*[right={(Decl (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C}_s \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C}_s \concat (n, t[x/ \mathscr{l}^\bullet_{@n'}])}
+        {\mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[x/ \mathscr{l}^\bullet_{@n'}])}
 
         \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
-        {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t')}
+        {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C} \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t')}
 
-        \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C}_s \concat (n', t) \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n', t')}
-        {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C}_s \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C}_s \concat (n, t'@n')}
+        \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n', t) \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n', t')}
+        {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t'@n')}
     \end{mathpar}
     \caption{The semantics of dFR (part two)}
     \label{semantics:eval-distributed-2}
