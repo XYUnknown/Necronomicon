@@ -78,6 +78,7 @@ Distributed computing has extensive application in areas such as cloud computing
 
 However, comparing to monolithic systems, distributed systems are more complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. Therefore, it is a common practice to implement a system, a monolithic design is initially adopted as the implementation and deployment of a monolithic system is straightforward. Such a monolithic system needs to later be re-structured and migrated into a distributed design when it needs to be expanded into a larger scale. However, it still requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
 
+\subsection{Contributions}
 To address these issues in the design and implementation of a distributed system as well as migrating a monolithic systems into a distributed setting, we propose our design of a UMI library in Rust. The design of the UMI library share the same underlying idea of the \emph{remote procedural call} (RPC)~\citep{10.5555/910306}, where a method invocation on an object can be executed on a different node within the same network, abstracting over the underlying message-passing details. Such a design allows programmers to model a distributed system focusing on \emph{what} functional features are required instead of \emph{how} these functional features are achieved via complicated network communications. Moreover, it allows applications to be migrated from a monolithic design to a distributed architecture without massive changes to source code or the needs of high-level expertise in microservices. In addition, by choosing Rust as the language for implementing the UMI framework, we are able to avoid distributed memory management hassles like distributed garbage collection while extending Rust's memory safety and data-racing free guarantees into the distributed setting.
 
 In summary, we make following contributions:
@@ -86,6 +87,13 @@ In summary, we make following contributions:
     \item We formalise the \emph{structural operational semantics} for a core calculus of monolithic and distributed Rust programs (section~\ref{chap3:semantics}).
     \item We prove a \emph{location transparency theorem}: With the UMI framework, when a monolithic program is deployed to multiple nodes, its semantics is preserved (section~\ref{chap3:semantics:loc-transp}).
 \end{itemize}
+
+\subsection{Limitations}
+There are two limitations of this project worth mention upfront.
+
+Firstly, we do not network failures or concurrency in this project.
+
+Secondly, there are limitations in the formal system we have presented, which are caused by the formal system we build upon. In order to have a better formalisation of our system, it is required to have a better formalisation of the surface language of Rust, which is out of the scope of this project.
 
 Before stepping into the detailed discussion of the UMI library, in the next section, we will give a high-level overview of remote procedure calls and Rust.
 
@@ -515,11 +523,11 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
 An evaluation context is a term with a placeholder $\llbracket\cdot\rrbracket$. $E\llbracket t\rrbracket$ is a term obtained by replacing the placeholder with a term $t$. The evaluation context and reduction rule for the evaluation context are shown in figure~\ref{semantics:eval-context}.
 \begin{figure}
     \begin{align*}
-        E \metaDeff \llbracket \cdot \rrbracket \cmid E;t \cmid v; E \cmid \texttt{let mut }x=E; t \cmid \texttt{let mut }x = v; E \cmid \{E\} \cmid \texttt{box }E \cmid w = E
+        E \metaDeff [\cdot] \cmid E;t \cmid v; E \cmid \texttt{let mut }x=E; t \cmid \texttt{let mut }x = v; E \cmid \{E\} \cmid \texttt{box }E \cmid w = E
     \end{align*}
     \begin{mathpar}
     \inferrule*[right={(Context)}]{ S, t \longrightarrow S, t' }
-        { S, E\llbracket t \rrbracket \longrightarrow  S', E\llbracket t' \rrbracket }
+        { S, E[t] \longrightarrow  S', E[t'] }
     \end{mathpar}
     \caption{Evaluation context}
     \label{semantics:eval-context}
@@ -568,7 +576,7 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
     \begin{align*}
         &\mathcal{D}: \mathcal{N} \rightharpoonup \mathcal{S}
         %&\mathit{nt} \in  \mathcal{N} \times\mathds{1} + \mathcal{N}\times T\\
-        &\mathit{nt} \in  \mathcal{N} \times\mathds{1} + \mathcal{N}\times T\\
+        &\mathit{nt} \in  \mathcal{N} \times\mathds{1} + \mathcal{N}\times \mathcal{T}\\
         &\mathcal{C} : (nt)^*
         &\mathrm{Configuration}: \mathcal{D}, \mathcal{C}
     \end{align*}
@@ -949,14 +957,14 @@ Described in \citepos{10.5555/910306} thesis, RPC allows programs in separate ad
 Distributed garbage collection used in Java RMI~\citep{10.5555/1268049.1268066} as been an essential yet challenging research topic in distributed memory management. \citet{10.1145/292469.292471} offers a comprehensive review of distributed garbage collection (GC) schemes applicable to autonomous systems connected by a network, particularly in the context of Internet programming languages such as Java. It highlights the evolution of garbage collection from single-address-space collectors to distributed systems due to the increasing prominence of languages like Java in Internet applications. It categorises and reviews various GC methods, discussing their adaptation for distributed environments, which are characterised by issues such as communication overhead, locality of action, and non-deterministic communication latency. Designed for the object-oriented programming language with actor model Pony~\citep{10.1145/3133896}, Orca is a concurrent garbage collection algorithm which manages memory without requiring stop-the-world pauses or synchronisation mechanisms, enabling zero-copy message passing and mutable data sharing among actors. It leverages Pony's type system to ensure data race-free programs, allowing garbage collection tasks to be handled locally by each actor without synchronisation, thus enhancing performance and responsiveness.
 Perhaps more relevant to our memory management mechanism, the region system Reggio~\citep{10.1145/3622846} accompanied with a type system for Verona, which is a concurrent object-oriented programming language, organises objects into isolated regions, each with its own memory management strategy. It addresses the challenge of providing the control of manual memory management while maintaining memory safety by utilising a combination of region-based memory partitioning and an ownership type system.
 
-\paragraph*{Formalisation of Rust}
+\paragraph*{Formalisations of Rust and Their Limitations}
 The formalism of a core calculus of the UMI framework presented in this chapter is based on a formalisation of a core calculus of Rust described by~\citet{10.1145/3443420}. Although we are not completely satisfied with this formalism, it is the most suitable choice comparing to all common approaches of formalisation of Rust's semantics we have surveyed.
 
 There are many different approaches to formalise Rust, from different perspectives and aiming for different application domains. RustBelt~\citep{10.1145/3158154} provide a formalised continuation-passing style MIR --- $\lambda_{\textit{Rust}}$ --- mechanised using Iris. However, such an approach does not provide a formal model which is close to the source-level language of Rust. Hence, it is not convenient for us to use it as the basis for formalising the distributed extensions of the features of the UMI framework.
 
 Different from RustBelt, there are also attempts of formalising Rust from a source-level language perspective. For instance, Oxide~\citep{weiss2021oxide} attempts to formalise near-complete source-level Rust language features, providing a type system and small-step operational semantics. An implementation of Oxide is provided on GitHub although the formal claims are not mechanised. We argue that due to the level of the complexity and obscurity of this formalism, it is rather hard for us to gain a clear understanding of the modelling of Rust's borrow checking and non-lexical lifetime. In addition, without a concise and consistent presentation of the syntax, type system and formal semantics of the core features of Rust, it is again hard for us to use such a formalism to reason about properties of Rust programs and be convinced that the type system is indeed sound.
 
-Back to the formalisation we choose to build our distributed language extension upon, instead of modelling the full Rust language, \citet{10.1145/3443420} formalises a core calculus of Rust, which is FR, emphasising on the understanding of borrowing and lifetime of Rust. However, this formalism does not include essential Rust language features such as tuples, structs, functions and closures which makes it too minimalist. One may argue that \citet{10.1145/3443420} does discuss the possible extensions of FR to include tuples and functions hence it is unfair to criticise such an approach being ``too minimalist", however, I insist that these features are fundamental building blocks of a core language and should not be treated as extensions of a core language. Besides, the way that the let-binding is modelled made it hard to do substitutions, which is in my opinion the obstacle of having functions as a part of the formalism. In addition, its lexical treatment of Rust's lifetime is already obsolete.
+Back to the formalisation we choose to build our distributed language extension upon, instead of modelling the full Rust language, \citet{10.1145/3443420} formalises a core calculus of Rust, which is FR, emphasising on the understanding of borrowing and lifetime of Rust. However, this formalism does not include essential Rust language features such as tuples, structs, functions and closures which makes it ``too minimalist". One may argue that \citet{10.1145/3443420} does discuss the possible extensions of FR to include tuples and functions hence it is unfair to criticise such an approach being too minimalist, however, I insist that these features are fundamental building blocks of a core language and should not be treated as extensions of a core language. Besides, the way that the let-binding is modelled made it hard to do substitutions, which is in my opinion the obstacle of having functions as a part of the formalism. In addition, its lexical treatment of Rust's lifetime is already obsolete.
 
 Due to the reality of lack of a concise formalism of the source-level Rust that captures all key concepts of Rust's language features, our formalism of the UMI framework as a distributed extension of Rust is also not completely satisfying. However, it does demonstrate Rust's core memory management mechanisms, and allows us to prove the semantic preservation property of distributed programs implemented using the UMI framework. To have formalism of UMI capturing more language features would require us to develop yet another formalism of source-level Rust, which is out of the scope of this project.
 
