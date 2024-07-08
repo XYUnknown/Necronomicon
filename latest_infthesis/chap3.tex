@@ -89,9 +89,9 @@ In summary, we make following contributions:
 \end{itemize}
 
 \subsection{Limitations}
-There are some limitations of this project worth mentioning upfront.
+There are some limitations of this project worth mentioning upfront. Firstly, the UMI framework does not handle network communication errors. Since technically it is difficult to handle these errors in a distributed program while maintaining the same interface of its monolithic counterpart without the language feature throwing and handling exceptions. Also, as we plan to integrate this framework within micro-services platforms, where server errors are managed by cloud service providers. Supervision strategies can be employed to take snapshots and restart from failures, ensuring these issues do not pose a critical problem for the UMI framework's design.
 
-Firstly, we do not network failures or concurrency in this project.
+In addition, we do not model concurrency in this project.
 
 Secondly, there are limitations in the formal system we have presented, which are caused by the formal system we build upon. In order to have a better formalisation of our system, it is required to have a better formalisation of the surface language of Rust, which is out of the scope of this project.
 
@@ -996,3 +996,10 @@ Our UMI framework provides a new perspective for characterising the relationship
 However, with such an abstract view of distributed program, network communication errors such as timeouts and server errors are not explicitly modelled or handled with the UMI framework. Although we envision integrating such a framework within micro-services platforms where server errors are mitigated by cloud service providers, and supervision strategies can by used for taking snapshots and restarting from a failure, making these issues not a critical problem of the design of the UMI framework, we have to admit that, such a framework itself is not expressive enough to model network communication errors.
 
 One observation is that there is a trade-off between abstraction and expressiveness in modelling a distributed system. In this study, by making external facilities for handling the network communication issues, we focus on designing a concise abstraction which describes the intended functionalities of distributed programs and making it easier to model and reason about memory safety of distributed programs.
+
+\newpage
+\begin{subappendices}
+\section{The Type System of FR}
+\label{chap3:app1:type-system}
+TBC
+\end{subappendices}
