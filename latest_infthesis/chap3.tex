@@ -84,18 +84,18 @@ To address these issues in the design and implementation of a distributed system
 In summary, we make following contributions:
 \begin{itemize}
     \item We provide a usable \emph{Rust implementation of the UMI framework} (section~\ref{chap3:implementation}).
-    \item We formalise the \emph{structural operational semantics} for a core calculus of monolithic and distributed Rust programs (section~\ref{chap3:semantics}).
+    \item We formalise the \emph{structural operational semantics} based on \citet{10.1145/3443420}'s featherweight Rust (FR) for a core calculus of monolithic Rust programs and distributed Rust programs written in the UMI framework (section~\ref{chap3:semantics}).
     \item We prove a \emph{location transparency theorem}: With the UMI framework, when a monolithic program is deployed to multiple nodes, its semantics is preserved (section~\ref{chap3:semantics:loc-transp}).
 \end{itemize}
 
 \subsection{Limitations}
-There are some limitations of this project worth mentioning upfront. Firstly, the UMI framework does not handle network communication errors. Since technically it is difficult to handle these errors in a distributed program while maintaining the same interface of its monolithic counterpart without the language feature throwing and handling exceptions. Also, as we plan to integrate this framework within micro-services platforms, where server errors are managed by cloud service providers. Supervision strategies can be employed to take snapshots and restart from failures, ensuring these issues do not pose a critical problem for the UMI framework's design.
+There are some limitations of this project worth mentioning upfront. Firstly, the UMI framework does not handle network communication errors. Since technically it is difficult to handle these errors in a distributed program while maintaining the same interface of its monolithic counterpart without the language feature throwing and handling exceptions. Also, as we plan to integrate this framework within micro-services platforms, where server errors are managed by cloud service providers. Supervision strategies can be employed to take snapshots and restart from failures, ensuring these issues do not pose a critical problem for the UMI framework's design. 
 
-In addition, we do not model concurrency in this project.
+In addition, both the implementation and the formalisation of the UMI framework are deterministic and sequential. In the current stage, such a design decision is sufficient to demonstrate of core concepts of the UMI framework including location transparency and memory safety. However, as potential future work, it would be nice to model the UMI framework that accounts for concurrency.
 
-Secondly, there are limitations in the formal system we have presented, which are caused by the formal system we build upon. In order to have a better formalisation of our system, it is required to have a better formalisation of the surface language of Rust, which is out of the scope of this project.
+Moreover, there are limitations in the formal system we have presented, for instance, functions and structs are missing. These issues are caused by the formal system we build upon. Many different styles of formal systems of Rust have been surveyed for this project however it is rather hard to find a formal system that models sufficient core features of the surface language of Rust. We will discuss related formalisation of Rust in section~\ref{chap3:related-work}. In order to have a better formalisation of our system, it is required to have a better formalisation of the surface language of Rust, which is out of the scope of this project.
 
-Before stepping into the detailed discussion of the UMI library, in the next section, we will give a high-level overview of remote procedure calls and Rust.
+Before stepping into the detailed discussion of the UMI library, in the next section, we will give a high-level overview of remote procedure calls as well as Rust.
 
 \section{Background}
 \label{chap3:background}
@@ -363,8 +363,6 @@ Message::Invoke(fname, variables, invoke_op) => {
 \subsection{Extending Lifetime Management into Distributed Settings}
 \label{chap3:impl:lifetime}
 Recall that in section~\ref{chap3:impl:resource}, we have briefly introduced storing and deallocating remotely owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
-
-In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime (line 10). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=chap3:impl:lst:drop-eg]
 // on caller
 fn main() {
@@ -378,10 +376,9 @@ fn main() {
 } // a_proxy is out of scope, its data on the remote machine is dropped
 \end{lstlisting}
 
-For monolithic programs, the deallocation is achieved via the \texttt{drop} method in the destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}.
-When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources. 
+In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime (line 10).
+
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={The implementation of a remote deallocation}, label=chap3:impl:lst:drop]
-...
 impl Drop for #name {
   fn drop(&mut self) {
     match self {
@@ -391,8 +388,11 @@ impl Drop for #name {
           send(*addr, msg).unwrap(); }},
       _ => {}
 }}}
-...
 \end{lstlisting}
+
+For monolithic programs, the deallocation is achieved via the \texttt{drop} method in the destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}.
+When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources. 
+
 As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \texttt{id} will be removed from the resource table (i.e., the \texttt{mvtable} in the listing). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 Message::Drop(id) => { mvtable.remove(&id); }
