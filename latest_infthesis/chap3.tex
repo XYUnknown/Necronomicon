@@ -1010,8 +1010,8 @@ Figure~\ref{chap3:app1:type-system:syntax} presents the syntax of types of \cite
     \cmid \quad &\lfloor T \rfloor &\text{undefined}\\
     \text{Types}\quad T\ \metaDeff \quad &\epsilon &\text{unit}\\
     \cmid \quad &\texttt{int} &\text{integer}\\
-    \cmid \quad &\&\texttt{mut}\; \bar{w} &\text{mutable borrow}\\
-    \cmid \quad &\&\bar{w} &\text{immutable borrow}\\
+    \cmid \quad &\&\texttt{mut}\; \overline{w} &\text{mutable borrow}\\
+    \cmid \quad &\&\overline{w} &\text{immutable borrow}\\
     \cmid \quad &\Box T&\text{box}
     \end{align*}
     \caption{Syntax of Types}
@@ -1019,7 +1019,7 @@ Figure~\ref{chap3:app1:type-system:syntax} presents the syntax of types of \cite
 \end{figure}
 \subsection{Preliminaries}
 These are support functions presented by \citet{10.1145/3443420} for defining the typing rules.
-\begin{definition}[Copy Types] A type $T$ has copy semantics, denoted by \emph{\texttt{copy}}($T$), when $T = \emph{\texttt{int}}$ or $T = \&\bar{w}$.
+\begin{definition}[Copy Types] A type $T$ has copy semantics, denoted by \emph{\texttt{copy}}($T$), when $T = \emph{\texttt{int}}$ or $T = \&\overline{w}$.
 \end{definition}
 \noindent Note that mutable references and boxes do not have copy semantics.
 \begin{definition}[Type Strengthening] For partial types $\widetilde{T_1}$ and $\widetilde{T_2}$, we say that $\widetilde{T_1}$ strengthes $\widetilde{T_2}$, denoted by $\widetilde{T_1} \sqsubseteq \widetilde{T_2}$, according to the following rules:
@@ -1045,7 +1045,7 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
 \end{definition}
 \begin{definition}[Environment Join] The join of environments $\Gamma_1$ and $\Gamma_2$, denoted $\Gamma_1 \sqcup \Gamma_2$, is a partial function returning the strongest $\Gamma_3$ such that $\Gamma_1 \sqsubseteq \Gamma_3$ and $\Gamma_2 \sqsubseteq \Gamma_3$.
 \end{definition}
-\begin{definition}[LVal Typing] An lval $w$ is said to be typed with respect to an environment $\Gamma$, denoted $\Gamma \vdash w : \langle \widetilde{T}$, according to the following rules:
+\begin{definition}[LVal Typing] An lval $w$ is said to be typed with respect to an environment $\Gamma$, denoted $\Gamma \vdash w : \langle \widetilde{T}\rangle$, according to the following rules:
 \end{definition}
 \vspace{-2.0em}
 \begin{mathpar}
@@ -1055,7 +1055,7 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
 
 \inferrule*[right=(T-LvBor)]{
   \Gamma \vdash w : \langle \&[\texttt{mut}] \overline{u} \rangle^n \\
-  \Gamma \vdash \overline{u} : \langle \overline{T} \rangle^m
+  \inferrule*{ }{\Gamma \vdash u : \langle T \rangle^m}
 }{
   \Gamma \vdash *w : \langle \sqcup_i T_i \rangle^{\sqcap_i m_i}
 }
