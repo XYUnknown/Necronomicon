@@ -1064,7 +1064,7 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
 \end{definition}
 \begin{definition}[Path Selector] A \textit{path selector}, $\rho$, is always a dereference $(\rho \triangleq \ast)$.
 \end{definition}
-\begin{definition}[Path Conflict] Let $u \overset{\Delta}{\equiv} \pi_{u} \mid x$ and $w \triangleq \pi_{w} \mid y$ be lvals. Then, $w$ is said to conflict with $u$, denoted $u\bowtie w$, if $x = y$.
+\begin{definition}[Path Conflict] Let $u \triangleq \pi_{u} \mid x$ and $w \triangleq \pi_{w} \mid y$ be lvals. Then, $w$ is said to conflict with $u$, denoted $u\bowtie w$, if $x = y$.
 \end{definition}
 \noindent Note that $u \triangleq \pi \mid x$ denotes \textit{destructuring} of an lval $u$ into its base $x$ and path $\pi$.
 \subsection{Typing Rules}
