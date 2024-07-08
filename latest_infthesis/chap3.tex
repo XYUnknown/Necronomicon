@@ -520,10 +520,10 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
 \end{figure}
 % \subsection{Evaluation Context}
 
-An evaluation context is a term with a placeholder $\llbracket\cdot\rrbracket$. $E\llbracket t\rrbracket$ is a term obtained by replacing the placeholder with a term $t$. The evaluation context and reduction rule for the evaluation context are shown in figure~\ref{semantics:eval-context}.
+An evaluation context is a term with a placeholder $[\cdot]$. $E[t]$ is a term obtained by replacing the placeholder with a term $t$. The evaluation context and reduction rule for the evaluation context are shown in figure~\ref{semantics:eval-context}.
 \begin{figure}
     \begin{align*}
-        E \metaDeff [\cdot] \cmid E;t \cmid v; E \cmid \texttt{let mut }x=E; t \cmid \texttt{let mut }x = v; E \cmid \{E\} \cmid \texttt{box }E \cmid w = E
+        E \metaDeff [\cdot] \cmid E;t \cmid v; E \cmid \texttt{let mut}\;x=E; t \cmid \texttt{let mut}\;x = v; E \cmid \{E\} \cmid \texttt{box}\;E \cmid w = E
     \end{align*}
     \begin{mathpar}
     \inferrule*[right={(Context)}]{ S, t \longrightarrow S, t' }
