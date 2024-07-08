@@ -1001,5 +1001,64 @@ One observation is that there is a trade-off between abstraction and expressiven
 \begin{subappendices}
 \section{The Type System of FR}
 \label{chap3:app1:type-system}
-TBC
+Figure~\ref{chap3:app1:type-system:syntax} presents the syntax of types of \citepos{10.1145/3443420} FR without any modifications. A primitive type such as the integer type \texttt{int} has copy semantics. A box type $\Box T$ that represents a heap allocation has move semantics. A partial type may contain \emph{undefined} components. An undefined component denoted by $\lfloor T \rfloor$ represents a currently inaccessible location as its value has already been moved. The dFR is merely a semantics extension of FR, which uses the same type system as FR.
+\begin{figure}
+    \centering
+    \begin{align*}
+    \text{Partial Types}\quad \widetilde{T}\ \metaDeff \quad &T &\text{type}\\
+    \cmid \quad &\Box \widetilde{T} &\text{partial box}\\
+    \cmid \quad &\lfloor T \rfloor &\text{undefined}\\
+    \text{Types}\quad T\ \metaDeff \quad &\epsilon &\text{unit}\\
+    \cmid \quad &\texttt{int} &\text{integer}\\
+    \cmid \quad &\&\texttt{mut}\; \bar{w} &\text{mutable borrow}\\
+    \cmid \quad &\&\bar{w} &\text{immutable borrow}\\
+    \cmid \quad &\Box T&\text{box}
+    \end{align*}
+    \caption{Syntax of Types}
+    \label{chap3:app1:type-system:syntax}
+\end{figure}
+\subsection{Preliminaries}
+These are support functions presented by \citet{10.1145/3443420} for defining the typing rules.
+\begin{definition}[Copy Types] A type $T$ has copy semantics, denoted by \emph{\texttt{copy}}($T$), when $T = \emph{\texttt{int}}$ or $T = \&\bar{w}$.
+\end{definition}
+\noindent Note that mutable references and boxes do not have copy semantics.
+\begin{definition}[Type Strengthening] For partial types $\widetilde{T_1}$ and $\widetilde{T_2}$, we say that $\widetilde{T_1}$ strengthes $\widetilde{T_2}$, denoted by $\widetilde{T_1} \sqsubseteq \widetilde{T_2}$, according to the following rules:
+\end{definition}
+\vspace{-2.0em}
+\begin{mathpar}
+    \inferrule*[right=(W-Reflex)]{ }{\widetilde{T_1} \sqsubseteq \widetilde{T_1}}
+    
+    \inferrule*[right=(W-Box)]{\widetilde{T_1} \sqsubseteq \widetilde{T_2}}{\square \widetilde{T_1} \sqsubseteq \square \widetilde{T_2}}
+    
+    \inferrule*[right=(W-Bor)]{u \sqsubseteq w}{\Gamma \vdash \&[\texttt{mut}] \, u \sqsubseteq \&[\texttt{mut}] \, w}
+    
+    \inferrule*[right=(W-UndefA)]{T_1 \sqsubseteq T_2}{\lfloor T_1 \rfloor \sqsubseteq \lfloor T_2 \rfloor}
+    
+    \inferrule*[right=(W-UndefB)]{T_1 \sqsubseteq T_2}{T_1 \sqsubseteq \lfloor T_2 \rfloor}
+    
+    \inferrule*[right=(W-UndefC)]{\widetilde{T_1} \sqsubseteq \lfloor T_2 \rfloor}{\square \widetilde{T_1} \sqsubseteq \square \lfloor T_2 \rfloor}
+\end{mathpar}
+Note that the rule \textsc{W-Bor} requires the mutability to be the same on both sides.
+\begin{definition}[Type Join] The join of partial types $\widetilde{T_1}$ and $\widetilde{T_2}$, denoted $\widetilde{T_1} \sqcup \widetilde{T_2}$, is a partial function returning the strongest $\widetilde{T_3}$ such that $\widetilde{T_1} \sqsubseteq \widetilde{T_3}$ and $\widetilde{T_2} \sqsubseteq \widetilde{T_3}$.
+\end{definition}
+\begin{definition}[Environment Strengthening] Let $\Gamma_1$ and $\Gamma_2$ be typing environments. We say that $\Gamma_1$ strengthens $\Gamma_2$, denoted $\Gamma_1 \sqsubseteq \Gamma_2$, if and only if $\mathrm{dom}(\Gamma_1) = \mathrm{dom}(\Gamma_2)$ and for all $x \in \mathrm{dom}(\Gamma_1)$ where $\Gamma_1(x) = \langle \widetilde{T_1} \rangle^1$, we have $\Gamma_2(x) = \langle \widetilde{T_2} \rangle^1$ where $\widetilde{T_1} \sqsubseteq \widetilde{T_2}$.
+\end{definition}
+\begin{definition}[Environment Join] The join of environments $\Gamma_1$ and $\Gamma_2$, denoted $\Gamma_1 \sqcup \Gamma_2$, is a partial function returning the strongest $\Gamma_3$ such that $\Gamma_1 \sqsubseteq \Gamma_3$ and $\Gamma_2 \sqsubseteq \Gamma_3$.
+\end{definition}
+\begin{definition}[LVal Typing] An lval $w$ is said to be typed with respect to an environment $\Gamma$, denoted $\Gamma \vdash w : \langle \widetilde{T}$, according to the following rules:
+\end{definition}
+\vspace{-2.0em}
+\begin{mathpar}
+\inferrule*[right=(T-LvVar)]{\Gamma(x) = \langle \widetilde{T} \rangle^m}{\Gamma \vdash x : \langle \widetilde{T} \rangle^m}
+
+\inferrule*[right=(T-LvBox)]{\Gamma \vdash w : \langle \square \widetilde{T} \rangle^m}{\Gamma \vdash *w : \langle \widetilde{T} \rangle^m}
+
+\inferrule*[right=(T-LvBor)]{
+  \Gamma \vdash w : \langle \&[\texttt{mut}] \overline{u} \rangle^n \\
+  \Gamma \vdash \overline{u} : \langle \overline{T} \rangle^m
+}{
+  \Gamma \vdash *w : \langle \sqcup_i T_i \rangle^{\sqcap_i m_i}
+}
+\end{mathpar}
+\subsection{Typing Rules}
 \end{subappendices}
