@@ -538,7 +538,7 @@ Next, we will discuss the syntax and semantics of dFR, which extends FR with dis
 \subsection{The Syntax and Semantics of dFR} 
 \label{chap3:semantics:dfr}
 Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. Note that such an extension does not change the type system of FR.
-% $\mathscr{l}^\bullet_{@n}$ denotes a owned reference on the node $n$. 
+% $\mathscr{l}^\bullet@n$ denotes a owned reference on the node $n$. 
 \begin{figure}
 \begin{alignat*}{3}
     \text{Term}(\mathcal{T}) \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
@@ -587,13 +587,13 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
 \begin{figure}
     \begin{mathpar}
         \inferrule*[right={(Copy (s1))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m) }
-        {\mathcal{D}, \mathcal{C} \concat (n, !\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
+        {\mathcal{D}, \mathcal{C} \concat (n, !\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
         
         \inferrule*[right={(Copy (s2))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m)}
         {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n',!\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, v@n')}
 
         \inferrule*[right={(Move (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \#\mathscr{l}^\bullet_{@n'}) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet)}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \#\mathscr{l}^\bullet@n') \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet)}
 
         \inferrule*[right={(Move (s2))}]{ }
         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto \bot), \mathcal{C} \concat (n, v@n')}
@@ -602,30 +602,30 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
         {\mathcal{D}, \mathcal{C} \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v)}
 
         \inferrule*[right={(Box (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C} \concat (n, \mathscr{l}^\bullet_{@n'})} 
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C} \concat (n, \mathscr{l}^\bullet@n')} 
 
         \inferrule*[right={(Borrow (s1))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
+        {\mathcal{D}, \mathcal{C} \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
 
         \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, \mathscr{l}^\circ_{@n'})}
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, \mathscr{l}^\circ@n')}
     \end{mathpar}
     \caption{The semantics of dFR (part one)}
     \label{semantics:eval-distributed-1}
 \end{figure}
 
-To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a node with address $n$, the first step shown in the rule \textsc{Copy (s1)} is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet_{@n'})$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. It models that the computation is passed to the node $n'$, which stores the resource owned by the reference $\mathscr{l}^\bullet_{@n'}$. Then the rule \textsc{Copy (s2)} indicates that the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. Similarly, as for the semantics of moving the value out of a remote owned reference, the first step is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. The resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$, indicating that the value is moved out of the location $\mathscr{l}$ at the node $n'$.
+To evaluate copying a remotely owned reference $\mathscr{l}^\bullet@n'$ on a node with address $n$, the first step shown in the rule \textsc{Copy (s1)} is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet@n')$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. It models that the computation is passed to the node $n'$, which stores the resource owned by the reference $\mathscr{l}^\bullet@n'$. Then the rule \textsc{Copy (s2)} indicates that the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. Similarly, as for the semantics of moving the value out of a remote owned reference, the first step is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. The resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$, indicating that the value is moved out of the location $\mathscr{l}$ at the node $n'$.
 
 \begin{figure}
     \begin{mathpar}
         \inferrule*[right={(Assign Owned (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}_{@n'}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
 
         \inferrule*[right={(Assign Owned (s2))}]{ }
         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
 
         \inferrule*[right={(Assign Borrowed (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}_{@n'}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
 
         \inferrule*[right={(Assign Borrowed (s2))}]{ }
         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
@@ -634,7 +634,7 @@ To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a 
         {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x)}
 
         \inferrule*[right={(Decl (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[x/ \mathscr{l}^\bullet_{@n'}])}
+        {\mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[x/ \mathscr{l}^\bullet@n'])}
 
         \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
         {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C} \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t')}
@@ -646,13 +646,13 @@ To evaluate copying a remotely owned reference $\mathscr{l}^\bullet_{@n'}$ on a 
     \label{semantics:eval-distributed-2}
 \end{figure}
 
-The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remote heap allocation $\texttt{box}@n'\;v$ on the node $n$. Firstly, the heap allocation is passed to the node $n'$ to be evaluated, and a hole on the node $n$ is created and pushed onto the configuration stack. The value $v$ is stored in a fresh location $\mathscr{l}$ at the program state of the node $n'$ and assigned with the lifetime $\top$ since it is a heap allocation, hence a owned reference $\mathscr{l}^\bullet$ is created in the node $n'$. Such a owned reference is then passed back to the node $n$ allowing the node $n$ to own the location $\mathscr{l}$ created by the heap allocation on the node $n'$. At the end of the evaluation, as shown in the rule \textsc{Box (s2)}, on the top of the configuration stack, the hole create on the node $n$ is filled by the owned remote reference $\mathscr{l}^\bullet_{@n'}$
+The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remote heap allocation $\texttt{box}@n'\;v$ on the node $n$. Firstly, the heap allocation is passed to the node $n'$ to be evaluated, and a hole on the node $n$ is created and pushed onto the configuration stack. The value $v$ is stored in a fresh location $\mathscr{l}$ at the program state of the node $n'$ and assigned with the lifetime $\top$ since it is a heap allocation, hence a owned reference $\mathscr{l}^\bullet$ is created in the node $n'$. Such a owned reference is then passed back to the node $n$ allowing the node $n$ to own the location $\mathscr{l}$ created by the heap allocation on the node $n'$. At the end of the evaluation, as shown in the rule \textsc{Box (s2)}, on the top of the configuration stack, the hole create on the node $n$ is filled by the owned remote reference $\mathscr{l}^\bullet@n'$
 
-The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of immutable and mutable borrow terms. On a given node $n$, to borrow a remotely owned reference from a different node $n'$, firstly a hole is again created and pushed waiting for a term to be passed back, and the borrow term $\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'}$ is passed to the node $n'$ to be evaluated. After it being evaluated on the node $n'$, the resulting remotely borrowed reference $\mathscr{l}^\circ_{@n'}$ is passed back to the node $n$ filling the hole on the configuration stack.
+The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of immutable and mutable borrow terms. On a given node $n$, to borrow a remotely owned reference from a different node $n'$, firstly a hole is again created and pushed waiting for a term to be passed back, and the borrow term $\&[\texttt{mut}]\mathscr{l}^\bullet@n'$ is passed to the node $n'$ to be evaluated. After it being evaluated on the node $n'$, the resulting remotely borrowed reference $\mathscr{l}^\circ@n'$ is passed back to the node $n$ filling the hole on the configuration stack.
 
-A remote assignment to an owned reference $\mathscr{l}^\bullet_{@n'} \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack. The evaluation of a remote assignment to a borrowed reference is similar. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
+A remote assignment to an owned reference $\mathscr{l}^\bullet@n' \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack. The evaluation of a remote assignment to a borrowed reference is similar. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
 
-Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a remote declaration is more complicated. The first step shown in \textsc{Decl (s1)} leaves a hole to be filled by the resulting term in the substitution of the declared variable $x$. Then the declaration is passed to the node $n'$ to be evaluated. Shown in  \textsc{Decl (s2)}, once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable $x$ on the node $n$ will be substituted with the remote owned reference $\mathscr{l}_{@n'}^\bullet$.
+Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a remote declaration is more complicated. The first step shown in \textsc{Decl (s1)} leaves a hole to be filled by the resulting term in the substitution of the declared variable $x$. Then the declaration is passed to the node $n'$ to be evaluated. Shown in  \textsc{Decl (s2)}, once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable $x$ on the node $n$ will be substituted with the remote owned reference $\mathscr{l}@n'^\bullet$.
 
 Lastly, all reduction rules for evaluating terms presented in FR are adapted into reduction rules for evaluating dFR via the rule \textsc{Local Term}. As for the evaluation of remote terms, shown in the rule \textsc{Remote Term}, if a local term $t$ on the node $n'$ is evaluated into $t'$, then when it is treated as a remote term $t@n'$ on the node $n$, it will be evaluated to a remote term $t'@n'$ on the node $n$.
 
@@ -675,7 +675,7 @@ Formally, we state this semantic preservation property of the distributed extens
     &|\mathcal{D}| = \bigcup_{\forall n \in \textbf{dom} \mathcal{D}} \mathcal{D}(n)\\
     &(\texttt{let mut}@n\;x=t; t)|_@ =  \texttt{let mut}\;x=t; t
     &\texttt{box}@n\;t |_@ = \texttt{box}\;t\\
-    &\mathscr{l}^\bullet_{@n} \metaDef v |_@ = \mathscr{l}^\bullet \metaDef v
+    &\mathscr{l}^\bullet@n \metaDef v |_@ = \mathscr{l}^\bullet \metaDef v
     &\mathscr{l}^\circ{@n} \metaDef v |_@ = \mathscr{l}^\circ \metaDef v\\
     &v@n|_@ = v
     &t@n|_@ = t |_@
@@ -691,9 +691,9 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state: 
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution of a remote copy term gives:
-\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
+\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
 Following FR's reduction rule \textsc{Copy}, the monolithic execution of the flattened remote copy term gives:
-\[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\]
+\[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad\quad 
 \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\]
@@ -703,7 +703,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\mathcal{D}, [(n, !\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
 \end{gather*}
 
 
@@ -713,9 +713,9 @@ Hence:
 %     \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
 %     &|\mathcal{D}| = \mathcal{S}\\
 %     &\text{Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution gives:}\\
-%     &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\\
+%     &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\\
 %     &\text{Following the corresponding reduction rule, the monolithic execution gives:}\\
-%     &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\\
+%     &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\\
 %     &\text{To conclude, after executions:}\\
 %     &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))) \quad 
 %     \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
@@ -730,16 +730,16 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Move (s1)} and \textsc{Move (s2)}, the distributed execution of a remote move term gives:
-\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\]
+\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\]
 Following FR's reduction rule \textsc{Move}, the monolithic execution of the flattened remote move term gives:
-\[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\]
+\[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot)) \quad\quad \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot)\]
 To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the flatted resulting value obtained from the distributed execution and the resulting value obtained from the monolithic execution are equal:
 \[|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad\quad v@n'|_@ = v\]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \#\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  \#\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\mathcal{D}, [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -747,9 +747,9 @@ Hence:
     % \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
     % &|\mathcal{D}| = \mathcal{S}\\
     % &\text{The distributed execution gives:}\\
-    % &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\\
+    % &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\\
     % &\text{The monolithic execution gives:}\\
-    % &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet_{@n'}|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\\
+    % &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\\
     % &\text{To conclude, after executions:}\\
     % &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot)) \quad 
     % \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot)\\
@@ -763,7 +763,7 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of a remote heap allocation term gives:
 \[
-\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet_{@n'})]
+\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]
 \]
 Following FR's reduction rule \textsc{Box}, the monolithic execution of the flattened remote heap allocation term gives:
 \[
@@ -779,22 +779,22 @@ The updated distributed program state can be flatten into:
 Since we have $|\mathcal{D}| = \mathcal{S}$, we can conclude that the flattened updated distributed program state and the updated monolithic program state are equal:
 \[|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}'\]
 Also, the flattened remote owned reference obtained from the distributed execution equals to the owned reference obtained from the monolithic execution:
-\[\mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet\]
+\[\mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet\]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D'}, [(n, \mathscr{l}^\bullet)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet
+\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D'}, [(n, \mathscr{l}^\bullet)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
     % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
     % &\text{The execution of the distributed program gives:}\\
-    % &\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet_{@n'})]\\
+    % &\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]\\
     % &\text{The execution of the monolithic program gives:}\\
     % &\mathcal{S}, (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top)), \mathscr{l}^\bullet\\
     % &\text{To conclude, after executions:}\\
     % &\mathcal{D}' = \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top)) \quad 
     % \mathcal{S}' =  \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))\\
-    % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet_{@n'}|_@ = \mathscr{l}^\bullet
+    % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
     % \end{align*}
 \end{proof}
 \begin{proof}[Case \textsc{\emph{Borrow}}]
@@ -804,31 +804,31 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}, the distributed execution of a remote borrow term gives:
 \[
-\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ_{@n'})]
+\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ@n')]
 \]
 Following FR's reduction rule \textsc{Borrow}, the monolithic execution of the flattened remote borrow term gives:
 \[
-\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ
+\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ
 \]
 To conclude, after the evaluation, the distributed program state and the monolithic program state remain unchanged, hence they are still equal. In addition, the flattened remote borrowed reference obtained from the distributed execution equals to the borrowed reference obtained from the monolithic execution:
 \[
-\mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
+\mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
+\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
     % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \in \textbf{dom}\; \mathcal{S}\\
     % &\text{The execution of the distributed program gives:}\\
-    % &\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})] \longrightarrow \mathcal{D} [(n, \mathscr{l}^\circ_{@n'})]\\
+    % &\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D} [(n, \mathscr{l}^\circ@n')]\\
     % &\text{The execution of the monolithic program gives:}\\
-    % &\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet_{@n'})|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ\\
+    % &\mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ\\
     % &\text{To conclude, after executions:}\\
     % &\mathcal{D}' = \mathcal{D}\quad 
     % \mathcal{S}' =  \mathcal{S}\quad
-    % |\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\circ_{@n'}|_@ = \mathscr{l}^\circ
+    % |\mathcal{D}'| = \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
     % \end{align*}
 \end{proof}
 \begin{proof}[Case \textsc{\emph{Assign Owned}}]
@@ -840,11 +840,11 @@ We can say that, initially, the flattened distributed program state equals to th
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}, the distributed execution of a remote assignment to an owned reference gives:
 \[
-\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
+\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet@n' \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
 \]
 Following FR's reduction rule \textsc{Assign Owned}, the monolithic execution of the flattened remote assignment to an owned reference gives:
 \[
-\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
+\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
 \]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[
@@ -857,7 +857,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\mathcal{D}, [(n, \mathscr{l}^\bullet@n' \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -865,9 +865,9 @@ Hence:
     % \mathcal{S} = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m))\\
     % &|\mathcal{D}| = \mathcal{S}\\
     % &\text{The execution of the distributed program gives:}\\
-    % &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet_{@n'} \metaDef v')] \\&\longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]\\
+    % &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet@n' \metaDef v')] \\&\longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]\\
     % &\text{The execution of the monolithic program gives:}\\
-    % &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}\\
+    % &\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}\\
     % &\text{To conclude, after executions:}\\
     % &\mathcal{D}' = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))) \quad 
     % \mathcal{S}' = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m))\\
@@ -883,11 +883,11 @@ We can say that, initially, the flattened distributed program state equals to th
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Assign Borrowed (s1)} and \textsc{Assign Borrowed (s2)}, the distributed execution of a remote assignment to a (mutably) borrowed reference gives:
 \[
-\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\circ_{@n'} \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
+\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\circ@n' \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
 \]
 Following FR's reduction rule \textsc{Assign Borrowed}, the monolithic execution of the flattened remote assignment to a (mutably) borrowed reference gives:
 \[
-\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\circ_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
+\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
 \]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[
@@ -900,7 +900,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \mathscr{l}^\circ_{@n'} \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ_{@n'} \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\mathcal{D}, [(n, \mathscr{l}^\circ@n' \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
 \end{proof}
 \begin{proof}[Case \textsc{\emph{Decl}}]
@@ -910,7 +910,7 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, the distributed execution of a remote declaration gives:
 \[
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet@n'])]
 \]
 Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
 \[
@@ -923,23 +923,23 @@ After the evaluation, the updated distributed program state and monolithic progr
 \]
 To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the substitution with the flattened owned reference obtained from the distributed execution and the substitution with the owned reference obtained from the monolithic execution are trivially equal:
 \[
-|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}'\]\[ t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
+|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}'\]\[ t[x/\mathscr{l}^\bullet@n']|_@ = t[x/(\mathscr{l}^\bullet@n')|_@] = t[x/\mathscr{l}^\bullet]
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D'}, [(n, t[x/\mathscr{l}^\bullet_{@n'}])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[x/\mathscr{l}^\bullet] \land |\mathcal{D}'| = \mathcal{S}' \land t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/\mathscr{l}^\bullet]
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D'}, [(n, t[x/\mathscr{l}^\bullet@n'])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[x/\mathscr{l}^\bullet] \land |\mathcal{D}'| = \mathcal{S}' \land t[x/\mathscr{l}^\bullet@n']|_@ = t[x/\mathscr{l}^\bullet]
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
     % &|\mathcal{D}| = \mathcal{S} \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}\\
     % &\text{The execution of the distributed program gives:}\\
-    % &\mathcal{D}, [(n, \texttt{let mut}@n' x = v;t)] \\&\longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet_{@n'}])]\\
+    % &\mathcal{D}, [(n, \texttt{let mut}@n' x = v;t)] \\&\longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet@n'])]\\
     % &\text{The execution of the monolithic program gives:}\\
     % &\mathcal{S}, (\texttt{let mut}@n' x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[x/\mathscr{l}^\bullet]\\
     % &\text{To conclude, after executions:}\\
     % &\mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))) \quad 
     % \mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k))\\
-    % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \\&\text{and} \quad t[x/\mathscr{l}^\bullet_{@n'}]|_@ = t[x/(\mathscr{l}^\bullet_{@n'})|_@] = t[x/\mathscr{l}^\bullet]
+    % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}' \quad \\&\text{and} \quad t[x/\mathscr{l}^\bullet@n']|_@ = t[x/(\mathscr{l}^\bullet@n')|_@] = t[x/\mathscr{l}^\bullet]
     % \end{align*}
 \end{proof}
 The proofs for location transparency of the distributed and monolithic executions of local terms and remote terms should then be trivial.
