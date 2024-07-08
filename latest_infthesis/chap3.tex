@@ -1060,5 +1060,9 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
   \Gamma \vdash *w : \langle \sqcup_i T_i \rangle^{\sqcap_i m_i}
 }
 \end{mathpar}
+\begin{definition}[Path]A path $\pi$ is a sequence of zero or more path selectors $\rho$, which is either empty $(\pi \triangleq \epsilon)$ or composed by appending a selector onto another path $(\pi \triangleq \pi' \cdot \rho)$.
+\end{definition}
+\begin{definition}[Path Selector]A \textit{path selector}, $\rho$, is always a dereference $(\rho \triangleq \ast)$.
+\end{definition}
 \subsection{Typing Rules}
 \end{subappendices}
