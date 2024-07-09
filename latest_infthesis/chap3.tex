@@ -1041,7 +1041,7 @@ These are support functions presented by \citet{10.1145/3443420} for defining th
 Note that the rule \textsc{W-Bor} requires the mutability to be the same on both sides.
 \begin{definition}[Type Join] The join of partial types $\widetilde{T_1}$ and $\widetilde{T_2}$, denoted $\widetilde{T_1} \sqcup \widetilde{T_2}$, is a partial function returning the strongest $\widetilde{T_3}$ such that $\widetilde{T_1} \sqsubseteq \widetilde{T_3}$ and $\widetilde{T_2} \sqsubseteq \widetilde{T_3}$.
 \end{definition}
-\begin{definition}[Environment Strengthening] Let $\Gamma_1$ and $\Gamma_2$ be typing environments. We say that $\Gamma_1$ strengthens $\Gamma_2$, denoted $\Gamma_1 \sqsubseteq \Gamma_2$, if and only if $\mathrm{dom}(\Gamma_1) = \mathrm{dom}(\Gamma_2)$ and for all $x \in \mathrm{dom}(\Gamma_1)$ where $\Gamma_1(x) = \langle \widetilde{T_1} \rangle^1$, we have $\Gamma_2(x) = \langle \widetilde{T_2} \rangle^1$ where $\widetilde{T_1} \sqsubseteq \widetilde{T_2}$.
+\begin{definition}[Environment Strengthening] Let $\Gamma_1$ and $\Gamma_2$ be typing environments. We say that $\Gamma_1$ strengthens $\Gamma_2$, denoted $\Gamma_1 \sqsubseteq \Gamma_2$, if and only if $\mathrm{dom}(\Gamma_1) = \mathrm{dom}(\Gamma_2)$ and for all $x \in \mathrm{dom}(\Gamma_1)$ where $\Gamma_1(x) = \langle \widetilde{T_1} \rangle^l$, we have $\Gamma_2(x) = \langle \widetilde{T_2} \rangle^l$ where $\widetilde{T_1} \sqsubseteq \widetilde{T_2}$.
 \end{definition}
 \begin{definition}[Environment Join] The join of environments $\Gamma_1$ and $\Gamma_2$, denoted $\Gamma_1 \sqcup \Gamma_2$, is a partial function returning the strongest $\Gamma_3$ such that $\Gamma_1 \sqsubseteq \Gamma_3$ and $\Gamma_2 \sqsubseteq \Gamma_3$.
 \end{definition}
@@ -1057,7 +1057,7 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
   \Gamma \vdash w : \langle \&[\texttt{mut}] \overline{u} \rangle^n \\
   \inferrule*{ }{\Gamma \vdash u : \langle T \rangle^m}
 }{
-  \Gamma \vdash *w : \langle \sqcup_i T_i \rangle^{\sqcap_i m_i}
+  \Gamma \vdash *w : \langle \bigsqcup\nolimits_i T_i \rangle^{\bigsqcap\nolimits_i m_i}
 }
 \end{mathpar}
 \begin{definition}[Path] A path $\pi$ is a sequence of zero or more path selectors $\rho$, which is either empty $(\pi \triangleq \epsilon)$ or composed by appending a selector onto another path $(\pi \triangleq \pi' \cdot \rho)$.
@@ -1067,7 +1067,7 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
 \begin{definition}[Path Conflict] Let $u \triangleq \pi_{u} \mid x$ and $w \triangleq \pi_{w} \mid y$ be lvals. Then $w$ is said to conflict with $u$, denoted $u\bowtie w$, if $x = y$.
 \end{definition}
 \noindent Note that $u \triangleq \pi \mid x$ denotes \textit{destructuring} of an lval $u$ into its base $x$ and path $\pi$.
-\begin{definition}[Type Containment] Let $\Gamma$ be an environment where $\Gamma(x) = \langle \widetilde{T} \rangle^1$ for some l. Then $\Gamma \vdash x \leadsto T_y$ denotes that variable $x$ contains type $T_y$ and is defined as $\emph{\texttt{contains}}(\Gamma, \widetilde{T}, T_y)$ where:
+\begin{definition}[Type Containment] Let $\Gamma$ be an environment where $\Gamma(x) = \langle \widetilde{T} \rangle^l$ for some l. Then $\Gamma \vdash x \leadsto T_y$ denotes that variable $x$ contains type $T_y$ and is defined as $\emph{\texttt{contains}}(\Gamma, \widetilde{T}, T_y)$ where:
 \[
 \emph{\texttt{contains}}(\Gamma, \widetilde{T}, T_y) = 
 \begin{cases}
@@ -1082,7 +1082,7 @@ Note that the rule \textsc{W-Bor} requires the mutability to be the same on both
 \begin{definition}[Write Prohibited] In an environment $\Gamma$, an lval $w$ is said to be write prohibited, denoted $\emph{\texttt{writeProhibited}}(\Gamma, w)$, when either some $x$ exists where $\Gamma \vdash x \leadsto \&\overline{u} \land \exists_i (u_i \bowtie w)$ or $\emph{\texttt{readProhibited}}(\Gamma, w)$ holds.
 \end{definition}
 The partial function \texttt{move}($\Gamma, w$) determines the environment after the value of an lval $w$ is moved out:
-\begin{definition}[Move] Let $\Gamma$ be an environment where $\Gamma(x) = \langle \widetilde{T_1} \rangle^1$ for some lifetime 1, and $w$ an lval where $w \triangleq \pi_x \mid x$. Then $\emph{\texttt{move}}(\Gamma, w)$ is a partial function defined as $\Gamma[x \mapsto \langle \widetilde{T_2} \rangle^1]$ where $\widetilde{T_2} = \emph{\texttt{strike}}(\pi_x \mid \widetilde{T_1})$:
+\begin{definition}[Move] Let $\Gamma$ be an environment where $\Gamma(x) = \langle \widetilde{T_1} \rangle^l$ for some lifetime $l$, and $w$ an lval where $w \triangleq \pi_x \mid x$. Then $\emph{\texttt{move}}(\Gamma, w)$ is a partial function defined as $\Gamma[x \mapsto \langle \widetilde{T_2} \rangle^l]$ where $\widetilde{T_2} = \emph{\texttt{strike}}(\pi_x \mid \widetilde{T_1})$:
 \[
 \begin{aligned}
 \emph{\texttt{strike}}(\epsilon \mid T) &= [T] \\
@@ -1090,7 +1090,7 @@ The partial function \texttt{move}($\Gamma, w$) determines the environment after
 \end{aligned}
 \]
 \end{definition}
-\begin{definition}[Mutable] Let $\Gamma$ be an environment where $\Gamma(x) = \langle \widetilde{T} \rangle^1$ for some lifetime 1, and $w$ an lval where $w \triangleq \pi_x \mid x$. Then $\emph{\texttt{mut}}(\Gamma, w)$ is a partial function defined as $\emph{\texttt{mutable}}(\Gamma, \pi_x \mid \widetilde{T})$ that determines whether $w$ is mutable:
+\begin{definition}[Mutable] Let $\Gamma$ be an environment where $\Gamma(x) = \langle \widetilde{T} \rangle^l$ for some lifetime 1, and $w$ an lval where $w \triangleq \pi_x \mid x$. Then $\emph{\texttt{mut}}(\Gamma, w)$ is a partial function defined as $\emph{\texttt{mutable}}(\Gamma, \pi_x \mid \widetilde{T})$ that determines whether $w$ is mutable:
 \[
 \begin{aligned}
 \emph{\texttt{mutable}}(\Gamma, \epsilon \mid T) &= \text{true} \\
@@ -1099,29 +1099,100 @@ The partial function \texttt{move}($\Gamma, w$) determines the environment after
 \end{aligned}
 \] 
 \end{definition}
-\subsection{Typing Rules}
-\begin{figure}
+\begin{definition}[Environment Drop] The environment drop deallocates locations by removing them from an environment $\Gamma$: $\emph{\texttt{drop}}(\Gamma, m) = \Gamma - \{ x \mapsto \langle \widetilde{T} \rangle^m \mid x \mapsto \langle \widetilde{T} \rangle^m \in \Gamma \}$.
+\end{definition}
+\begin{definition}[Well-formed Type] For an environment $\Gamma$, a type $T$ is said to be well-formed with respect to a lifetime $l$, denoted $\Gamma \vdash T \succeq l$, according to rules:
+\end{definition}
+\vspace{-2.0em}
 \begin{mathpar}
-\inferrule*[right=T-Const]{
-    \sigma \vdash v : T
+\inferrule*[right=(L-Int)]{
 }{
-    \Gamma \vdash \langle v : T \rangle^1_\sigma \dashv \Gamma
+    \Gamma \vdash \texttt{int} \succeq l
 }
 
-\inferrule*[right=T-Copy]{
+\inferrule*[right=(L-Borrow)]{
+    \Gamma \vdash u : \langle T \rangle^m \\
+    m \succeq l
+}{
+    \Gamma \vdash \&[\texttt{mut}] \, u \succeq l
+}
+
+\inferrule*[right=(L-Box)]{
+    \Gamma \vdash T \succeq l
+}{
+    \Gamma \vdash \square T \succeq l
+}
+\end{mathpar}
+\begin{definition}[Compatible Shape] For an environment $\Gamma$, two partial types $\widetilde{T_1}$ and $\widetilde{T_2}$ are shape compatible, denoted as $\Gamma \vdash \widetilde{T_1} \approx \widetilde{T_2}$, according to the following rules:
+\end{definition}
+\vspace{-2.0em}
+\begin{mathpar}
+\inferrule*[right=(S-Int)]{
+}{
+    \Gamma \vdash \texttt{int} \approx \texttt{int}
+}
+
+\inferrule*[right=(S-Box)]{
+    \Gamma \vdash \widetilde{T_1} \approx \widetilde{T_2}
+}{
+    \Gamma \vdash \square \widetilde{T_1} \approx \square \widetilde{T_2}
+}
+
+\inferrule*[right=(S-Bor)]{
+    \forall_{i,j} (\Gamma \vdash u_i : \widetilde{T_1} \approx \widetilde{T_2} : w_j \dashv \Gamma)
+}{
+    \Gamma \vdash \&[\texttt{mut}] \, \overline{u} \approx \&[\texttt{mut}] \, \overline{w}
+}
+
+\inferrule*[right=(S-UndefL)]{
+    \Gamma \vdash T_1 \approx \widetilde{T_2}
+}{
+    \Gamma \vdash \lfloor T_1\rfloor \approx \widetilde{T_2}
+}
+
+\inferrule*[right=(S-UndefR)]{
+    \Gamma \vdash \widetilde{T_1} \approx T_2
+}{
+    \Gamma \vdash \widetilde{T_1} \approx \lfloor T_2\rfloor
+}
+\end{mathpar}
+\begin{definition}[Write]
+Let $\Gamma$ be an environment where $\Gamma(x) = \langle\widetilde{T}_1\rangle^l$ for some lifetime $l$ and lval w where $w \triangleq \pi_x \mid x$. Then, $\text{write}^k(\Gamma, w, T)$ is a partial function defined as $\Gamma_2[x \mapsto \langle\widetilde{T}_2\rangle^l]$ for some rank $k \geq 0$ where $(\Gamma_2, \widetilde{T}_2) = \emph{\texttt{update}}^k(\Gamma, \pi_x \mid \widetilde{T}_1, T)$:
+\begin{align*}
+\emph{\texttt{update}}^0(\Gamma, \epsilon \mid \widetilde{T}_1, T_2) &= (\Gamma, T_2) \\
+\emph{\texttt{update}}^{k \geq 1}(\Gamma, \epsilon \mid T_1, T_2) &= (\Gamma, T_1 \sqcup T_2) \\
+\emph{\texttt{update}}^k(\Gamma_1, (\pi \cdot *) \mid \square\widetilde{T}_1, T) &= (\Gamma_2, \square\widetilde{T}_2) \quad \emph{\textbf{where}}\; (\Gamma_2, \widetilde{T}_2) = \emph{\texttt{update}}^k(\Gamma_1, \pi \mid \widetilde{T}_1, T) \\
+\emph{\texttt{update}}^k(\Gamma, (\pi \cdot *) \mid \&\emph{\texttt{mut}}\; \overline{u_i}, T) &= (\bigsqcup\nolimits_i \Gamma_i, \&\emph{\texttt{mut}}\; \overline{u_i}) \quad \emph{\textbf{where}}\; \inferrule*{ }{\Gamma_i = \emph{\texttt{write}}^{k+1}(\Gamma, \pi \mid u_i, T)}
+\end{align*}
+\end{definition}
+\begin{figure}
+\begin{mathpar}
+\inferrule*[right=(T-Const)]{
+    \sigma \vdash v : T
+}{
+    \Gamma \vdash \langle v : T \rangle^l_\sigma \dashv \Gamma
+}
+
+\inferrule*[right=(T-Box)]{
+    \Gamma_1 \vdash \langle t : T \rangle^l_\sigma \dashv \Gamma_2
+}{
+    \Gamma_1 \vdash \langle \texttt{box}\;t : \square T \rangle^l_\sigma \dashv \Gamma_2
+}
+
+\inferrule*[right=(T-Copy)]{
     \Gamma \vdash w : \langle T \rangle^m \\
     \texttt{copy}(T) \\
     \neg \texttt{readProhibited}(\Gamma, w)
 }{
-    \Gamma \vdash \langle \hat{w} : T \rangle^1_\sigma \dashv \Gamma
+    \Gamma \vdash \langle !w : T \rangle^l_\sigma \dashv \Gamma
 }
 
-\inferrule*[right=T-Move]{
+\inferrule*[right=(T-Move)]{
     \Gamma \vdash w : \langle T \rangle^m \\
     \neg \texttt{writeProhibited}(\Gamma_1, w) \\
     \Gamma_2 = \texttt{move}(\Gamma_1, w)
 }{
-    \Gamma_1 \vdash \langle w : T \rangle^1_\sigma \dashv \Gamma_2
+    \Gamma_1 \vdash \langle \#w : T \rangle^l_\sigma \dashv \Gamma_2
 }
 
 \inferrule*[right=(T-MutBorrow)]{
@@ -1129,58 +1200,56 @@ The partial function \texttt{move}($\Gamma, w$) determines the environment after
     \texttt{mut}(\Gamma, w) \\
     \neg \texttt{writeProhibited}(\Gamma, w)
 }{
-    \Gamma \vdash \langle \&\texttt{mut}\;w : \&\texttt{mut}\;w \rangle^1_\sigma \dashv \Gamma
+    \Gamma \vdash \langle \&\texttt{mut}\;w : \&\texttt{mut}\;w \rangle^l_\sigma \dashv \Gamma
 }
 
 \inferrule*[right=(T-ImmBorrow)]{
     \Gamma \vdash w : \langle T \rangle^m \\
     \neg \texttt{readProhibited}(\Gamma, w)
 }{
-    \Gamma \vdash \langle \&w : \&w \rangle^1_\sigma \dashv \Gamma
+    \Gamma \vdash \langle \&w : \&w \rangle^l_\sigma \dashv \Gamma
 }
 
-\inferrule*[right=T-Box]{
-    \Gamma_1 \vdash \langle t : T \rangle^1_\sigma \dashv \Gamma_2
-}{
-    \Gamma_1 \vdash \langle \texttt{box}\;t : \square T \rangle^1_\sigma \dashv \Gamma_2
-}
-
-\inferrule*[right=T-Seq]{
-    \Gamma_1 \vdash \langle t_1 : T_1 \rangle^1_\sigma \dashv \Gamma_2 \\
+\inferrule*[right=(T-Seq)]{
+    \Gamma_1 \vdash \langle t_1 : T_1 \rangle^l_\sigma \dashv \Gamma_2 \\
     \dots \\
-    \Gamma_n \vdash \langle t_n : T_n \rangle^1_\sigma \dashv \Gamma_{n+1}
+    \Gamma_n \vdash \langle t_n : T_n \rangle^l_\sigma \dashv \Gamma_{n+1}
 }{
-    \Gamma_1 \vdash \langle \overline{t} : \overline{T_n} \rangle^1_\sigma \dashv \Gamma_{n+1}
+    \Gamma_1 \vdash \langle \overline{t} : \overline{T_n} \rangle^l_\sigma \dashv \Gamma_{n+1}
 }
 
-\inferrule*[right=T-block]{
-    \Gamma_1 \vdash \langle \overline{t} : T \rangle^m_\sigma \dashv \Gamma_2 \\
-    \Gamma_2 \vdash T \geq 1 \\
-    \Gamma_3 = \texttt{drop}(\Gamma_2, m)
+\inferrule*[right=(T-Block)]{
+    \Gamma_1 \vdash \langle t : T \rangle^k_\sigma \dashv \Gamma_2 \\
+    \Gamma_2 \vdash T \succeq l \\
+    \Gamma_3 = \texttt{drop}(\Gamma_2, k)
 }{
-    \Gamma_1 \vdash \langle \{\overline{t}\}^m : T \rangle^1_\sigma \dashv \Gamma_3
+    \Gamma_1 \vdash \langle \{t\} : T \rangle^l_\sigma \dashv \Gamma_3
 }
 
-\inferrule*[right=T-Declare]{
+\inferrule*[right=(T-Declare)]{
     x \not\in \textbf{dom}(\Gamma_1) \\
-    \Gamma_1 \vdash \langle t : T \rangle^1_\sigma \dashv \Gamma_2 \\
-    \Gamma_3 = \Gamma_2[x \mapsto \langle T \rangle^1]
+    \Gamma_1 \vdash \langle t_1 : T \rangle^l_\sigma \dashv \Gamma_2 \\
+    \Gamma_3 = \Gamma_2[x \mapsto \langle T \rangle^l]\\
+    \Gamma_3 \vdash t_2: T' \dashv \Gamma_3
 }{
-    \Gamma_1 \vdash \langle \texttt{let}\;\texttt{mut}\; x = t : \epsilon \rangle^1_\sigma \dashv \Gamma_3
+    \Gamma_1 \vdash \langle \texttt{let}\;\texttt{mut}\; x = t_1;t_2 : T' \rangle^l_\sigma \dashv \Gamma_3
 }
 
-\inferrule*[right=T-Assign]{
+\inferrule*[right=(T-Assign)]{
     \Gamma_1 \vdash w : \langle \widetilde{T_1} \rangle^m \\
-    \Gamma_1 \vdash \langle t : T_2 \rangle^1_\sigma \dashv \Gamma_2 \\
+    \Gamma_1 \vdash \langle t : T_2 \rangle^l_\sigma \dashv \Gamma_2 \\
     \Gamma_2 \vdash \widetilde{T_1} \approx T_2 \\
-    \Gamma_2 \vdash T_2 \geq m \\
+    \Gamma_2 \vdash T_2 \succeq m \\
     \Gamma_3 = \texttt{write}^0(\Gamma_2, w, T_2) \\
     \neg \texttt{writeProhibited}(\Gamma_3, w)
 }{
-    \Gamma_1 \vdash \langle w = t : \epsilon \rangle^1_\sigma \dashv \Gamma_3
+    \Gamma_1 \vdash \langle w = t : \epsilon \rangle^l_\sigma \dashv \Gamma_3
 }
 \end{mathpar}
 \caption{Typing Rules for FR}
 \label{chap3:app1:type-system:rules}
 \end{figure}
+
+\subsection{Typing Rules}
+Utilising the helper functions defined in perious section, FR's typing rules are shown in figure~\ref{chap3:app1:type-system:rules}. Note that we do not make any major modification to these typing rules. The only minor changes are: 1) The syntax of the lifetime of a block is now implicit; and 2) Since the syntax of declaration is changed from the original form $\texttt{let}\;\texttt{mut}\; x = t$ to $\texttt{let}\;\texttt{mut}\; x = t_1;t_2$ to allow substitutions, the typing rule is slightly modified accordingly.
 \end{subappendices}
