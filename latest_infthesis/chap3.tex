@@ -404,6 +404,8 @@ After presenting the design and implementation of the UMI library, in the next c
 \label{chap3:semantics}
 We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s featherweight Rust (FR), which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references, and lexical lifetimes. We then present dFR, which extends FR to include distributed features of the UMI framework such as remote copy- and move-semantics as well as remote references. We show that such an extension preserves the semantics of FR, and therefore, the type safety claims of FR is preserved by dFR.
 
+Note that the aim of this project is not to design a formal semantics or type system of Rust, rather, we aim to utilise existing work which provide formal semantics accompanied with a type system with type safety proofs for a core surface language of Rust (i.e., FR). Hence, here we only focus on discussing the semantics extension and the location transparency theorem. For readers who are curious about the (rather complicated) type system, please refer to appendix~\ref{chap3:app1:type-system}.
+
 \subsection{The Revised Syntax and Semantics of FR}
 \label{chap3:semantics:fr}
 We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
@@ -451,14 +453,14 @@ The notion of program state is introduced in figure~\ref{chap3:semantics:program
 We provide the operations of recursively removing values based on a location $\mathscr{l}$ and a lifetime $k$ from the state: 
 \begin{align*}
       &\bigl(\mathcal{S}\otimes(\mathscr{l}^\bullet \mapsto (v, k))\bigr)\setminus {\mathscr{l}^\bullet} = \mathcal{S}\setminus v \\
-      &\mathcal{S}\setminus v = \mathcal{S} \quad\text{(o/w)}
+      &\mathcal{S}\setminus v = \mathcal{S} \quad\text{otherwise}
 \end{align*}
 and respectively:
 \[
    \mathcal{S}\setminus k \ (\mathscr{l}) =
     \begin{cases}
       \mathcal{S}(\mathscr{l}) \quad\text{if $\mathcal{S}(\mathscr{l})=(v,k)$} \\
-      \textbf{undefined}\quad\text{(o/w)}
+      \textbf{undefined}\quad\text{otherwise}
     \end{cases}
 \] % this  is not correct and I will revise it
 
@@ -648,7 +650,7 @@ To evaluate copying a remotely owned reference $\mathscr{l}^\bullet@n'$ on a nod
 
 The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remote heap allocation $\texttt{box}@n'\;v$ on the node $n$. Firstly, the heap allocation is passed to the node $n'$ to be evaluated, and a hole on the node $n$ is created and pushed onto the configuration stack. The value $v$ is stored in a fresh location $\mathscr{l}$ at the program state of the node $n'$ and assigned with the lifetime $\top$ since it is a heap allocation, hence a owned reference $\mathscr{l}^\bullet$ is created in the node $n'$. Such a owned reference is then passed back to the node $n$ allowing the node $n$ to own the location $\mathscr{l}$ created by the heap allocation on the node $n'$. At the end of the evaluation, as shown in the rule \textsc{Box (s2)}, on the top of the configuration stack, the hole create on the node $n$ is filled by the owned remote reference $\mathscr{l}^\bullet@n'$
 
-The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of immutable and mutable borrow terms. On a given node $n$, to borrow a remotely owned reference from a different node $n'$, firstly a hole is again created and pushed waiting for a term to be passed back, and the borrow term $\&[\texttt{mut}]\mathscr{l}^\bullet@n'$ is passed to the node $n'$ to be evaluated. After it being evaluated on the node $n'$, the resulting remotely borrowed reference $\mathscr{l}^\circ@n'$ is passed back to the node $n$ filling the hole on the configuration stack.
+The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of immutable and mutable borrow terms. On a given node $n$, to borrow a remotely owned reference from a different node $n'$, firstly a hole is created and pushed waiting for a term to be passed back, and the borrow term $\&[\texttt{mut}]\mathscr{l}^\bullet@n'$ is passed to the node $n'$ to be evaluated. After it being evaluated on the node $n'$, the resulting remotely borrowed reference $\mathscr{l}^\circ@n'$ is passed back to the node $n$ into the hole on the configuration stack.
 
 A remote assignment to an owned reference $\mathscr{l}^\bullet@n' \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack. The evaluation of a remote assignment to a borrowed reference is similar. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
 
@@ -1219,9 +1221,9 @@ Let $\Gamma$ be an environment where $\Gamma(x) = \langle\widetilde{T}_1\rangle^
 }
 
 \inferrule*[right=(T-Block)]{
-    \Gamma_1 \vdash \langle t : T \rangle^k_\sigma \dashv \Gamma_2 \\
+    \Gamma_1 \vdash \langle t : T \rangle^m_\sigma \dashv \Gamma_2 \\
     \Gamma_2 \vdash T \succeq l \\
-    \Gamma_3 = \texttt{drop}(\Gamma_2, k)
+    \Gamma_3 = \texttt{drop}(\Gamma_2, m)
 }{
     \Gamma_1 \vdash \langle \{t\} : T \rangle^l_\sigma \dashv \Gamma_3
 }
