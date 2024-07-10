@@ -464,7 +464,7 @@ and respectively:
     \end{cases}
 \] % this  is not correct and I will revise it
 
-Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$, and $S', t'$ are the program state and the term after the evaluation.
+Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \stackrel k\longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$, and $S', t'$ are the program state and the term after the evaluation. $k$ is a lifetime, which we omit when it is irrelevant to the evaluation of a term.
 
 Evaluating a copy term simply makes a copy of a value $v$ at a given location $\mathscr{l}$, without modifying the program state, whereas evaluating a move term moves a value $v$ out of a given location $\mathscr{l}$.
 A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the \emph{global lifetime} $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
@@ -667,13 +667,13 @@ As we have mentioned in previous sections, by extending FR into dFR, the type sy
 Formally, we state this semantic preservation property of the distributed extension dFR in the \emph{location transparency theorem}~\ref{chap3:thm:loc-transp}. Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient for our claim.
 
 \begin{theorem}[Location Transparency]
-\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. Note that we make locations on all nodes distinct to simplify the proof.
+\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. $\longrightarrow^*$ is a reflexive transitive closure that represents one or more steps of evaluation. Note that we make locations on all nodes distinct to simplify the proof.
 % &\forall t \in \Pi_{\mathit{ref}}.\; \phi_\mathcal{D}, [t] \longrightarrow \mathcal{D}, [v] \iff \phi_\mathcal{S},  t|_@ \longrightarrow \mathcal{S}, v' \land \mathcal{S} = |\mathcal{D}| \land v' = v\\
 \begin{gather*}
     \forall t \in \mathcal{T}.\; \mathcal{D}, [(n, t)] \longrightarrow^* \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
 \end{gather*}
+where $|\cdot|$ and $\cdot|_@$ are operators that erase addresses of nodes from distributed program states and terms defined as:
 \begin{align*}
-    &\mathrm{where:}\\
     &|\mathcal{D}| = \bigcup_{\forall n \in \textbf{dom} \mathcal{D}} \mathcal{D}(n)\\
     &(\texttt{let mut}@n\;x=t; t)|_@ =  \texttt{let mut}\;x=t; t
     &\texttt{box}@n\;t |_@ = \texttt{box}\;t\\
@@ -693,7 +693,7 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state: 
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution of a remote copy term gives:
-\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
+\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet@n')] \longrightarrow^* \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
 Following FR's reduction rule \textsc{Copy}, the monolithic execution of the flattened remote copy term gives:
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
@@ -705,7 +705,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, !\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\mathcal{D}, [(n, !\mathscr{l}^\bullet@n')] \longrightarrow^* \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
 \end{gather*}
 
 
@@ -732,7 +732,7 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Move (s1)} and \textsc{Move (s2)}, the distributed execution of a remote move term gives:
-\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\]
+\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow^* \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\]
 Following FR's reduction rule \textsc{Move}, the monolithic execution of the flattened remote move term gives:
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
@@ -741,7 +741,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \[|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad\quad v@n'|_@ = v\]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\mathcal{D}, [(n, \#\mathscr{l}^\bullet@n')] \longrightarrow^* \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -765,7 +765,7 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of a remote heap allocation term gives:
 \[
-\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]
+\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow^* \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]
 \]
 Following FR's reduction rule \textsc{Box}, the monolithic execution of the flattened remote heap allocation term gives:
 \[
@@ -784,7 +784,7 @@ Also, the flattened remote owned reference obtained from the distributed executi
 \[\mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet\]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow \mathcal{D'}, [(n, \mathscr{l}^\bullet)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
+\mathcal{D}, [(n, \texttt{box}@n'\;v)] \longrightarrow^* \mathcal{D'}, [(n, \mathscr{l}^\bullet)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -806,7 +806,7 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}, the distributed execution of a remote borrow term gives:
 \[
-\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ@n')]
+\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow^* \mathcal{D}, [(n, \mathscr{l}^\circ@n')]
 \]
 Following FR's reduction rule \textsc{Borrow}, the monolithic execution of the flattened remote borrow term gives:
 \[
@@ -818,7 +818,7 @@ To conclude, after the evaluation, the distributed program state and the monolit
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow \mathcal{D}, [(n, \mathscr{l}^\circ)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
+\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \longrightarrow^* \mathcal{D}, [(n, \mathscr{l}^\circ)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -841,9 +841,9 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}, the distributed execution of a remote assignment to an owned reference gives:
-\[
-\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet@n' \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
-\]
+\begin{gather*}
+  \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet@n' \metaDef v')] \\\longrightarrow^*\\ \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]  
+\end{gather*}
 Following FR's reduction rule \textsc{Assign Owned}, the monolithic execution of the flattened remote assignment to an owned reference gives:
 \[
 \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
@@ -859,7 +859,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \mathscr{l}^\bullet@n' \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\mathcal{D}, [(n, \mathscr{l}^\bullet@n' \metaDef v')] \longrightarrow^* \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -884,9 +884,9 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Assign Borrowed (s1)} and \textsc{Assign Borrowed (s2)}, the distributed execution of a remote assignment to a (mutably) borrowed reference gives:
-\[
-\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\circ@n' \metaDef v')] \longrightarrow \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]
-\]
+\begin{gather*}
+   \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\circ@n' \metaDef v')] \\\longrightarrow^*\\ \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')] 
+\end{gather*}
 Following FR's reduction rule \textsc{Assign Borrowed}, the monolithic execution of the flattened remote assignment to a (mutably) borrowed reference gives:
 \[
 \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
@@ -902,7 +902,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \mathscr{l}^\circ@n' \metaDef v')] \longrightarrow \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\mathcal{D}, [(n, \mathscr{l}^\circ@n' \metaDef v')] \longrightarrow^* \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
 \end{proof}
 \begin{proof}[Case \textsc{\emph{Decl}}]
@@ -912,7 +912,7 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, the distributed execution of a remote declaration gives:
 \[
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[\mathscr{l}^\bullet@n'/x])]
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow^* \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[\mathscr{l}^\bullet@n'/x])]
 \]
 Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
 \[
@@ -929,7 +929,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D'}, [(n, t[\mathscr{l}^\bullet@n'/x])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[\mathscr{l}^\bullet/x] \land |\mathcal{D}'| = \mathcal{S}' \land t[\mathscr{l}^\bullet@n'/x]|_@ = t[\mathscr{l}^\bullet/x]
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow^* \mathcal{D'}, [(n, t[\mathscr{l}^\bullet@n'/x])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[\mathscr{l}^\bullet/x] \land |\mathcal{D}'| = \mathcal{S}' \land t[\mathscr{l}^\bullet@n'/x]|_@ = t[\mathscr{l}^\bullet/x]
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -953,14 +953,15 @@ In section~\ref{chap3:implementation}, we have discussed the design and implemen
 \section{Related Work}
 \label{chap3:related-work}
 \paragraph*{Design and Implementations of Remote Procedural Call}
-Described in \citepos{10.5555/910306} thesis, RPC allows programs in separate address spaces to communicate synchronously. By experimenting with different implementations of RPC, \citet{10.5555/910306} argues that RPC is an efficient and effective programming tool for distributed systems. Java RMI~\citep{10.5555/1268049.1268066} implements the concept of RPC in a object-orientated programming language. It outlines a model for distributed objects within the Java environment which allows Java objects to communicate across different address spaces. This RMI framework is designed to integrate seamless with the Java language, preserving as much of the Java object model's semantics as possible. As for its memory management mechanism, it contains a design of distributed garbage collection, ensuring that remote objects which are no longer referenced by any client should be automatically garbage collected. However, the Stub object in this framework does not always preserves the semantics of the Java object model. In our UMI approach, the framework is designed to be truly integrated with Rust as it is semantic preserving. The idea of location transparency and seamless integration of distributed computing presented in this UMI framework is related on the formal model Krivine Nets presented by~\citet{10.1145/2628136.2628152}, which extends the classic Krivine abstract machine to support distributed execution. This extension allows a seamless and transparent RPC mechanism to handle higher-order functions without transmitting the actual code. Krivine Nets enable the seamless integration of distributed computing into programming languages by eliminating explicit communication and process management from source code. In addition, instead of embedding deployment details within the source code, Krivine Nets handle these details automatically.
+Described in \citepos{10.5555/910306} thesis, RPC allows programs in separate address spaces to communicate synchronously. By experimenting with different implementations of RPC, \citet{10.5555/910306} argues that RPC is an efficient and effective programming tool for distributed systems. Java RMI~\citep{10.5555/1268049.1268066} implements the concept of RPC in a object-orientated programming language. It outlines a model for distributed objects within the Java environment which allows Java objects to communicate across different address spaces. This RMI framework is designed to integrate seamless with the Java language, preserving as much of the Java object model's semantics as possible. As for its memory management mechanism, it contains a design of distributed garbage collection, ensuring that remote objects which are no longer referenced by any client should be automatically garbage collected. However, the Stub object in this framework does not always preserves the semantics of the Java object model. In our UMI approach, the framework is designed to be truly integrated with Rust as it is semantic preserving. The idea of location transparency and seamless integration of distributed computing presented in this UMI framework is related on the formal model Krivine Nets presented by~\citet{10.1145/2628136.2628152}, which extends the classic Krivine abstract machine to support distributed execution. This extension allows a seamless and transparent RPC mechanism to handle higher-order functions without transmitting the actual code. Krivine Nets enable the seamless integration of distributed computing into programming languages by eliminating explicit communication and process management from source code. In addition, instead of embedding deployment details within the source code, Krivine Nets handle these details automatically. The RPC calculus presented by \citet{cooper2009rpc} explores the design and implementation of a symmetrical location-aware programming language atop a stateless server. The authors address the challenge of maintaining control state transparently within a programming language, despite the stateless nature of web servers, which typically do not retain client-specific session information.
+To achieve this, they propose a technique involving three main steps: defunctionalisation, continuation-passing style (CPS) translation, and the use of a trampoline mechanism for server-to-client requests. The paper outlines the RPC calculus ($\lambda_{\text{rpc}}$), which is enriched with location annotations to indicate where code should execute, supporting semantics where computation steps can occur at designated locations; and a translation from $\lambda_{\text{rpc}}$ to a first-order client-server calculus ($\lambda_{\text{cs}}$), which models an asymmetrical client-server environment. They demonstrate that this translation preserves the locative semantics of the source calculus, allowing for effective RPC calls in the location-aware language. The subsequent work for such a RPC calculus present by \citep{choi2020polymorphic} proposes a polymorphic RPC (Remote Procedure Call) calculus that extends the typed RPC calculus with polymorphic locations. It introduces a new polymorphic RPC calculus that allows programmers to write succinct multi-tier programs using polymorphic location constructs and defines a type system for the polymorphic RPC calculus and proves its type soundness. In addition it develops a monomorphisation translation that converts polymorphic RPC terms into monomorphic typed RPC terms, allowing existing slicing compilation methods for client-server models to be used. The type correctness and semantic correctness of the monomorphisation translation are proven.
 
 \paragraph*{Distributed Memory Management}
 Distributed garbage collection used in Java RMI~\citep{10.5555/1268049.1268066} as been an essential yet challenging research topic in distributed memory management. \citet{10.1145/292469.292471} offers a comprehensive review of distributed garbage collection (GC) schemes applicable to autonomous systems connected by a network, particularly in the context of Internet programming languages such as Java. It highlights the evolution of garbage collection from single-address-space collectors to distributed systems due to the increasing prominence of languages like Java in Internet applications. It categorises and reviews various GC methods, discussing their adaptation for distributed environments, which are characterised by issues such as communication overhead, locality of action, and non-deterministic communication latency. Designed for the object-oriented programming language with actor model Pony~\citep{10.1145/3133896}, Orca is a concurrent garbage collection algorithm which manages memory without requiring stop-the-world pauses or synchronisation mechanisms, enabling zero-copy message passing and mutable data sharing among actors. It leverages Pony's type system to ensure data race-free programs, allowing garbage collection tasks to be handled locally by each actor without synchronisation, thus enhancing performance and responsiveness.
 Perhaps more relevant to our memory management mechanism, the region system Reggio~\citep{10.1145/3622846} accompanied with a type system for Verona, which is a concurrent object-oriented programming language, organises objects into isolated regions, each with its own memory management strategy. It addresses the challenge of providing the control of manual memory management while maintaining memory safety by utilising a combination of region-based memory partitioning and an ownership type system.
 
 \paragraph*{Formalisations of Rust and Their Limitations}
-The formalism of a core calculus of the UMI framework presented in this chapter is based on a formalisation of a core calculus of Rust described by~\citet{10.1145/3443420}. Although we are not completely satisfied with this formalism, it is the most suitable choice comparing to all common approaches of formalisation of Rust's semantics we have surveyed.
+The formalism of a core calculus of the UMI framework presented in this chapter is based on a formalisation of a core calculus of Rust described by~\citet{10.1145/3443420}. Although as mentioned in previous sections, we are not completely satisfied with this formalism, it is the most suitable choice comparing to all common approaches of formalisation of Rust's semantics we have surveyed. In the following paragraphs, we discuss these approaches in detail.
 
 There are many different approaches to formalise Rust, from different perspectives and aiming for different application domains. RustBelt~\citep{10.1145/3158154} provide a formalised continuation-passing style MIR --- $\lambda_{\textit{Rust}}$ --- mechanised using Iris. However, such an approach does not provide a formal model which is close to the source-level language of Rust. Hence, it is not convenient for us to use it as the basis for formalising the distributed extensions of the features of the UMI framework.
 
