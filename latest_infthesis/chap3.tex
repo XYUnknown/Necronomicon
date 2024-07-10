@@ -408,7 +408,7 @@ Note that the aim of this project is not to design a formal semantics or type sy
 
 \subsection{The Revised Syntax and Semantics of FR}
 \label{chap3:semantics:fr}
-We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
+We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, where $\&[mut] w$ represents either a immutable or a mutable borrow term. $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. A copy term is denoted as $!w$. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
 
 % Note that the $k$ in the block represents the lifetime.
 \begin{figure}
@@ -448,7 +448,7 @@ We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Not
 \label{chap3:semantics:program:state}
 \end{figure}
 
-The notion of program state is introduced in figure~\ref{chap3:semantics:program:state}, which is a mapping from a location to a tuple of value and lifetime. When a value is replaced or its lifetime is expired, it will be removed from the program state.
+The notion of program state $\mathcal{S}$ is introduced in figure~\ref{chap3:semantics:program:state}, which is a mapping from a location to a tuple of value and lifetime. When a value is replaced or its lifetime is expired, it will be removed from the program state.
 
 We provide the operations of recursively removing values based on a location $\mathscr{l}$ and a lifetime $k$ from the state: 
 \begin{align*}
@@ -467,7 +467,7 @@ and respectively:
 Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$, and $S', t'$ are the program state and the term after the evaluation.
 
 Evaluating a copy term simply makes a copy of a value $v$ at a given location $\mathscr{l}$, without modifying the program state, whereas evaluating a move term moves a value $v$ out of a given location $\mathscr{l}$.
-A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the global lifetime $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
+A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the \emph{global lifetime} $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
 Assignment places a given value $v'$ in the location $\mathscr{l}$, and recursively deallocates the old value $v$ from the program state. Note that assignments to immutably borrowed references are prohibited by the type system provided by \citepos{10.1145/3443420} original work, the discussion of the type system is omitted here since focus on the analysis of the SOS of FR programs.
 The evaluation of a declaration allocates a given value $v$ to a fresh location $\mathscr{l}$ and substitutes latter occurrence of the declared variable $x$ with the owned reference $\mathscr{l}^\bullet$.
 
@@ -496,7 +496,7 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
 
     \inferrule*[right={(Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
-    {\mathcal{S}, \texttt{let}\;\texttt{mut}\;x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[\mathscr{l}^\bullet]/x}\\
+    {\mathcal{S}, \texttt{let}\;\texttt{mut}\;x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[\mathscr{l}^\bullet/x]}\\
 
     \inferrule*[right={(Block (base))}]{ }
     {\mathcal{S}, \{v\} \stackrel k\longrightarrow \mathcal{S}\setminus suc\ k, v} 
@@ -539,26 +539,26 @@ Next, we will discuss the syntax and semantics of dFR, which extends FR with dis
 
 \subsection{The Syntax and Semantics of dFR} 
 \label{chap3:semantics:dfr}
-Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. Note that such an extension does not change the type system of FR.
+Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. All extensions are highlighted. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. Also, such an extension does not change the type system of FR.
 % $\mathscr{l}^\bullet@n$ denotes a owned reference on the node $n$. 
 \begin{figure}
 \begin{alignat*}{3}
     \text{Term}(\mathcal{T}) \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
-    \cmid \quad &\texttt{let mut}@n\; x = t;t &\text{remote declaration}\\
+    \cmid \quad &\color{kirby}\texttt{let mut}@n\; x = t;t &\text{\color{kirby}remote declaration}\\
     \cmid \quad &w \metaDef t &\text{assignment}\\
     \cmid \quad &t;t &\text{sequence}\\
     \cmid \quad &\texttt{()} &\text{unit}\\
     \cmid \quad &\{t\} &\text{block}\\
     \cmid \quad &\texttt{box } t &\text{heap allocation}\\
-    \cmid \quad &\texttt{box}@n\; t &\text{remote  heap allocation}\\
+    \cmid \quad &\color{kirby}\texttt{box}@n\; t &\text{\color{kirby}remote  heap allocation}\\
     \cmid \quad &\&w \quad &\text{immutable borrow} \\
     \cmid \quad &\&\texttt{mut } w \quad &\text{mutable borrow} \\
     \cmid \quad &\#{w} \quad &\text{move} \\
     \cmid \quad &!{w} \quad &\text{copy} \\
     \cmid \quad &v \quad &\text{value} \\
-    \cmid \quad &v@n \quad &\text{remote value}\\
+    \cmid \quad &\color{kirby}v@n \quad &\text{\color{kirby}remote value}\\
     % \cmid \quad &t@n \quad &\text{remote term}\\
-    \text{Remote Term} \quad t_d \metaDeff \quad &t@n\\
+    \text{\color{kirby}Remote Term} \quad\color{kirby} t_d \metaDeff \quad &\color{kirby}t@n\\
     \text{LVal} \quad w \ \metaDeff \quad &x \quad &\text{variable} \\
     \cmid \quad &{*}w \quad &\text{dereference} \\
     \text{Value}(\mathcal{V}) \quad v \ \metaDeff \quad &\bot\\ 
@@ -567,13 +567,13 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
     \cmid \quad &\mathscr{l}^\bullet &\text{owned reference} \\
     \cmid \quad &\mathscr{l}^\circ &\text{borrowed reference} \\
     \text{Location}\quad  \mathscr{l} \in \mathbb{A}
-    &\quad\quad\quad\quad\text{Node}\quad n \in \mathcal{N}
+    &\quad\quad\quad\quad\text{\color{kirby}Node}\quad \color{kirby}n \in \mathcal{N}
 \end{alignat*}
 \caption{The syntax of dFR}
 \label{syntax:d-syntax-fig}
 \end{figure}
 
-Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are configuration stacks. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
+Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are \emph{configuration stacks}. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
 \begin{figure}
     \begin{align*}
         &\mathcal{D}: \mathcal{N} \rightharpoonup \mathcal{S}
@@ -670,7 +670,7 @@ Formally, we state this semantic preservation property of the distributed extens
 \emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. Note that we make locations on all nodes distinct to simplify the proof.
 % &\forall t \in \Pi_{\mathit{ref}}.\; \phi_\mathcal{D}, [t] \longrightarrow \mathcal{D}, [v] \iff \phi_\mathcal{S},  t|_@ \longrightarrow \mathcal{S}, v' \land \mathcal{S} = |\mathcal{D}| \land v' = v\\
 \begin{gather*}
-    \forall t \in \mathcal{T}.\; \mathcal{D}, [(n, t)] \longrightarrow \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
+    \forall t \in \mathcal{T}.\; \mathcal{D}, [(n, t)] \longrightarrow^* \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
 \end{gather*}
 \begin{align*}
     &\mathrm{where:}\\
