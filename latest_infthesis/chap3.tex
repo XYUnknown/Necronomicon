@@ -496,7 +496,7 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
     {\mathcal{S}\otimes \mathscr{l} \mapsto (v, m), \mathscr{l}^\circ \metaDef v' \longrightarrow (\mathcal{S}\setminus v)\otimes \mathscr{l} \mapsto (v', m), \texttt{()}}
 
     \inferrule*[right={(Decl)}]{\mathscr{l} \notin \textbf{dom}\;\mathcal{S}}
-    {\mathcal{S}, \texttt{let}\;\texttt{mut}\;x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[x/\mathscr{l}^\bullet]}\\
+    {\mathcal{S}, \texttt{let}\;\texttt{mut}\;x = v; t \stackrel k \longrightarrow \mathcal{S}\otimes \mathscr{l} \mapsto (v, k), t[\mathscr{l}^\bullet]/x}\\
 
     \inferrule*[right={(Block (base))}]{ }
     {\mathcal{S}, \{v\} \stackrel k\longrightarrow \mathcal{S}\setminus suc\ k, v} 
@@ -633,10 +633,10 @@ To evaluate copying a remotely owned reference $\mathscr{l}^\bullet@n'$ on a nod
         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
         
         \inferrule*[right={(Decl (s1))}]{ }
-        {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x)}
+        {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x)}
 
         \inferrule*[right={(Decl (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, t[x/?]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[x/ \mathscr{l}^\bullet@n'])}
+        {\mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[\mathscr{l}^\bullet@n'/x])}
 
         \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
         {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C} \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t')}
@@ -912,11 +912,11 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, the distributed execution of a remote declaration gives:
 \[
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[x/\mathscr{l}^\bullet@n'])]
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[\mathscr{l}^\bullet@n'/x])]
 \]
 Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
 \[
-\mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[x/\mathscr{l}^\bullet]
+\mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[\mathscr{l}^\bullet/x]
 \]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
 \[
@@ -925,11 +925,11 @@ After the evaluation, the updated distributed program state and monolithic progr
 \]
 To conclude, after the evaluation, the flattened updated distributed program state and the updated monolithic program are equal, and the substitution with the flattened owned reference obtained from the distributed execution and the substitution with the owned reference obtained from the monolithic execution are trivially equal:
 \[
-|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}'\]\[ t[x/\mathscr{l}^\bullet@n']|_@ = t[x/(\mathscr{l}^\bullet@n')|_@] = t[x/\mathscr{l}^\bullet]
+|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)) = \mathcal{S}'\]\[ t[\mathscr{l}^\bullet@n'/x]|_@ = t[(\mathscr{l}^\bullet@n')|_@/x] = t[\mathscr{l}^\bullet/x]
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D'}, [(n, t[x/\mathscr{l}^\bullet@n'])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[x/\mathscr{l}^\bullet] \land |\mathcal{D}'| = \mathcal{S}' \land t[x/\mathscr{l}^\bullet@n']|_@ = t[x/\mathscr{l}^\bullet]
+\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \longrightarrow \mathcal{D'}, [(n, t[\mathscr{l}^\bullet@n'/x])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[\mathscr{l}^\bullet/x] \land |\mathcal{D}'| = \mathcal{S}' \land t[\mathscr{l}^\bullet@n'/x]|_@ = t[\mathscr{l}^\bullet/x]
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
