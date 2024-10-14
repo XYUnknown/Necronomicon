@@ -638,7 +638,11 @@ Our approach easily ensures completeness when each operation is specified by a \
 Thus, just as forward simulation states that each property established for an abstract operation applies also (via the inverse of the abstraction function $\alpha^{-1}$) to a concrete implementation, completeness states that each property established for a concrete implementation applies (via the abstraction function $\alpha$) to the abstract operation. With both completeness and forward simulation, we ensure that \emph{all} valid implementations and \emph{only} the valid implementations are selected by \Primrose{}.
 
 There are many other available approaches for modelling library specifications, for instance, the axiomatic approach used in algebraic specifications for abstract data types \cite{WIRSING1990675}, specifying the behaviour of operations as a set of equational axioms that relate various operations.
-However, it is hard to ensure the completeness of algebraic specifications, as it is hard capture all behaviours of all operations by a set of equations.  
+However, it is hard to ensure the completeness of algebraic specifications, as it is hard capture all behaviours of all operations by a set of equations.
+\begin{highlightnew}
+\paragraph*{Other Approaches without Manually Written Library Specifications}
+There are other alternative approaches for selecting valid concrete implementations directly using the property specifications, via property-based testing or bounded model checking. Comparing to our current approach requiring library developers to manually provide library specifications, these alternative designs provide better automation and avoid potential issues caused by inaccurate or incomplete library specifications. They can be seen as a future direction that could be studied. However, our current design still has the advantage of being language agnostic as the selection process is not deeply embedded into the syntax or type system of a particular programming language. In addition, the selection process of our design with manually written specifications is potentially faster than using alternative approaches involving property-based testing or bounded model checking as a part of the selection process. Since in our design, property-based tests are not required to be executed in the selection process, instead, they only need to be conducted when library specifications are modified.
+\end{highlightnew}
 
 \subsection{The Library Specification of A \texttt{LinkedList}}
 \label{chap2:lib:list}
