@@ -973,15 +973,7 @@ Since the calculated weakest must succeed precondition is not an empty set, acco
 \label{chap4:reasoning:beta-eta}
 In section~\ref{chap4:syntax}, we have defined the normalise strategy by composing the strategy $\mathit{repeat}(s)$ and the top-down traversal $\mathit{topDown}(s)$ as
 $\mathit{normalise} (s) = \mathit{repeat}(\mathit{topDown} (s))$, which keeps applying a given strategy $s$ to every possible sub-expression of an expression until $s$ is no longer applicable.
-
-One example usage of the normalisation strategy we demonstrated is to reduce an expression in $\lambda$-calculus into the $\beta\eta$-normal form. Given the $\beta$-reduction and $\eta$-reduction as two atomic strategies $\mathit{beta}$ and $\mathit{eta}$, we can express the strategy for calculating the $\beta\eta$-normal form as:
-\[\mathit{BENF} = \mathit{normalise} (\mathit{beta} \lchoice \mathit{eta})\]
-Furthermore, we define a predicate to assert that an expression is in $\beta\eta$-normal form, simply by stating that the $\mathit{beta}$ and $\mathit{eta}$ atomic strategies must not be defined for any location in the expression:
-\begin{align*}
-    &\mathit{isBENF}\; e \Leftrightarrow \forall l.\ \mathit{beta}(\pitchforkup_l e)\, \tundef \land \mathit{eta}(\pitchforkup_l e)\,\tundef &\text{(where: $\quad\pitchforkup_l e$ is defined)}
-\end{align*}
-It is well known that not every $\lambda$-expression has such a normal form. With our location-based weakest precondition calculus, we are able to reason about whether an expression can be normalised by the strategy $\mathit{BENF}$ into a $\beta\eta$-normal form.
-\begin{figure}
+\begin{figure}[!b]
     \begin{alignat*}{3}
     \mathrm{Lambda~Expression}  \quad
     &e \ &\metaDef \quad &\mathit{Id}\;\iota \cmid \begin{array}{@{}c@{}} \begin{tikzpicture}[level distance=1.5em] \Tree [ .$\mathit{Abs}$ $\bullet$ $e$ ]\end{tikzpicture}\end{array}
@@ -994,6 +986,14 @@ It is well known that not every $\lambda$-expression has such a normal form. Wit
     \label{chap4:reasoning:lambda}
 \end{figure}
 
+One example usage of the normalisation strategy we demonstrated is to reduce an expression in $\lambda$-calculus into the $\beta\eta$-normal form. Given the $\beta$-reduction and $\eta$-reduction as two atomic strategies $\mathit{beta}$ and $\mathit{eta}$, we can express the strategy for calculating the $\beta\eta$-normal form as:
+\[\mathit{BENF} = \mathit{normalise} (\mathit{beta} \lchoice \mathit{eta})\]
+Furthermore, we define a predicate to assert that an expression is in $\beta\eta$-normal form, simply by stating that the $\mathit{beta}$ and $\mathit{eta}$ atomic strategies must not be defined for any location in the expression:
+\begin{align*}
+    &\mathit{isBENF}\; e \Leftrightarrow \forall l.\ \mathit{beta}(\pitchforkup_l e)\, \tundef \land \mathit{eta}(\pitchforkup_l e)\,\tundef &\text{(where: $\quad\pitchforkup_l e$ is defined)}
+\end{align*}
+It is well known that not every $\lambda$-expression has such a normal form. With our location-based weakest precondition calculus, we are able to reason about whether an expression can be normalised by the strategy $\mathit{BENF}$ into a $\beta\eta$-normal form.
+
 Firstly, in figure~\ref{chap4:reasoning:lambda}, we provide an encoding of the lambda calculus with de Bruijn indices using the expression tree structure we introduced, which takes the form of either a $\mathit{Leaf}$ or a node $\begin{array}{@{}c@{}} \begin{tikzpicture}[level distance=1.5em] \Tree [ .$\mathit{n}$ $e$ $e$ ]\end{tikzpicture}\end{array}$. Specifically, we encode an $\mathit{Id}$ expression (a de Bruijn index) as a $\mathit{Leaf}$ and both an abstraction and an application as nodes.
 Then we encode beta reduction and eta reduction as two atomic strategies:
 \begin{align*}
@@ -1004,7 +1004,7 @@ where $f[e/0]$ is the de Bruijn substitution of the index $0$ with the expressio
 
 Next we introduce the weakest precondition formula for the strategy $\mathit{normalise}(s)$, which is calculated using the weakest precondition formulae of $\mathit{repeat}(s)$ (introduced in section~\ref{chap4:reasoning:termintation}) and $\mathit{topDown}(s)$. Recall that in section~\ref{chap4:syntax} the strategy $\mathit{topDown}(s)$ is defined using the left choice combinator, the traversal $\mathit{one}(s)$ as well as the fixed-point~operator:
 \[\mathit{topDown}(s) = \mu X. (s \lchoice \mathit{one}(X))\]
-We can derive its weakest must succeed precondition and weakest may error precondition formulae:
+We can derive its weakest must succeed and may error precondition formulae:
 \begin{align*}
     &wp_{\zeta \Vdash \mathit{topDown}(s)@l}(P) = [\text{LFP}\, \mathscr{X} : \Delta] \;l\;P
     \quad\quad\quad wp_{\zeta \Vdash \mathit{topDown}(s) @l}^\uparrow(P) = [\text{LFP}\, \mathscr{Y} : \Delta]\;l\;P\\
@@ -1032,8 +1032,8 @@ With the weakest precondition formulae for $\mathit{topDown}(s)$ defined, we can
       \\&\cap\, (\mathscr{Y}_t (l \triangleright \mathscr{l})\,P \cap \mathscr{Y}_t (l \triangleright \mathscr{r})\,P))
     \end{cases}
 \end{align*}
-With the weakest precondition formula for $\mathit{normalise}(s)$, we can first conclude that the strategy $\mathit{BENF}$ for calculating the $\beta\eta$-normal form for expressions is a good strategy by showing:
-\[wp_{\zeta\Vdash\mathit{BENF}@l} (\mathbb{E}) \neq \emptyset\]
+With the weakest precondition formula for $\mathit{normalise}(s)$, we can first conclude that the strategy $\mathit{BENF}$ for calculating the $\beta\eta$-normal form for expressions is a good strategy by showing that $wp_{\zeta\Vdash\mathit{BENF}@l} (\mathbb{E}) \neq \emptyset$.
+
 Although the strategy $\mathit{BENF}$ is good, some expressions are not able to be rewritten by it to a $\beta\eta$-normal form. For instance, the expression $\Omega$ is defined as:
 \[\Omega \metaDef \begin{array}{@{}c@{}}\begin{tikzpicture}[level distance=2.5em] \Tree [ .$\mathit{App}$ [ .$\mathit{Abs}$ $\phantom{A}\bullet\phantom{A}$ [ .$\mathit{App}$ $Id\;0$ $Id\;0$ ]  ] [ .$\mathit{Abs}$ $\phantom{A}\bullet\phantom{A}$ [ .$\mathit{App}$ $Id\;0$ $Id\;0$ ] ] ]\end{tikzpicture}\end{array}\]
 Applying the strategy $\mathit{BENF}$ to the expression $\Omega$ will diverge, namely, the execution of the strategy $\mathit{BENF}$ on $\Omega$ is unsuccessful. We draw this conclusion by showing that $\Omega$ is not an expression in the weakest must succeed precondition of $\mathit{BENF}$\, no matter what the postcondition is:
