@@ -80,6 +80,14 @@ Dedicated strategy languages, such as Stratego~\citep{DBLP:conf/icfp/VisserBT98,
 Strategic rewriting has many important practical applications. For instance, Stratego is used to specify the semantics of programming languages by writing interpreters with rewrite strategies in the Spoofax language workbench~\citep{DBLP:journals/software/WachsmuthKV14}.
 Elevate is used to describe compiler optimisations for generating fast code achieving competitive performance to the state-of-the art machine learning compiler TVM~\citep{DBLP:journals/pacmpl/HagedornLKQGS20}. Strategic rewriting is also used in domains ranging from generic programming~\citep{DBLP:conf/rule/LammelV02} to tactic languages in proof assistants~\citep{sozeau2014proof}.
 
+\begin{highlightnew}
+To give some examples of strategic rewriting, rewrite rules like $\mathit{add_{id}}$ and $\mathit{add_{com}}$ shown below are what we call \emph{atomic strategies}:
+\[\mathit{add_{id}} : 0 + a \rightsquigarrow a \quad\quad\quad\mathit{add_{com}}: a + b \rightsquigarrow b + a\]
+These two strategies can be composed into a new strategy using a sequential composition \emph{combinator} ($\seqcomp$), such a composed strategy is shown below:
+\[\mathit{add_{com}}\seqcomp\mathit{add_{id}}\]
+This strategy instructs to execute the atomic strategy $\mathit{add_{id}}$ after the execution of the atomic strategy $\mathit{add_{com}}$. It can rewrite an expression $3+0$ into $3$. We introduce the formal syntax of strategies together with more examples in section~\ref{chap4:syntax}.
+\end{highlightnew}
+
 Compositions of rewrites easily become complex.
 For example, \citet{DBLP:journals/pacmpl/HagedornLKQGS20} report that for performing their compiler optimisations up to $60,000$ rewrite steps are required. To orchestrate such long rewrite sequences, strategy languages provide various combinators for composing strategies together and traversals for applying strategies to different sub-expressions within the given abstract syntax tree.
 Together with support for recursion, these combinators and traversals are capable of modelling the complex rewrite sequences required in practical applications.
@@ -212,8 +220,8 @@ sets of values using the Egli-Milner ordering:\vspace{1ex}\\
 \iff (\forall x \in A.\; \exists y \in B.\; x \preceq y) \land (\forall y \in
 B.\; \exists x \in A.\; x \preceq y)\)\vspace{1ex}
 
-\begin{wrapfigure}{r}{0.37\textwidth}
-  \vspace{-40pt}
+\begin{wrapfigure}{r}{0.35\textwidth}
+  \vspace{-25pt}
   \begin{center}
     \includegraphics[width=0.3\textwidth]{porcupine.png}
   \end{center}
@@ -223,7 +231,7 @@ B.\; \exists x \in A.\; x \preceq y)\)\vspace{1ex}
 fashion always yields a preorder. For a \emph{flat domain} $\V_\bot$, $\preceq$ is a partial order on
 $\Pow_{\neg \emptyset}(\V_\bot)$. It is characterised by:
 \begin{align*}
-     &A \preceq B \iff  A = B \lor ((\bot \in A) \land A {\setminus} \{\bot\} \subseteq B)  &\qquad\qquad\text{\centering(Porcupine ordering)}
+     &A \preceq B \iff  A = B \lor ((\bot \in A) \land A {\setminus} \{\bot\} \subseteq B)  &\qquad\qquad\quad\text{\centering(Porcupine ordering)}
 \end{align*}
 The resulting poset $\Pow_{\neg \emptyset}(\V_\bot)$ is an $\omega$-cpo.
 Each $\omega$-chain either enters a spine of the
@@ -793,7 +801,7 @@ With these notations and helper partial functions, we provide the location-based
 \end{figure}
 
 Figure~\ref{chap4:wp:basic-strategies} shows the weakest preconditions for basic strategies: SKIP, ABORT and $\mathit{atomic}$. Trivially, the weakest must succeed precondition and weakest may error precondition for SKIP are the same, i.e., the given postcondition $P$, since the execution of SKIP never results in error or divergence, nor changes the input expression. As for ABORT, since it will always result in an error no matter what input expression is given, its weakest must succeed precondition is the empty set and its weakest may error precondition is the set of all expressions. The weakest preconditions of atomic strategies are defined using their denotational semantics (cf.\ figure~\ref{chap4:semantics:denotational}): the weakest must succeed precondition is the set of input expressions, for each expression of which applying the atomic strategy to its sub-expression at the given location $l$ should result in a (singleton) set of expressions which is a subset of the given postcondition $P$. The weakest may error postcondition is defined in a similar manner, the only difference is that the resulting set of expressions should be a subset of $P \cup \{\err\}$. It does not matter what semantic environment is given here when we invoke the semantics, so we just use the environment which maps all variables to $\{\dive\}$, denoted by $\varnothing$. Remember that the operators $\pitchforkup$ and $\boxRight$ are $\mathit{lookup}$ and $\mathit{update}$.
-\begin{figure}
+\begin{figure}[!b]
 \begin{align*}
     &wp_{\zeta \Vdash s \seqcomp t @l}(P) = wp_{\zeta \Vdash s@l}(wp_{\zeta \Vdash t@l}(P))\quad\quad wp_{\zeta \Vdash s \seqcomp t @l}^{\uparrow}(P) = wp_{\zeta \Vdash s@l}^{\uparrow}(wp_{\zeta \Vdash t@l}^{\uparrow}(P))
     \intertext{\centering(Sequential composition)}
@@ -810,8 +818,7 @@ Figure~\ref{chap4:wp:basic-strategies} shows the weakest preconditions for basic
     \label{chap4:wp:combinators}
 \end{figure}
 
-Figure~\ref{chap4:wp:combinators} shows the weakest preconditions for combinators: sequential composition, left choice and nondeterministic choice. Intuitively, the weakest must succeed precondition of the sequential composition $s \seqcomp t$ is simply to sequentially compose the weakest must succeed preconditions of $s$ and $t$ where the post condition of $s$ is the weakest must succeed precondition of $t$. The same approach is taken for defining the weakest may error precondition. The weakest must succeed precondition of the left choice $s \lchoice t$ is the union of the set of expressions that can be successfully rewritten by the strategy $s$ and the set of expressions for which applying $s$ may result in error but that can be successfully rewritten by the strategy $t$. Its weakest may error condition additionally includes the set of expressions for which applying the strategy $t$ may result in error. The definitions of the weakest preconditions of the nondeterministic choice $s \choice t$ capture the angelic nondeterminism for $\err$ and demonic nondeterminism for $\dive$. Its weakest must succeed precondition is the set of expressions to which applying neither the strategy $s$ nor $t$ will diverge and which can be successfully rewritten by at least one of $s$ and $t$. The weakest may error precondition relaxes this last requirement by including the set of expressions to which applying both $s$ and $t$ may result in an error.
-\begin{figure}
+\begin{figure}[!b]
 \begin{align*}
     &wp_{\zeta \Vdash \mathit{one}(s) @ l}(P) = (wp_{\zeta \Vdash s@l\triangleright \mathscr{l}} ^ \uparrow (P) \cap wp_{\zeta \Vdash s@l \triangleright \mathscr{r}}(P)) \cup (wp_{\zeta \Vdash s@l\triangleright \mathscr{r}} ^ \uparrow (P) \cap wp_{\zeta \Vdash s@l \triangleright \mathscr{l}}(P))
     \\
@@ -842,9 +849,11 @@ Figure~\ref{chap4:wp:combinators} shows the weakest preconditions for combinator
     \caption{Location-based weakest preconditions for traversals}
     \label{wp:traversals}
 \end{figure}
+Figure~\ref{chap4:wp:combinators} shows the weakest preconditions for combinators: sequential composition, left choice and nondeterministic choice. 
+Intuitively, the weakest must succeed precondition of the sequential composition $s \seqcomp t$ is simply to sequentially compose the weakest must succeed preconditions of $s$ and $t$ where the post condition of $s$ is the weakest must succeed precondition of $t$. The same approach is taken for defining the weakest may error precondition. The weakest must succeed precondition of the left choice $s \lchoice t$ is the union of the set of expressions that can be successfully rewritten by the strategy $s$ and the set of expressions for which applying $s$ may result in error but that can be successfully rewritten by the strategy $t$. Its weakest may error condition additionally includes the set of expressions for which applying the strategy $t$ may result in error. The definitions of the weakest preconditions of the nondeterministic choice $s \choice t$ capture the angelic nondeterminism for $\err$ and demonic nondeterminism for $\dive$. Its weakest must succeed precondition is the set of expressions to which applying neither the strategy $s$ nor $t$ will diverge and which can be successfully rewritten by at least one of $s$ and $t$. The weakest may error precondition relaxes this last requirement by including the set of expressions to which applying both $s$ and $t$ may result in an error.
 
 Location is very important for defining the weakest preconditions of traversals. Demonstrated in figure~\ref{wp:traversals}, the approach of defining the weakest preconditions for $\one(s)$ is again similar to nondeterministic choice, as $\one(s)$ nondeterministically chooses one of the left or right child of the current expression to apply the strategy $s$ to. Its weakest must succeed precondition is a set of expressions that are not leaf nodes. For each of them, applying $s$ to either its left child or right child should not diverge, and at least one of its children must be successfully rewritten by $s$. The weakest may error precondition of $\mathit{one}(s)$ includes all expressions that are leaf nodes as well as expressions whose both children to which applying $s$ may result in error.
-The weakest must succeed precondition of $\mathit{some}(s)$ is a set of expressions that are not leaf nodes. For each of them, if the given strategy $s$ can be applied to \emph{both} of its children successfully, the result of applying $s$ to both of them regardless of the ordering of the application should satisfy the postcondition $P$. In addition, applying $s$ to one of its children may result in an error, but not for both of its children. Again, expressions with children to which applying $s$ diverges are excluded from the weakest must succeed precondition. Similar to $\mathit{one}(s)$, the weakest may error preconditions includes all leaf expressions and expressions whose both children to which applying $s$ may result in error. Since $\mathit{all}(s)$ requires the strategy $s$ to be applied to either a leaf expression or both children of an expression which is not a leaf, intuitively, its weakest must succeed precondition is a set of leaf expressions, or expressions of which both children can be successfully rewritten by the strategy $s$ regardless of the order of the application of $s$. Its weakest may error precondition again includes all leaf expressions and expressions with children to which applying $s$ may result in an error.
+The weakest must succeed precondition of $\mathit{some}(s)$ is a set of expressions that are not leaf nodes. For each of them, if the given strategy $s$ can be applied to \emph{both} of its children successfully, the result of applying $s$ to both of them regardless of the ordering of the application should satisfy the postcondition $P$. In addition, applying $s$ to one of its children may result in an error, but not for both of its children. Again, expressions with children to which applying $s$ diverges are excluded from the weakest must succeed precondition. Similar to $\mathit{one}(s)$, the weakest may error preconditions includes all leaf expressions and expressions whose both children to which applying $s$ may result in error. Since $\mathit{all}(s)$ requires the strategy $s$ to be applied to either a leaf expression or both children of an expression which is not a leaf, intuitively, its weakest must succeed precondition is a set of leaf expressions, or expressions of which both children can be successfully rewritten by the strategy $s$ regardless of the order of the application of $s$. Its weakest may error precondition again includes all leaf expressions and expressions with children to which applying $s$ may result in an error. \begin{highlightnew}Note that the weakest precondition formulae of $\mathit{all}(s)$ contain the sequential composition of the execution of $s$ on the left child and then the right child as well as the execution of $s$ on the right child and then the left child to indicate that $\mathit{all}(s)$ is executed without regard for the order of the application of $s$.\end{highlightnew}
 
 Lastly, we introduce the weakest preconditions for the fixed-point operator, shown in figure~\ref{wp:fp-operator}, which are defined using simultaneous induction. $\Delta$ contains a pair of simultaneously defined least fixed points $\mathscr{X}$ and $\mathscr{Y}$ which are used to define the weakest must succeed precondition and weakest may fail precondition respectively. In these fixed-point equations, we extend the logic environment $\zeta$ with mappings from the fixed-point variable with tags $(X, \cdot)$ and $(X, \uparrow)$ to the least fixed points $\mathscr{X}$ and $\mathscr{Y}$ respectively.
 
