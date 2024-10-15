@@ -851,8 +851,14 @@ Before proving the case for \textsc{Box}, we introduce a lemma stating a relatio
 \begin{lemma}
 \label{chap3:loc-lemma-1}
 Given a distributed program state $\mathcal{D}$ and a monolithic program state $\mathcal{S}$, $n$ is a node in the domain of $\mathcal{D}$:
-\[|\mathcal{D}| = S \land \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n) \Rightarrow \mathscr{l} \notin \textbf{dom}\;\mathcal{S}\]
+\[|\mathcal{D}| = S \land \mathscr{l} \notin \textbf{\emph{dom}}\;\mathcal{D}(n) \Rightarrow \mathscr{l} \notin \textbf{\emph{dom}}\;\mathcal{S}\]
 \end{lemma}
+\begin{proof}
+According to theorem~\ref{chap3:thm:loc-transp}, locations on all nodes in $\mathcal{D}$ are distinct. Given $\mathscr{l}$ is a fresh location in $\textbf{dom}\;\mathcal{D}(n)$, i.e., $\mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n)$, $\mathscr{l}$ is also not in any other nodes in $\mathcal{D}$. Hence we have:
+\[\mathscr{l} \notin \textbf{dom}\; |\mathcal{D}|\]
+Since $|\mathcal{D}| = S$, we can conclude that:
+\[\mathscr{l} \notin \textbf{dom}\;\mathcal{S}\]
+\end{proof}
 \end{highlightnew}
 
 \begin{proof}[Case \textsc{\emph{Box}}]
@@ -904,8 +910,14 @@ Hence:
 Before proving the case for \textsc{Borrow}, we introduce a lemma stating a relation between an existing location in a distributed program state $\mathcal{D}$ and such a location in a monolithic program state $\mathcal{S}$.  
 \begin{lemma}\label{chap3:loc-lemma-2}
 Given a distributed program state $\mathcal{D}$ and a monolithic program state $\mathcal{S}$, $n$ is a node in the domain of $\mathcal{D}$:
-\[|\mathcal{D}| = S \land \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n) \Rightarrow \mathscr{l} \in \textbf{dom}\;\mathcal{S}\]
+\[|\mathcal{D}| = S \land \mathscr{l} \in \textbf{\emph{dom}}\;\mathcal{D}(n) \Rightarrow \mathscr{l} \in \textbf{\emph{dom}}\;\mathcal{S}\]
 \end{lemma}
+\begin{proof}
+Given $\mathscr{l}$ is an existing location in $\textbf{dom}\;\mathcal{D}(n)$, i.e., $\mathscr{l} \in \textbf{dom}\;\mathcal{D}(n)$, we have:
+\[\mathscr{l} \in \textbf{dom}\; |\mathcal{D}|\]
+Since $|\mathcal{D}| = S$, we can conclude that:
+\[\mathscr{l} \in \textbf{dom}\;\mathcal{S}\]
+\end{proof}
 \end{highlightnew}
 
 \begin{proof}[Case \textsc{\emph{Borrow}}]
