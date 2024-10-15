@@ -846,15 +846,28 @@ Hence:
     % &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
     % \end{align*}
 \end{proof}
+\begin{highlightnew}
+Before proving the case for \textsc{Box}, we introduce a lemma stating a relation between a fresh location in a distributed program state $\mathcal{D}$ and such a location in a monolithic program state $\mathcal{S}$.  
+\begin{lemma}
+\label{chap3:loc-lemma-1}
+Given a distributed program state $\mathcal{D}$ and a monolithic program state $\mathcal{S}$, $n$ is a node in the domain of $\mathcal{D}$:
+\[|\mathcal{D}| = S \land \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n) \Rightarrow \mathscr{l} \notin \textbf{dom}\;\mathcal{S}\]
+\end{lemma}
+\end{highlightnew}
+
 \begin{proof}[Case \textsc{\emph{Box}}]
 We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, we take a fresh location $\mathscr{l}$:
 \[
-|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}
+|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n')
 \]
 Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of a remote heap allocation term gives:
 \[
 \mathcal{D}, [(n, \texttt{box}@n'\;v)] \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]
 \]
+\begin{highlightnew}
+According to lemma~\ref{chap3:loc-lemma-1}, we have:
+\[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
+\end{highlightnew}
 Following FR's reduction rule \textsc{Box}, the monolithic execution of the flattened remote heap allocation term gives:
 \[
 \mathcal{S}, (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top)), \mathscr{l}^\bullet
@@ -887,15 +900,27 @@ Hence:
     % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
     % \end{align*}
 \end{proof}
+\begin{highlightnew}
+Before proving the case for \textsc{Borrow}, we introduce a lemma stating a relation between an existing location in a distributed program state $\mathcal{D}$ and such a location in a monolithic program state $\mathcal{S}$.  
+\begin{lemma}\label{chap3:loc-lemma-2}
+Given a distributed program state $\mathcal{D}$ and a monolithic program state $\mathcal{S}$, $n$ is a node in the domain of $\mathcal{D}$:
+\[|\mathcal{D}| = S \land \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n) \Rightarrow \mathscr{l} \in \textbf{dom}\;\mathcal{S}\]
+\end{lemma}
+\end{highlightnew}
+
 \begin{proof}[Case \textsc{\emph{Borrow}}]
 We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, $\mathscr{l}$ is a location with an allocated value:
 \[
-|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \in \textbf{dom}\; \mathcal{S}
+|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n')
 \]
 Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}, the distributed execution of a remote borrow term gives:
 \[
 \mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \leadsto \mathcal{D}, [(n, \mathscr{l}^\circ@n')]
 \]
+\begin{highlightnew}
+According to lemma~\ref{chap3:loc-lemma-2}, we have:
+\[\mathscr{l} \in \textbf{dom}\; \mathcal{S}\] 
+\end{highlightnew}
 Following FR's reduction rule \textsc{Borrow}, the monolithic execution of the flattened remote borrow term gives:
 \[
 \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ
@@ -996,12 +1021,16 @@ Hence:
 \begin{proof}[Case \textsc{\emph{Decl}}]
 We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, we take a fresh location $\mathscr{l}$:
 \[
-|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n') \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{S}
+|\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n')
 \]
 Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, the distributed execution of a remote declaration gives:
 \[
 \mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[\mathscr{l}^\bullet@n'/x])]
 \]
+\begin{highlightnew}
+According to lemma~\ref{chap3:loc-lemma-1}, we have:
+\[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
+\end{highlightnew}
 Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
 \[
 \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[\mathscr{l}^\bullet/x]
