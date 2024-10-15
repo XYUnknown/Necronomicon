@@ -131,7 +131,7 @@ In the section, we present our implementation of the UMI framework as a library 
 
 \subsection{Overview}
 \label{chap3:impl:overview}
-To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolithic program into a distributed setting, by adding the \emph{macro}s provided by the UMI library. In this example program which allocates instances of the \texttt{struct} \texttt{A} and calls methods on them, the macro \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to resources held on a remote node. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local instance is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation of those original methods.
+To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolithic program into a distributed setting, by adding the \emph{macro}s provided by the UMI library. In this example program which allocates instances of the \texttt{struct} \texttt{A} and calls methods on them, the macro \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to resources held on a remote node. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local instance is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation of those original methods. \begin{highlightnew} We need to use different macros to identify the syntactic scopes of different code blocks in a piece of Rust program to produce corresponding translations.\end{highlightnew}
 
 An invocation on a proxy is encapsulated into a serialised message and sent to the destination node of which the address is the address stored in the proxy, and then the message is deserialised and the invocation is executed at the destination. After the execution, the result of the invocation is again put into a serialised message and passed back to the calling node to be deserialised.
 \begin{figure}[t]
@@ -212,12 +212,7 @@ As for a method of a translated \texttt{enum}, the macro \texttt{\#[umi\_enum\_m
 \subsection{Resource Management}
 \label{chap3:impl:resource}
 To be able to use the UMI library for executing programs that access and manipulate memories of different nodes within a network, resources and computations need to be made available to and well-managed by all nodes in the network.
-
-Firstly, a node should be able to store resources owned by different machines and deallocate those resources according to their lifetime.
-In Rust, if some resources are owned by a reference on the same node, and the reference has reached the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, while some resources on a node $n_1$ are not owned by any reference on the same node, they can be owned by a reference on a different node $n_2$. Although these resources do not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. 
-To achieve this goal, on each UMI server, we design a \emph{resource table} shown in figure~\ref{chap3:impl:tables} on the left, which has the same lifetime as the server. We used it to identify and manage local resources involved in remote computations. Note that the ID in an entry of the table is the ID field in a corresponding proxy, which is globally unique.
-If a variable is created locally, it will be put into the table once it is passed into a remote computation. The entry will not be removed until the remote computation finishes. If a variable is created via a remote call, it will be put into table on creation and will be deallocated when its remote owner decides that it should be dropped.
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \begin{tabular}{ |c|c| } 
 \hline
@@ -240,6 +235,11 @@ If a variable is created locally, it will be put into the table once it is passe
 \label{chap3:impl:tables}
 \end{figure}
 
+Firstly, a node should be able to store resources owned by different machines and deallocate those resources according to their lifetime.
+In Rust, if some resources are owned by a reference on the same node, and the reference has reached the end of its lifetime, these resources will be deallocated from the memory. With such a design, resources that are not owned by any reference on the same node are automatically deallocated. However, in our UMI library, while some resources on a node $n_1$ are not owned by any reference on the same node, they can be owned by a reference on a different node $n_2$. Although these resources do not have a local owner, the deallocation should not happen until the remote owner reaches the end of its lifetime. 
+To achieve this goal, on each UMI server, we design a \emph{resource table} shown in figure~\ref{chap3:impl:tables} on the left, which has the same lifetime as the server. We used it to identify and manage local resources involved in remote computations. Note that the ID in an entry of the table is the ID field in a corresponding proxy, which is globally unique.
+If a variable is created locally, it will be put into the table once it is passed into a remote computation. The entry will not be removed until the remote computation finishes. If a variable is created via a remote call, it will be put into table on creation and will be deallocated when its remote owner decides that it should be dropped.
+
 Secondly, we need to make all nodes aware of all methods that can be invoked on a proxy in order to make computations available on all nodes. To achieve this goal, we register all methods that are available for remote invocations in a \emph{method registration table} shown in figure~\ref{chap3:impl:tables} on the right, using the \texttt{register!(name, arg\_types, return\_type)} macro. The method registration table holds the full path name, argument types, and return type of methods. When a serialised invocation message, which takes the form of a plain string, is received by a node, the method to be invoked is deserialised and reconstructed according to the type information recorded in the registration table.
 
 \subsection{Passing Remote Invocations via Messages}
@@ -250,11 +250,13 @@ There are different types of messages for passing remote invocations. For instan
 
 \subsection{Extending Borrow Checking into Distributed Settings}
 \label{chap3:impl:borrow}
-To execute a deserialised remote method invocation on the node which receives the invocation, the first step is to gather serialised data as well as the ownership information of each variable involved in the method. In this step, we do not perform any reconstruction of these variables; instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. Such an format is implemented as \texttt{Argument}, which keeps the information of the variables related to borrow checking, and stores the data of the variable. The detailed implementation of this step is shown in listing~\ref{chap3:impl:lst:invoke}.
+To execute a deserialised remote method invocation on the node which receives the invocation, the first step is to gather serialised data as well as the ownership information of each variable involved in the method. In this step, we do not perform any reconstruction of these variables; instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. Such an format is implemented as \texttt{Argument}, which keeps the information of the variables related to borrow checking, and stores the data of the variable. The detailed implementation of this step is shown in listing~\ref{chap3:impl:lst:invoke:owned}, listing~\ref{chap3:impl:lst:invoke:rremote}, and listing~\ref{chap3:impl:lst:invoke:mrremote}.
 
-As shown in listing~\ref{chap3:impl:lst:invoke}, a serialised variable has a label indicating that if it is a piece of data copied or moved from the caller (\texttt{OwnedLocal}), a remote reference owned by the caller (\texttt{OwnedRemote}), a remote reference immutably borrowed by the caller (\texttt{RefRemote}), or a remote reference mutably borrowed by the caller (\texttt{MutRefRemote}).
+A serialised variable has a label indicating that if it is a piece of data copied or moved from the caller (\texttt{OwnedLocal}), a remote reference owned by the caller (\texttt{OwnedRemote}), a remote reference immutably borrowed by the caller (\texttt{RefRemote}), or a remote reference mutably borrowed by the caller (\texttt{MutRefRemote}).
 
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message}, label=chap3:impl:lst:invoke]
+As shown in listing~\ref{chap3:impl:lst:invoke:owned}, if a variable is serialised data, which is copied or moved from the caller, it will be kept as serialised, since the deserialisation and reconstruction process will happen during the invocation of the method (line 5 --- line 6).
+If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{chap3:impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table (line 7 --- line 11).
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \texttt{OwnedLocal} and \texttt{OwnedRemote}}, label=chap3:impl:lst:invoke:owned]
 Message::Invoke(fname, variables, invoke_op) => {
   let mut arguments: Vec<Argument> = Vec::new();
   for v in &variables {
@@ -269,6 +271,15 @@ Message::Invoke(fname, variables, invoke_op) => {
         } else { 
           arguments.push(
             Argument::Serialised(serialise_remote.to_string())); }},
+      ...}} ... }
+\end{lstlisting}
+
+If it is immutably borrowed, as shown in listing~\ref{chap3:impl:lst:invoke:rremote}. then the corresponding entry will be immutably borrowed from the table (line 5 --- line 13).
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \texttt{RefRemote}}, label=chap3:impl:lst:invoke:rremote]
+Message::Invoke(fname, variables, invoke_op) => {
+  let mut arguments: Vec<Argument> = Vec::new();
+  for v in &variables {
+    match v {...
       Variable::RefRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let borrow = mvtable.get(id).unwrap().borrow();
@@ -281,6 +292,15 @@ Message::Invoke(fname, variables, invoke_op) => {
         } else { 
           arguments.push(
             Argument::RemoteRef(serialise_remote.to_string())); }},
+      ...}} ... }
+\end{lstlisting}
+
+ If it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution (line 5 --- line 14). 
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \texttt{MutRefRemote}}, label=chap3:impl:lst:invoke:mrremote]
+Message::Invoke(fname, variables, invoke_op) => {
+  let mut arguments: Vec<Argument> = Vec::new();
+  for v in &variables {
+    match v { ...
       Variable::MutRefRemote(serialise_remote, addr, id) => {
         if addr == &local_address {
           let mut borrow_mut = mvtable.get(id).unwrap().borrow_mut();
@@ -294,32 +314,21 @@ Message::Invoke(fname, variables, invoke_op) => {
         } else { 
           arguments.push(
             Argument::RemoteMutRef(serialise_remote.to_string())); }
-  }}} ...
-}
+  }}} ... }
 \end{lstlisting}
 
-If a variable is serialised data, which is copied or moved from the caller, it will be kept as serialised, since the deserialisation and reconstruction process will happen during the invocation of the method (line 5 --- line 6).
-If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{chap3:impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table (line 7 --- line 11). 
-If it is immutably borrowed, then the corresponding entry will be immutably borrowed from the table (line 15 --- line 23). If it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution (line 27 --- line 36). 
-If an argument is a proxy that is not located at the caller, as shown in three \texttt{else}-cases, from line 12 to line 14, from line 24 to line 26, and from line 37 to line 39, then the proxy will be passed into the method without any additional modification.
+If an argument is a proxy that is not located at the caller, as shown in three \texttt{else}-cases demonstrated in listing~\ref{chap3:impl:lst:invoke:owned} (line 12 --- line 14), listing~\ref{chap3:impl:lst:invoke:rremote} (line 14 --- line 16), and listing~\ref{chap3:impl:lst:invoke:mrremote} (line 15 --- line 17), then the proxy will be passed into the method without any additional modification.
 
-Once the information about all variables is gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables} on the right. During the execution of the method via \texttt{f.call(arguments)} shown in line 6, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
+Once the information about all variables is gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return:owned} and listing~\ref{chap3:impl:lst:exec-return:r:mr}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables} on the right. During the execution of the method via \texttt{f.call(arguments)} shown in line 6, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
 
 The result of an execution is provided in two formats, serialised data and a boxed data entry. These two formats are used according to the required ownership information of the return value. 
-If the method produces an owned result annotated with \texttt{InvokeOp::Owned}, whether the serialised data \texttt{res} represents some local resources or a proxy, it will be kept as the serialised form and sent back via a return message (line 9 --- line 11). 
-
-If the method is an initialisation call sent by the macro \texttt{remote!(...)} annotated with \texttt{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and a unique \texttt{id} will be generated. In the return message, the address of the receiver, the \texttt{id}, and the ownership status which is \texttt{true} are included for the caller to construct a proxy that owns such a data entry on the receiver (line 12 --- line 18).
-
-For a return value that is an immutably or mutably borrowed reference, there are two situations. 
-If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by a generated unique \texttt{id}. Such an \texttt{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference (line 20 --- line 25 and line 31 --- line 36). 
-However, if a borrowed reference is not local to the receiver, meaning it already mirrors a reference on a different node, then it will not be stored in the resource table, instead, the serialised version of it will be sent back to the caller in a return message (line 26 --- line 27 and line 37 --- line 38).
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result}, label=chap3:impl:lst:exec-return]
-Message::Invoke(fname, variables, invoke_op) => {
-  ...
+As shown in listing~\ref{chap3:impl:lst:exec-return:owned}, if the method produces an owned result annotated with \texttt{InvokeOp::Owned}, whether the serialised data \texttt{res} represents some local resources or a proxy, it will be kept as the serialised form and sent back via a return message (line 8 --- line 10). If the method is an initialisation call sent by the macro \texttt{remote!(...)} annotated with \texttt{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and a unique \texttt{id} will be generated. In the return message, the address of the receiver, the \texttt{id}, and the ownership status which is \texttt{true} are included for the caller to construct a proxy that owns such a data entry on the receiver (line 11 --- line 16).
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result: \texttt{Owned} and \texttt{Init}}, label=chap3:impl:lst:exec-return:owned]
+Message::Invoke(fname, variables, invoke_op) => { ...
   let f: &str = &*fname; 
   match lrtable.get(f) {
     Some(f) => {
-      let ((res, is_local), b) = f.call(arguments);
+      let ((res, is_local), b) = f.call(arguments); // b is a reference
       let res_message: Message;
       match invoke_op {
         InvokeOp::Owned => { 
@@ -331,38 +340,53 @@ Message::Invoke(fname, variables, invoke_op) => {
           mvtable.insert(id.clone(), RefCell::new((b, false)));
           res_message = 
             Message::Return(ReturnVar::OwnedInit(local_address, id, true));
-        },
-        InvokeOp::Ref => {
-          if is_local {
-            let id = (SystemTime::now(), m_id_gen.next());
-            // b is a reference
-            mvtable.insert(id.clone(), RefCell::new((b, true)));
-            res_message =
-              Message::Return(ReturnVar::RefMirror(local_address, id));
-          } else { 
-            res_message = Message::Return(ReturnVar::RefBorrow(res)); 
-          }
-        },
-        InvokeOp::MutRef => {
-          if is_local {
-            let id = (SystemTime::now(), m_id_gen.next());
-            // b is a reference
-            mvtable.insert(id.clone(), RefCell::new((b, true)));
-            res_message =
-              Message::Return(ReturnVar::MutRefMirror(local_address, id));
-          } else { 
-            res_message = Message::Return(ReturnVar::MutRefBorrow(res)); 
-          }
-      }}
+        }, ... }
       response(stream, res_message);
     },
     None => { /* report unregistered function */ }}
 }, ...
 \end{lstlisting}
 
-\subsection{Extending Lifetime Management into Distributed Settings}
+For a return value that is an immutably or mutably borrowed reference, as shown in listing~\ref{chap3:impl:lst:exec-return:r:mr} there are two situations. 
+If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by a generated unique \texttt{id}. Such an \texttt{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference (line 9 --- line 13 and line 18 --- line 22). 
+However, if a borrowed reference is not local to the receiver, meaning it already mirrors a reference on a different node, then it will not be stored in the resource table, instead, the serialised version of it will be sent back to the caller in a return message (line 14 --- line 15 and line 23 --- line 24).
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result: \texttt{Ref} and \texttt{MutRef}}, label=chap3:impl:lst:exec-return:r:mr]
+Message::Invoke(fname, variables, invoke_op) => { ...
+  let f: &str = &*fname; 
+  match lrtable.get(f) {
+    Some(f) => {
+      let ((res, is_local), b) = f.call(arguments); // b is a reference
+      let res_message: Message;
+      match invoke_op { ...
+        InvokeOp::Ref => {
+          if is_local {
+            let id = (SystemTime::now(), m_id_gen.next());
+            mvtable.insert(id.clone(), RefCell::new((b, true)));
+            res_message =
+              Message::Return(ReturnVar::RefMirror(local_address, id));
+          } else { 
+            res_message = Message::Return(ReturnVar::RefBorrow(res)); 
+        }}, 
+        InvokeOp::MutRef => {
+          if is_local {
+            let id = (SystemTime::now(), m_id_gen.next());
+            mvtable.insert(id.clone(), RefCell::new((b, true)));
+            res_message =
+              Message::Return(ReturnVar::MutRefMirror(local_address, id));
+          } else { 
+            res_message = Message::Return(ReturnVar::MutRefBorrow(res)); 
+      }}}
+      response(stream, res_message);
+    },
+    None => { /* report unregistered function */ }}
+}, ...
+\end{lstlisting}
+
+\subsection{Extending Lifetime Management to Distributed Settings}
 \label{chap3:impl:lifetime}
 Recall that in section~\ref{chap3:impl:resource}, we have briefly introduced storing and deallocating remotely owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
+
+In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime (line 10).
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=chap3:impl:lst:drop-eg]
 // on caller
 fn main() {
@@ -376,8 +400,7 @@ fn main() {
 } // a_proxy is out of scope, its data on the remote machine is dropped
 \end{lstlisting}
 
-In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime (line 10).
-
+For monolithic programs, the deallocation is achieved via the \texttt{drop} method in the destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}. When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources.
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={The implementation of a remote deallocation}, label=chap3:impl:lst:drop]
 impl Drop for #name {
   fn drop(&mut self) {
@@ -388,10 +411,7 @@ impl Drop for #name {
           send(*addr, msg).unwrap(); }},
       _ => {}
 }}}
-\end{lstlisting}
-
-For monolithic programs, the deallocation is achieved via the \texttt{drop} method in the destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}.
-When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources. 
+\end{lstlisting} 
 
 As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \texttt{id} will be removed from the resource table (i.e., the \texttt{mvtable} in the listing). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
