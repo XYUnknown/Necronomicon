@@ -411,12 +411,8 @@ For given environments $\xi_1$ and $\xi_2$, and strategy $s$ we have:
 \label{chap4:semantics:monotonicity}
 \end{theorem}
 \vspace{-1.0em}
-We prove this theorem in Isabelle/HOL by structural induction on the strategy $s$.
-
-\subsection{Formalised Big-Step Operational Semantics}
-\label{chap4:operational}
-In this section, we present the formalised big-step operational semantics of System S, with our extension allowing for divergent strategies. Figure~\ref{chap4:semantics:operational-p1} depicts the big-step operational semantics for the non-diverging cases of System S. These cases are essentially the same as those of \citet{VISSER1998422}, albeit with the aforementioned simplification to binary trees applied.\footnote{\citet{VISSER1998422} denote error by $\uparrow$.} The semantic rules are given in a straightforward way.
-\begin{figure}[t]
+\noindent We prove this theorem in Isabelle/HOL by structural induction on the strategy $s$.
+\begin{figure}[!b]
 \vspace{1em}
 \begin{mathparpagebreakable}
 %%% Line 1
@@ -473,7 +469,7 @@ In this section, we present the formalised big-step operational semantics of Sys
 \vspace{-1em}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!t]
 \begin{mathparpagebreakable}
 \inferrule*[right={\scriptsize (One(Id))}]{ }
     {\mathit{Leaf} \xrightarrow[]{\mathit{one} (s)} \err}
@@ -525,9 +521,10 @@ In this section, we present the formalised big-step operational semantics of Sys
 \label{chap4:semantics:operational-p2}
 \vspace{-1em}
 \end{figure}
-
-On top of these rules for terminating cases, we define the semantics for divergence as the \emph{coinductive} judgement \cite{LEROY2009284} satisfying the rules shown in figure \ref{chap4:semantics:operational-div}. Here we use \plat{$e \xrightarrow[\infty]{s}$} to indicate that the evaluation of an expression $e$ by a strategy $s$ leads to divergence.
-\begin{figure}
+\subsection{Formalised Big-Step Operational Semantics}
+\label{chap4:operational}
+In this section, we present the formalised big-step operational semantics of System S, with our extension allowing for divergent strategies. Figure~\ref{chap4:semantics:operational-p1} and figure~\ref{chap4:semantics:operational-p2} depict the big-step operational semantics for the non-diverging cases of System S. These cases are essentially the same as those of \citet{VISSER1998422}, albeit with the aforementioned simplification to binary trees applied.\footnote{\citet{VISSER1998422} denote error by $\uparrow$.} The semantic rules are given in a straightforward way.
+\begin{figure}[!b]
 \begin{mathpar}
 \begin{array}{ccc}
  %%%% Line 1
@@ -575,6 +572,8 @@ On top of these rules for terminating cases, we define the semantics for diverge
 \caption{Big-step operational semantics of diverging cases}
 \label{chap4:semantics:operational-div}
 \end{figure}
+
+On top of these rules for terminating cases, we define the semantics for divergence as the \emph{coinductive} judgement \cite{LEROY2009284} satisfying the rules shown in figure \ref{chap4:semantics:operational-div}. Here we use \plat{$e \xrightarrow[\infty]{s}$} to indicate that the evaluation of an expression $e$ by a strategy $s$ leads to divergence.
 
 \subsection{The Denotational Semantics is Equivalent to The Big-Step Operational Semantics}
 \label{chap4:equaivalence}
@@ -854,11 +853,7 @@ Intuitively, the weakest must succeed precondition of the sequential composition
 
 Location is very important for defining the weakest preconditions of traversals. Demonstrated in figure~\ref{wp:traversals}, the approach of defining the weakest preconditions for $\one(s)$ is again similar to nondeterministic choice, as $\one(s)$ nondeterministically chooses one of the left or right child of the current expression to apply the strategy $s$ to. Its weakest must succeed precondition is a set of expressions that are not leaf nodes. For each of them, applying $s$ to either its left child or right child should not diverge, and at least one of its children must be successfully rewritten by $s$. The weakest may error precondition of $\mathit{one}(s)$ includes all expressions that are leaf nodes as well as expressions whose both children to which applying $s$ may result in error.
 The weakest must succeed precondition of $\mathit{some}(s)$ is a set of expressions that are not leaf nodes. For each of them, if the given strategy $s$ can be applied to \emph{both} of its children successfully, the result of applying $s$ to both of them regardless of the ordering of the application should satisfy the postcondition $P$. In addition, applying $s$ to one of its children may result in an error, but not for both of its children. Again, expressions with children to which applying $s$ diverges are excluded from the weakest must succeed precondition. Similar to $\mathit{one}(s)$, the weakest may error preconditions includes all leaf expressions and expressions whose both children to which applying $s$ may result in error. Since $\mathit{all}(s)$ requires the strategy $s$ to be applied to either a leaf expression or both children of an expression which is not a leaf, intuitively, its weakest must succeed precondition is a set of leaf expressions, or expressions of which both children can be successfully rewritten by the strategy $s$ regardless of the order of the application of $s$. Its weakest may error precondition again includes all leaf expressions and expressions with children to which applying $s$ may result in an error. \begin{highlightnew}Note that the weakest precondition formulae of $\mathit{all}(s)$ contain the sequential composition of the execution of $s$ on the left child and then the right child as well as the execution of $s$ on the right child and then the left child to indicate that $\mathit{all}(s)$ is executed without regard for the order of the application of $s$.\end{highlightnew}
-
-Lastly, we introduce the weakest preconditions for the fixed-point operator, shown in figure~\ref{wp:fp-operator}, which are defined using simultaneous induction. $\Delta$ contains a pair of simultaneously defined least fixed points $\mathscr{X}$ and $\mathscr{Y}$ which are used to define the weakest must succeed precondition and weakest may fail precondition respectively. In these fixed-point equations, we extend the logic environment $\zeta$ with mappings from the fixed-point variable with tags $(X, \cdot)$ and $(X, \uparrow)$ to the least fixed points $\mathscr{X}$ and $\mathscr{Y}$ respectively.
-
-The weakest must succeed precondition a (fixed point) variable $X$ is calculated by applying the function obtained by looking up $(X, \cdot)$ in the logic environment $\zeta$ to the location $l$ and postcondition $P$. For the weakest may fail precondition, the function applied to $l$ and $P$ is obtained by looking up $X$ with the may fail tag $\uparrow$ from $\zeta$.
-\begin{figure}
+\begin{figure}[!b]
 \begin{align*}
     &wp_{\zeta \Vdash X@l}(P) = \zeta(X, \cdot) \,l\,P \quad\text{(where $\zeta(X, \cdot)$ \textbf{def.})}\\
     &wp_{\zeta \Vdash X@l} ^ \uparrow (P) = \zeta(X, \uparrow)\,l\,P \quad\text{(where $\zeta(X, \uparrow)$ \textbf{def.})}\\[-0.7em]
@@ -875,6 +870,10 @@ The weakest must succeed precondition a (fixed point) variable $X$ is calculated
     \caption{Location-based weakest preconditions for fixed-point operators}
     \label{wp:fp-operator}
 \end{figure}
+
+Lastly, we introduce the weakest preconditions for the fixed-point operator, shown in figure~\ref{wp:fp-operator}, which are defined using simultaneous induction. $\Delta$ contains a pair of simultaneously defined least fixed points $\mathscr{X}$ and $\mathscr{Y}$ which are used to define the weakest must succeed precondition and weakest may fail precondition respectively. In these fixed-point equations, we extend the logic environment $\zeta$ with mappings from the fixed-point variable with tags $(X, \cdot)$ and $(X, \uparrow)$ to the least fixed points $\mathscr{X}$ and $\mathscr{Y}$ respectively.
+
+The weakest must succeed precondition a (fixed point) variable $X$ is calculated by applying the function obtained by looking up $(X, \cdot)$ in the logic environment $\zeta$ to the location $l$ and postcondition $P$. For the weakest may fail precondition, the function applied to $l$ and $P$ is obtained by looking up $X$ with the may fail tag $\uparrow$ from $\zeta$.
 
 \subsection{The Soundness of the Weakest Precondition Calculus w.r.t. the Formal Semantics}
 Since our weakest precondition calculus is designed to reason about the execution of strategies, it is essential to prove it is \textit{sound} with respect to the formal semantics introduced in section~\ref{chap4:semantics}. Specifically, we define the soundness of the weakest must succeed precondition as theorem~\ref{chap4:wp:wp-soundness}, and the soundness of the weakest may error precondition as theorem~\ref{chap4:wp:wp-err-soundness}. Both of these theorems have the same assumption to relate the logic and semantic environments $\zeta$ and $\xi$. This assumption states that given any variable $X$, location $l$ and postcondition $P$, executing the function obtained by looking up $X$ in the logic environment $\zeta$ --- with the must succeed tag or the may error tag correspondingly --- gives the set of expressions, at the location $l$ of each of which executing the semantics of the variable ($\xi(X)$) results in a subset of the postcondition $P$ or $P\cup \{\err\}$ respectively. From this assumption, theorem~\ref{chap4:wp:wp-soundness} concludes that the weakest must succeed precondition $wp_{\zeta \Vdash s@l}(P)$ should equal to the set of expressions on which executing the semantics of $s$ gives a subset of $P$. Similarly, theorem~\ref{chap4:wp:wp-err-soundness} says that under the same assumptions, the weakest may error precondition $wp_{\zeta \Vdash s@l}^\uparrow(P)$ should equal to the set of expressions on which executing the semantics of $s$ gives a subset of $P\cup \{\err\}$.
