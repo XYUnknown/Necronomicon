@@ -420,18 +420,8 @@ Message::Drop(id) => { mvtable.remove(&id); }
 
 After presenting the design and implementation of the UMI library, in the next chapter, we discuss the formalisation of core concepts of the UMI library base on formalised operational semantics of a core language of Rust, and sketch a proof of the location transparency theorem stating that using the UMI framework, the translation of a monolithic program into a distributed program preserves the semantics of the original program.
 
-\section{The Operational Semantics}
-\label{chap3:semantics}
-We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s featherweight Rust (FR), which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references, and lexical lifetimes. We then present dFR, which extends FR to include distributed features of the UMI framework such as remote copy- and move-semantics as well as remote references. We show that such an extension preserves the semantics of FR, and therefore, the type safety claims of FR is preserved by dFR.
-
-Note that the aim of this project is not to design a formal semantics or type system of Rust, rather, we aim to utilise existing work which provide formal semantics accompanied with a type system with type safety proofs for a core surface language of Rust (i.e., FR). Hence, here we only focus on discussing the semantics extension and the location transparency theorem. For readers who are curious about the (rather complicated) type system, please refer to appendix~\ref{chap3:app1:type-system}.
-
-\subsection{The Revised Syntax and Semantics of FR}
-\label{chap3:semantics:fr}
-We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, where $\&[mut] w$ represents either a immutable or a mutable borrow term. $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. A copy term is denoted as $!w$. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
-
 % Note that the $k$ in the block represents the lifetime.
-\begin{figure}
+\begin{figure}[!b]
 \begin{alignat*}{3}
     \text{Term} \quad t \ \metaDeff \quad &\texttt{let mut}\;x = t;t &\text{declaration}\\
     \cmid \quad &w \metaDef t &\text{assignment}\\
@@ -458,6 +448,16 @@ We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Not
 \label{chap3:syntax:r-syntax-fig}
 \end{figure}
 
+\section{The Operational Semantics}
+\label{chap3:semantics}
+We first provide a small-step operational semantics of a core language of Rust based on \citet{10.1145/3443420}'s featherweight Rust (FR), which captures the core features of Rust including copy- and move-semantics, owned and immutably/mutably borrowed references, and lexical lifetimes. We then present dFR, which extends FR to include distributed features of the UMI framework such as remote copy- and move-semantics as well as remote references. We show that such an extension preserves the semantics of FR, and therefore, the type safety claims of FR is preserved by dFR.
+
+Note that the aim of this project is not to design a formal semantics or type system of Rust, rather, we aim to utilise existing work which provide formal semantics accompanied with a type system with type safety proofs for a core surface language of Rust (i.e., FR). Hence, here we only focus on discussing the semantics extension and the location transparency theorem. For readers who are curious about the (rather complicated) type system, please refer to appendix~\ref{chap3:app1:type-system}.
+
+\subsection{The Revised Syntax and Semantics of FR}
+\label{chap3:semantics:fr}
+We present a revised syntax of FR in figure~\ref{chap3:syntax:r-syntax-fig}. Note that $\&w$ and $\&\texttt{mut}\;w$ represent immutable and mutable borrowing, where $\&[mut] w$ represents either a immutable or a mutable borrow term. $\mathscr{l}^\bullet$ and $\mathscr{l}^\circ$ are owned and borrowed references where $\mathscr{l}$ represents a location in a program state. A copy term is denoted as $!w$. In addition, different from the original FR and Rust which do not have explicit syntax for move, we use $\#w$ to express move explicitly.
+
 \begin{figure}
 \begin{align*}
     &\mathcal{S}: \mathbb{A} \rightharpoonup \mathcal{V} \times \mathcal{L}\\
@@ -482,17 +482,9 @@ and respectively:
       \mathcal{S}(\mathscr{l}) \quad\text{if $\mathcal{S}(\mathscr{l})=(v,k)$} \\
       \textbf{undefined}\quad\text{otherwise}
     \end{cases}
-\] % this  is not correct and I will revise it
+\]
 
-Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \stackrel k\longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$, and $S', t'$ are the program state and the term after the evaluation. $k$ is a lifetime, which we omit when it is irrelevant to the evaluation of a term.
-
-Evaluating a copy term simply makes a copy of a value $v$ at a given location $\mathscr{l}$, without modifying the program state, whereas evaluating a move term moves a value $v$ out of a given location $\mathscr{l}$.
-A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the \emph{global lifetime} $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
-Assignment places a given value $v'$ in the location $\mathscr{l}$, and recursively deallocates the old value $v$ from the program state. Note that assignments to immutably borrowed references are prohibited by the type system provided by \citepos{10.1145/3443420} original work, the discussion of the type system is omitted here since focus on the analysis of the SOS of FR programs.
-The evaluation of a declaration allocates a given value $v$ to a fresh location $\mathscr{l}$ and substitutes latter occurrence of the declared variable $x$ with the owned reference $\mathscr{l}^\bullet$.
-
-FR's lifetimes are based on the the lexical structure of programs. A block's lifetime $k$ is based on the depth of the block. A block with deeper depth $\mathit{suc}\; k$ lives shorter than a block with depth $k$. The evaluation of a block is the evaluation of the term inside the block. At the end of the evaluation, a single value $v$ is obtained and values that have short lifetime than the current block are deallocated from the program state. The reduction rules for the evaluation of sequences are intuitive. We highlight the case for a sequence of which the first term is an owned reference. After evaluating the owned reference, it is recursively deallocated from the program state.
-\begin{figure}
+\begin{figure}[!b]
 \begin{mathparpagebreakable}
     \inferrule*[right={(Copy)}]{\mathcal{S} (\mathscr{l}) = (v , m)}
     {\mathcal{S}, !{\mathscr{l}^\bullet} \longrightarrow \mathcal{S}, v}
@@ -540,10 +532,18 @@ FR's lifetimes are based on the the lexical structure of programs. A block's lif
     \caption{The semantics of revised FR}
     \label{semantics:r-reduction-fig}
 \end{figure}
-% \subsection{Evaluation Context}
+
+Figure~\ref{semantics:r-reduction-fig} shows the small-step operational semantics of FR, which takes the form of a reduction $S, t \stackrel k\longrightarrow S', t'$, where $S$ is the program state before the evaluation of the term $t$, and $S', t'$ are the program state and the term after the evaluation. $k$ is a lifetime, which we omit when it is irrelevant to the evaluation of a term.
+
+Evaluating a copy term simply makes a copy of a value $v$ at a given location $\mathscr{l}$, without modifying the program state, whereas evaluating a move term moves a value $v$ out of a given location $\mathscr{l}$.
+A heap allocation $\texttt{box}\;v$ puts the value $v$ into a fresh location $\mathscr{l}$ and gives it the \emph{global lifetime} $\top$, which outlives all other lifetimes. The rule for evaluating a borrow term produces a borrowed reference of the give location $\mathscr{l}$.
+Assignment places a given value $v'$ in the location $\mathscr{l}$, and recursively deallocates the old value $v$ from the program state. Note that assignments to immutably borrowed references are prohibited by the type system provided by \citepos{10.1145/3443420} original work, the discussion of the type system is omitted here since focus on the analysis of the SOS of FR programs.
+The evaluation of a declaration allocates a given value $v$ to a fresh location $\mathscr{l}$ and substitutes latter occurrence of the declared variable $x$ with the owned reference $\mathscr{l}^\bullet$.
+
+FR's lifetimes are based on the the lexical structure of programs. A block's lifetime $k$ is based on the depth of the block. A block with deeper depth $\mathit{suc}\; k$ lives shorter than a block with depth $k$. The evaluation of a block is the evaluation of the term inside the block. At the end of the evaluation, a single value $v$ is obtained and values that have short lifetime than the current block are deallocated from the program state. The reduction rules for the evaluation of sequences are intuitive. We highlight the case for a sequence of which the first term is an owned reference. After evaluating the owned reference, it is recursively deallocated from the program state.
 
 An evaluation context is a term with a placeholder $[\cdot]$. $E[t]$ is a term obtained by replacing the placeholder with a term $t$. The evaluation context and reduction rule for the evaluation context are shown in figure~\ref{semantics:eval-context}.
-\begin{figure}
+\begin{figure}[!t]
     \begin{align*}
         E \metaDeff [\cdot] \cmid E;t \cmid v; E \cmid \texttt{let mut}\;x=E; t \cmid \texttt{let mut}\;x = v; E \cmid \{E\} \cmid \texttt{box}\;E \cmid w = E
     \end{align*}
@@ -561,7 +561,7 @@ Next, we will discuss the syntax and semantics of dFR, which extends FR with dis
 \label{chap3:semantics:dfr}
 Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of FR discussed in section~\ref{chap3:semantics:fr} extended with the remote declaration $\texttt{let}\;\texttt{mut}@n\; x = t;t$, remote heap allocation $\texttt{box}\;t$, remote values $v@n$, and remote terms $t@n$. All extensions are highlighted. Note that $n$ is the address of a node and $\mathcal{N}$ is the set of addresses. Also, such an extension does not change the type system of FR.
 % $\mathscr{l}^\bullet@n$ denotes a owned reference on the node $n$. 
-\begin{figure}
+\begin{figure}[!b]
 \begin{alignat*}{3}
     \text{Term}(\mathcal{T}) \quad t \ \metaDeff \quad &\texttt{let mut } x = t;t &\text{declaration}\\
     \cmid \quad &\color{kirby}\texttt{let mut}@n\; x = t;t &\text{\color{kirby}remote declaration}\\
@@ -593,7 +593,10 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
 \label{syntax:d-syntax-fig}
 \end{figure}
 
-Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are \emph{configuration stacks}. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
+Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are \emph{configuration stacks}. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR. \begin{highlightnew}
+We explain the reduction rules for each operation.
+% At the end of this section, figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2} show all reduction rules of the semantics of dFR.
+\end{highlightnew}
 \begin{figure}
     \begin{align*}
         &\mathcal{D}: \mathcal{N} \rightharpoonup \mathcal{S}
@@ -606,79 +609,139 @@ Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, w
     \label{d-state}
 \end{figure}
 
-\begin{figure}
-    \begin{mathpar}
-        \inferrule*[right={(Copy (s1))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m) }
+To evaluate copying a remotely owned reference $\mathscr{l}^\bullet@n'$ on a node with address $n$, the first step shown in the rule \textsc{Copy (s1)} is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet@n')$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. It models that the computation is passed to the node $n'$, which stores the resource owned by the reference $\mathscr{l}^\bullet@n'$. Then the rule \textsc{Copy (s2)} indicates that the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. 
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Copy (s1))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m) }
         {\mathcal{D}, \mathcal{C} \concat (n, !\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
         
-        \inferrule*[right={(Copy (s2))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m)}
+    \inferrule*[right={(Copy (s2))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m)}
         {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n',!\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, v@n')}
+\end{mathparpagebreakable}
 
-        \inferrule*[right={(Move (s1))}]{ }
+Similarly, as for the semantics of moving the value out of a remote owned reference, the first step shown in \textsc{Move (s1)} is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. Then as shown in \textsc{Move (s2)}, the resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$, indicating that the value is moved out of the location $\mathscr{l}$ at the node $n'$.
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Move (s1))}]{ }
         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \#\mathscr{l}^\bullet@n') \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet)}
 
-        \inferrule*[right={(Move (s2))}]{ }
+    \inferrule*[right={(Move (s2))}]{ }
         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto \bot), \mathcal{C} \concat (n, v@n')}
-
-        \inferrule*[right={(Box (s1))}]{ }
-        {\mathcal{D}, \mathcal{C} \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v)}
-
-        \inferrule*[right={(Box (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C} \concat (n, \mathscr{l}^\bullet@n')} 
-
-        \inferrule*[right={(Borrow (s1))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
-
-        \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, \mathscr{l}^\circ@n')}
-    \end{mathpar}
-    \caption{The semantics of dFR (part one)}
-    \label{semantics:eval-distributed-1}
-\end{figure}
-
-To evaluate copying a remotely owned reference $\mathscr{l}^\bullet@n'$ on a node with address $n$, the first step shown in the rule \textsc{Copy (s1)} is to update the configuration stack by changing the $(n, !\mathscr{l}^\bullet@n')$ to $(n, ?)$, and pushing a new address-term pair $(n', !\mathscr{l}^\bullet)$ to be evaluated onto the stack. It models that the computation is passed to the node $n'$, which stores the resource owned by the reference $\mathscr{l}^\bullet@n'$. Then the rule \textsc{Copy (s2)} indicates that the copy term $!\mathscr{l}^\bullet$ gets evaluated on the node $n'$, and the resulting value annotated with the address $n'$ is passed back to fill in the hole. Similarly, as for the semantics of moving the value out of a remote owned reference, the first step is to replace the term on the node $n$ with a hole, and pass the copy term to the node $n'$ to evaluate. The resulting value $v$ annotated with the address $n'$ is passed back to the node $n$ at the end of the evaluation to fill in the hole, and the value of the location $\mathscr{l}$ at the program state of the node $n'$ is replaced by $\bot$, indicating that the value is moved out of the location $\mathscr{l}$ at the node $n'$.
-
-\begin{figure}
-    \begin{mathpar}
-        \inferrule*[right={(Assign Owned (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
-
-        \inferrule*[right={(Assign Owned (s2))}]{ }
-        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
-
-        \inferrule*[right={(Assign Borrowed (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
-
-        \inferrule*[right={(Assign Borrowed (s2))}]{ }
-        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
-        
-        \inferrule*[right={(Decl (s1))}]{ }
-        {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x)}
-
-        \inferrule*[right={(Decl (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
-        {\mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[\mathscr{l}^\bullet@n'/x])}
-
-        \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
-        {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C} \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t')}
-
-        \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n', t) \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n', t')}
-        {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t'@n')}
-    \end{mathpar}
-    \caption{The semantics of dFR (part two)}
-    \label{semantics:eval-distributed-2}
-\end{figure}
+\end{mathparpagebreakable}
 
 The rules \textsc{Box (s1)} and \textsc{Box (s2)} show the evaluation of a remote heap allocation $\texttt{box}@n'\;v$ on the node $n$. Firstly, the heap allocation is passed to the node $n'$ to be evaluated, and a hole on the node $n$ is created and pushed onto the configuration stack. The value $v$ is stored in a fresh location $\mathscr{l}$ at the program state of the node $n'$ and assigned with the lifetime $\top$ since it is a heap allocation, hence a owned reference $\mathscr{l}^\bullet$ is created in the node $n'$. Such a owned reference is then passed back to the node $n$ allowing the node $n$ to own the location $\mathscr{l}$ created by the heap allocation on the node $n'$. At the end of the evaluation, as shown in the rule \textsc{Box (s2)}, on the top of the configuration stack, the hole create on the node $n$ is filled by the owned remote reference $\mathscr{l}^\bullet@n'$
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Box (s1))}]{ }
+        {\mathcal{D}, \mathcal{C} \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v)}
+
+    \inferrule*[right={(Box (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \\\mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C} \concat (n, \mathscr{l}^\bullet@n')} 
+\end{mathparpagebreakable}
 
 The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of immutable and mutable borrow terms. On a given node $n$, to borrow a remotely owned reference from a different node $n'$, firstly a hole is created and pushed waiting for a term to be passed back, and the borrow term $\&[\texttt{mut}]\mathscr{l}^\bullet@n'$ is passed to the node $n'$ to be evaluated. After it being evaluated on the node $n'$, the resulting remotely borrowed reference $\mathscr{l}^\circ@n'$ is passed back to the node $n$ into the hole on the configuration stack.
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Borrow (s1))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
+        {\mathcal{D}, \mathcal{C} \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
 
-A remote assignment to an owned reference $\mathscr{l}^\bullet@n' \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack. The evaluation of a remote assignment to a borrowed reference is similar. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
+    \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
+        {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, \mathscr{l}^\circ@n')}
+\end{mathparpagebreakable}
+
+A remote assignment to an owned reference $\mathscr{l}^\bullet@n' \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack.
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Assign Borrowed (s1))}]{ }
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+
+    \inferrule*[right={(Assign Borrowed (s2))}]{ }
+        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
+\end{mathparpagebreakable}
+
+The evaluation of a remote assignment to a borrowed reference is similar shown in rules \textsc{Assign Borrowed (s1)} and \textsc{Assign Borrowed (s2)}.. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Assign Borrowed (s1))}]{ }
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+
+    \inferrule*[right={(Assign Borrowed (s2))}]{ }
+        {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
+\end{mathparpagebreakable}
 
 Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a remote declaration is more complicated. The first step shown in \textsc{Decl (s1)} leaves a hole to be filled by the resulting term in the substitution of the declared variable $x$. Then the declaration is passed to the node $n'$ to be evaluated. Shown in  \textsc{Decl (s2)}, once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable $x$ on the node $n$ will be substituted with the remote owned reference $\mathscr{l}@n'^\bullet$.
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Decl (s1))}]{ }
+        {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x)}
+
+    \inferrule*[right={(Decl (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
+        {\mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[\mathscr{l}^\bullet@n'/x])}
+\end{mathparpagebreakable}
 
 Lastly, all reduction rules for evaluating terms presented in FR are adapted into reduction rules for evaluating dFR via the rule \textsc{Local Term}. As for the evaluation of remote terms, shown in the rule \textsc{Remote Term}, if a local term $t$ on the node $n'$ is evaluated into $t'$, then when it is treated as a remote term $t@n'$ on the node $n$, it will be evaluated to a remote term $t'@n'$ on the node $n$.
+\begin{mathparpagebreakable}
+    \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
+        {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C} \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t')}
+
+    \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n', t) \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n', t')}
+        {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t'@n')}
+\end{mathparpagebreakable}
 
 In the next section, we present and prove a location transparency theorem, which states that when translating a monolithic program written in FR into a distributed program written in dFR, the semantics of the monolithic program is preserved.
+
+% \begin{figure}
+%     \begin{mathpar}
+%         \inferrule*[right={(Copy (s1))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m) }
+%         {\mathcal{D}, \mathcal{C} \concat (n, !\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', !\mathscr{l}^\bullet)}
+        
+%         \inferrule*[right={(Copy (s2))}]{ \mathcal{D}(n')(\mathscr{l}) = (v, m)}
+%         {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n',!\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, v@n')}
+
+%         \inferrule*[right={(Move (s1))}]{ }
+%         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \#\mathscr{l}^\bullet@n') \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet)}
+
+%         \inferrule*[right={(Move (s2))}]{ }
+%         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \#\mathscr{l}^\bullet) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes\mathscr{l} \mapsto \bot), \mathcal{C} \concat (n, v@n')}
+
+%         \inferrule*[right={(Box (s1))}]{ }
+%         {\mathcal{D}, \mathcal{C} \concat (n, (\texttt{box}@n'\;v)) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v)}
+
+%         \inferrule*[right={(Box (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
+%         {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \texttt{box}\;v) \longrightarrow \\\mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes\mathscr{l}\mapsto (v, \top)), \mathcal{C} \concat (n, \mathscr{l}^\bullet@n')} 
+
+%         \inferrule*[right={(Borrow (s1))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
+%         {\mathcal{D}, \mathcal{C} \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet@n') \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet)}
+
+%         \inferrule*[right={(Borrow (s2))}]{ \mathscr{l} \in \textbf{dom}\;\mathcal{D}(n') }
+%         {\mathcal{D}, \mathcal{C} \concat (n, ?) \concat (n', \&[\texttt{mut}]\mathscr{l}^\bullet) \longrightarrow \mathcal{D}, \mathcal{C} \concat (n, \mathscr{l}^\circ@n')}
+%     \end{mathpar}
+%     \caption{The semantics of dFR (part one)}
+%     \label{semantics:eval-distributed-1}
+% \end{figure}
+
+% \begin{figure}
+%     \begin{mathpar}
+%         \inferrule*[right={(Assign Owned (s1))}]{ }
+%         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v')}
+
+%         \inferrule*[right={(Assign Owned (s2))}]{ }
+%         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\bullet \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
+
+%         \inferrule*[right={(Assign Borrowed (s1))}]{ }
+%         {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+
+%         \inferrule*[right={(Assign Borrowed (s2))}]{ }
+%         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
+        
+%         \inferrule*[right={(Decl (s1))}]{ }
+%         {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x)}
+
+%         \inferrule*[right={(Decl (s2))}]{ \mathscr{l} \notin \textbf{dom}\;\mathcal{D}(n') }
+%         {\mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x) \longrightarrow \\\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, k)), \mathcal{C} \concat (n, t[\mathscr{l}^\bullet@n'/x])}
+
+%         \inferrule*[right={(Local Terms)}]{ \mathcal{S}, t \longrightarrow \mathcal{S}', t'}
+%         {\mathcal{D}\otimes(n \mapsto \mathcal{S}), \mathcal{C} \concat (n, t) \longrightarrow \mathcal{D}\otimes(n \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t')}
+
+%         \inferrule*[right={(Remote Terms)}]{\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n', t) \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n', t')}
+%         {\mathcal{D}\otimes(n' \mapsto \mathcal{S}), \mathcal{C} \concat (n, t@n') \longrightarrow \mathcal{D}\otimes(n' \mapsto \mathcal{S}'), \mathcal{C} \concat (n, t'@n')}
+%     \end{mathpar}
+%     \caption{The semantics of dFR (part two)}
+%     \label{semantics:eval-distributed-2}
+% \end{figure}
 
 \subsection{Preservation of Semantics when Translating a FR Program into a dFR Program}
 \label{chap3:semantics:loc-transp}
@@ -705,7 +768,8 @@ where $|\cdot|$ and $\cdot|_@$ are operators that erase addresses of nodes from 
 }%
 \label{chap3:thm:loc-transp}
 \end{theorem}
-Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We focus on presenting proofs of the cases concerning the remote extensions in dFR's reduction rules given in figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
+Since a term $t$ is always a closed term, we prove the theorem~\ref{chap3:thm:loc-transp} by structural induction on the term $t$. We focus on presenting proofs of the cases concerning the remote extensions in dFR's reduction rules given in section~\ref{chap3:semantics:dfr}.
+% figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2}.
 \begin{proof}[Case \textsc{\emph{Copy}}]
 We assume that before the evaluation, given the distributed program state and monolithic program state as below:
 \[\mathcal{D} = \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l}\mapsto (v, m)))\quad\quad
@@ -995,7 +1059,7 @@ Due to the reality of lack of a concise formalism of the source-level Rust that 
 % \label{chap3:limitation-further-work}
 % There are some limitations of both the practical implementation and the formalisation of the semantics worth discussing. As for the design and implementation of the UMI library, mechanisms of handling internet communication errors are not presented in the design of the framework.
 
-\section{Conclusion}
+\section{Conclusion and Future Work}
 \label{chap3:conclusion}
 In this chapter, we firstly present our design, implementation, and formalisation of a UMI framework for Rust. This UMI framework allows programmers to express distributed computation in the same form of monolithic computation, abstracting away the internet communication complications and message passing details. To demonstrate as a distributed extension of Rust, our UMI framework extends Rust's memory safety guarantees into a distributed setting, we present the formalism of a core calculus focusing on the core features relating to distributed memory management mechanisms in the UMI framework. We present FR, which is a core calculus of the surface language of Rust, formalising the key concepts of Rust's ownership and lifetime in memory management. Then we extend FR into dFR, to include distributed features of the UMI framework. By showing that distributed programs written in dFR preserves the semantics of monolithic programs written in FR via proving a location transparency theorem, we can conclude that the memory safety guarantees provided by Rust can be extended to distributed programs written with our UMI framework.
 
