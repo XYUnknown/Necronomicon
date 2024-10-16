@@ -871,7 +871,7 @@ Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the 
 \mathcal{D}, [(n, \texttt{box}@n'\;v)] \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]
 \]
 \begin{highlightnew}
-According to lemma~\ref{chap3:loc-lemma-1}, we have:
+By lemma~\ref{chap3:loc-lemma-1}, we have:
 \[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
 \end{highlightnew}
 Following FR's reduction rule \textsc{Box}, the monolithic execution of the flattened remote heap allocation term gives:
@@ -930,7 +930,7 @@ Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}
 \mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \leadsto \mathcal{D}, [(n, \mathscr{l}^\circ@n')]
 \]
 \begin{highlightnew}
-According to lemma~\ref{chap3:loc-lemma-2}, we have:
+By lemma~\ref{chap3:loc-lemma-2}, we have:
 \[\mathscr{l} \in \textbf{dom}\; \mathcal{S}\] 
 \end{highlightnew}
 Following FR's reduction rule \textsc{Borrow}, the monolithic execution of the flattened remote borrow term gives:
@@ -1040,7 +1040,7 @@ Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, th
 \mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[\mathscr{l}^\bullet@n'/x])]
 \]
 \begin{highlightnew}
-According to lemma~\ref{chap3:loc-lemma-1}, we have:
+By lemma~\ref{chap3:loc-lemma-1}, we have:
 \[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
 \end{highlightnew}
 Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
