@@ -206,7 +206,7 @@ All these techniques allow developers to use multiple concrete implementations, 
 However, these types are deliberately \emph{abstract}, meaning that we \emph{cannot} instantiate them directly:
 When creating such a type, a developer must commit to a specific concrete implementation, requiring the developer to look underneath layers of abstraction to make an informed decision.
 Thus, these abstraction techniques do not free developers from considering low level details and they are not powerful enough to express \emph{semantic} requirements:
-developer cannot specify their functional requirements directly, but merely provide a common \emph{syntax} enabling the use of multiple implementations. 
+developers cannot specify their functional requirements directly, but merely provide a common \emph{syntax} enabling the use of multiple implementations. 
 With such an abstract container type \lstinline{Set}, we cannot express that each concrete implementation is required to contain no duplicate elements.
 Similarly, with an abstract type \lstinline{Stack}, we cannot state that the last-in-first-out property is respected by the \lstinline{push} and \lstinline{pop} operations.
 
@@ -332,7 +332,7 @@ We provide discussion about code generation and ranking in section~\ref{chap2:ra
 \label{common-language}
 The ``solver-aided programming language'' Rosette~\citep{rosette-lang, rosette-paper} is used as the common language in \Primrose{} for the formal parts.
 Rosette is chosen for \Primrose{} due to its convenient interface to the Z3 SMT solver and the straightforward translation from \Primrose{} property specifications into Rosette.
-Property specifications are used as verification conditions when selecting implementations by checking against library specifications which are directly encoded in Rosette. The selection process is done by interacting with the SMT solver via Rosette.
+Property specifications are used as verification conditions when selecting implementations by checking against library specifications which are directly encoded in Rosette. The selection process is performed by interacting with the SMT solver via Rosette.
 
 
 \paragraph*{Portability of \Primrose{}}
@@ -341,10 +341,7 @@ Currently, we choose Rust as the target language to implement our idea. Applicat
 However, \Primrose{} could easily be ported to many other languages, since property specifications, 
 library specifications, and the process of selecting implementations are all language-agnostic and not attached to Rust's particular type system or language features.
 Adapting property specifications into other languages only requires such languages to have a construct similar to Rust's traits, 
-such as traits in Scala and interfaces in Java, allowing us to model syntactic properties. It would be straightforward to add new backends to \Primrose{} to 
-generate code in these languages. Our library specifications are, by design, an abstraction over implementation details, describing the intended semantics of container operations without respect to 
-their implementation. This means we can trivially adapt these specifications to container libraries from other languages, so long as our specifications remain an abstraction of the 
-new implementations.  Thus, we anticipate that \Primrose{} could easily be adapted to produce code in any language with sufficient support for data abstraction, such as Java, Scala, Swift, or \Cpp.
+such as traits in Scala and interfaces in Java, allowing us to model syntactic properties. It would be straightforward to add new backends to \Primrose{} to generate code in these languages. Our library specifications are, by design, an abstraction over implementation details, describing the intended semantics of container operations irrespective of their implementation. This means we can trivially adapt these specifications to container libraries from other languages, so long as our specifications remain an abstraction of the new implementations. Thus, we anticipate that \Primrose{} could easily be adapted to produce code in other languages with sufficient support for data abstraction, such as Java, Scala, Swift, or \Cpp.
 
 \section{Property Specifications}
 \label{chap2:prop}
@@ -393,7 +390,7 @@ type UniqueCon<T> = {c <: (ContainerT) | (unique c)}
 
 We first define the \emph{semantic property} \lstinline{unique} using a \emph{predicate}.
 In our specification language, such predicates have type $\mathit{Con}\langle\tau\rangle \to \mathit{Bool}$, where $\mathit{Con}\langle\tau\rangle$ is a placeholder that is resolved into a concrete container type by 
-the selection process. The combinator \lstinline{for-all-elems} is part of a library enabling to write predicates for individual container elements. The predicate \lstinline{unique-count?} holds if and only if the given element occurs exactly once in the container. These combinators and predicates are explained in section~\ref{chap2:prop:semantic}. \begin{highlightnew} One may notice that the predicate \lstinline{unique-count?} relies on equality being able to be done on elements in the container. Currently, a runtime error will be produces if the equality of elements are not defined. We further discuss the potential improvement of such a design in section~\ref{chap2:limitations}.
+the selection process. The combinator \lstinline{for-all-elems} is part of a library enabling application developers to write predicates for individual container elements. The predicate \lstinline{unique-count?} holds if and only if the given element occurs exactly once in the container. These combinators and predicates are explained in section~\ref{chap2:prop:semantic}. \begin{highlightnew} One may notice that the predicate \lstinline{unique-count?} relies on equality being able to be done on elements in the container. Currently, a runtime error will be produces if the equality of elements are not defined. We further discuss the potential improvement of such a design in section~\ref{chap2:limitations}.
 \end{highlightnew}
 
 With the defined \emph{semantic property} \lstinline{unique}, we can then declare the container type \lstinline{UniqueCon<T>}. 
@@ -512,9 +509,7 @@ The conjunction \lstinline|and| is directly translated into a conjunction operat
 \label{chap2:prop:semantic-syntactic}
 All semantic properties we have seen so far have been invariants across all operations, but 
 some semantic properties relate to specific operations given by syntactic properties. 
-For instance, when specifying a stack container type providing operations \lstinline{push} and \lstinline{pop} with the expected last-in-first-out (LIFO) property.
-% on top of the trait \lstinline{ContainerT} specifying basic container operations, 
-Firstly, we define a trait specifying operations \lstinline{push} and \lstinline{pop}, namely \lstinline{StackT}:
+For instance, when specifying a stack container type providing operations \lstinline{push} and \lstinline{pop} with the expected last-in-first-out (LIFO) property, on top of the trait \lstinline{ContainerT} specifying basic container operations, we need to define a trait specifying operations \lstinline{push} and \lstinline{pop}, namely \lstinline{StackT}:
 \begin{lstlisting}[language=Rust, style=boxed, caption=The trait \mylstinline{StackT} specifying operations \mylstinline{push} and \mylstinline{pop}, captionpos=t, label=prop:spec-stackt, escapechar=!]
 !\tikz[remember picture, overlay]\node [xshift=12.95cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rust}};!pub trait StackT<T> {
   fn push(&mut self, elt: T);
@@ -523,7 +518,7 @@ Firstly, we define a trait specifying operations \lstinline{push} and \lstinline
 \end{lstlisting}
 Secondly, we define the semantic property \lstinline{lifo} for containers that implement \lstinline{StackT}:
 \begin{lstlisting}[language=Rust, style=boxed, caption=The semantic property LIFO, captionpos=t, label=prop:spec-lifo, escapechar=!]
-!\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Primrose}};!property lifo { \c <: StackT -> (forall \x. pop (push c x) == x) }
+!\tikz[remember picture, overlay]\node [xshift=13.1cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Primrose}};!property lifo { \c <: StackT -> (forall \x. pop (push c x) == x) }
 \end{lstlisting}
 \noindent
 Unlike previously, this semantic property includes a requirement that the given container implements the trait \lstinline{StackT}, enabling us to refer to the operations \lstinline{pop} and \lstinline{push} inside the semantic property. In this definition, \lstinline{forall} is a combinator with type:
@@ -644,8 +639,8 @@ While it is important to ensure that library specifications indeed convey the in
 Our approach easily ensures completeness when each operation is specified by a \emph{deterministic} model operation. Forward simulation states that every execution of the concrete implementation has a corresponding execution in the abstract operation, while determinism states that such correspondence is one-to-one, i.e., each abstract execution also has a corresponding concrete one.
 Thus, just as forward simulation states that each property established for an abstract operation applies also (via the inverse of the abstraction function $\alpha^{-1}$) to a concrete implementation, completeness states that each property established for a concrete implementation applies (via the abstraction function $\alpha$) to the abstract operation. With both completeness and forward simulation, we ensure that \emph{all} valid implementations and \emph{only} the valid implementations are selected by \Primrose{}.
 
-There are many other available approaches for modelling library specifications, for instance, the axiomatic approach used in algebraic specifications for abstract data types \cite{WIRSING1990675}, specifying the behaviour of operations as a set of equational axioms that relate various operations.
-However, it is hard to ensure the completeness of algebraic specifications, as it is hard capture all behaviours of all operations by a set of equations.
+There are many other available approaches for modelling library specifications, for instance, the axiomatic approach used in algebraic specifications for abstract data types \citep{WIRSING1990675}, specifying the behaviour of operations as a set of equational axioms that relate various operations.
+However, it is hard to ensure the completeness of algebraic specifications, as it is hard to capture all behaviours of all operations by a set of equations.
 \begin{highlightnew}
 \paragraph*{Other Approaches without Manually Written Library Specifications}
 There are other alternative approaches for selecting valid concrete implementations directly using the property specifications, via property-based testing or bounded model checking. Comparing to our current approach requiring library developers to manually provide library specifications, these alternative designs provide better automation and avoid potential issues caused by inaccurate or incomplete library specifications. They can be seen as a future direction to be studied. However, our current design still has the advantage of being language agnostic as the selection process is not deeply embedded into the syntax or type system of any particular programming language. In addition, the selection process of our design with manually written specifications is potentially faster than alternative approaches involving property-based testing or bounded model checking as a part of the selection process. Since in our design, property-based tests are not required to be executed in the selection process, instead, they only need to be conducted when library specifications are modified.
@@ -684,7 +679,7 @@ Similarly, we also provide the specification for the operation \lstinline{Linked
 !\tikz[remember picture, overlay]\node [xshift=12.95cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rust}};!fn contains(&self, x: &T) -> bool {...}
 \end{lstlisting}
 \noindent
-In our corresponding abstract operation, in addition to the boolean value indicating whether the given element \lstinline|x| is present or not, the input container is also returned, as we would like to express the input container is not mutable, its value remains unchanged after this operation. Also, since the underlying value with type \lstinline|T| is given by an immutable reference \lstinline|&T|, in the abstract operation we treat the immutable reference \lstinline|&T| as simply \lstinline|T|. The signature of the abstract operation is shown below:
+In our corresponding abstract operation, in addition to the boolean value indicating whether the given element \lstinline|x| is present or not, the input container is also returned. As we would like to express that the input container is not mutable, its value remains unchanged after this operation. Also, since the underlying value with type \lstinline|T| is given by an immutable reference \lstinline|&T|, in the abstract operation we treat the immutable reference \lstinline|&T| as simply \lstinline|T|. The signature of the abstract operation is shown below:
 \begin{lstlisting}[language=racket, style=boxed, caption=The signature of the abstract operation corresponding to \mylstinline{LinkedList::contains}, captionpos=t, label=lib:sig-abs-contains]
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!abs-contains: List<T> -> T -> (List<T>, bool)
 \end{lstlisting}
@@ -781,7 +776,7 @@ We again include the requirement that the container is unchanged in the specific
 \label{lib:spec-tree-first}
 \{xs_0.\ xs_0 = \texttt{\small dedup}\ (\texttt{\small sort}\ xs_0\ \texttt{\small<})\}~\texttt{abs-first}~\{xs_0\ xs\ x.\ (xs, x) = \texttt{\small model-first}\ xs_0\}
 \end{align}
-Here, \lstinline|model-first| is defined as a function that returns the first element of the list, is present, along with the list itself:
+Here, \lstinline|model-first| is defined as a function that returns the first element of the list, if present, along with the list itself:
 %, caption=The model operation obtaining the first element of a list, captionpos=b, label=lib:unique-sorted-list-first
 \begin{lstlisting}[language=racket, style=boxed]
 !\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define (model-first xs) 
@@ -877,7 +872,7 @@ The container type \lstinline{Con<T>} is resolved into the model type used in ou
 For instance, the generated code according to the property \lstinline|ascending| from listing~\ref{select:ascending-random-eg} is:
 % ,caption=Generated code for the property \mylstinline{ascending}, captionpos=b, label=select-gen-ascending
 \begin{lstlisting}[language=racket, style=boxed]
-!\tikz[remember picture, overlay]\node [xshift=12.8cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define ascending (lambda (c) (for-all-consecutive-pairs c leq?)))
+!\tikz[remember picture, overlay]\node [xshift=13.0cm, yshift=+.075cm, inner sep=0.075cm, rectangle] {\footnotesize\bfseries\texttt{Rosette}};!(define ascending (lambda (c) (for-all-consecutive-pairs c leq?)))
 \end{lstlisting}
 
 With these Rosette definitions, \Primrose{} generates verification conditions.
@@ -901,12 +896,12 @@ $\exists\ xs_0.\ \texttt{\small ascending}\ xs_0 \land xs_0 = \texttt{\small ded
 \label{select:rule-insert}
 \end{figure}
 
-\noindent Recall that $xs_0$ and $xs$ are model lists abstracted from the \lstinline|BTreeSet|, specifically, $xs_0$ is the model for the input \lstinline|BTreeSet|, and $xs$ is the model for the resulting \lstinline|BTreeSet| of \lstinline|BTreeSet::insert|. 
+\noindent Recall that $xs_0$ and $xs$ are model lists abstracted from the \lstinline|BTreeSet|, specifically, $\mathit{xs}_0$ is the model for the input \lstinline|BTreeSet|, and $\mathit{xs}$ is the model for the resulting \lstinline|BTreeSet| of \lstinline|BTreeSet::insert|. 
 The model operation \lstinline|model-insert| specifies the behaviour of \lstinline|BTreeSet::insert|'s corresponding abstract operation. 
-Given the rule shown in figure~\ref{select:rule-insert}, the solver attempts to find a counterexample, i.e., for all input models $xs_0$ that satisfy the semantic property \lstinline|ascending|, the solver tries to find a resulting model of the operation that does not satisfy the property. 
+Given the rule shown in figure~\ref{select:rule-insert}, the solver attempts to find a counterexample, i.e., for all input models $\mathit{xs}_0$ that satisfy the semantic property \lstinline|ascending|, the solver tries to find a resulting model of the operation that does not satisfy the property. 
 If there is no such counterexample found, the solver will conclude that the operation \lstinline|BTreeSet::insert| satisfies the property \lstinline|ascending|.
 
-This search for a counterexample is parameterised by a \emph{model size}, which denotes the maximum size of the input list $xs_0$ considered by the solver. This 
+This search for a counterexample is parameterised by a \emph{model size}, which denotes the maximum size of the input list $\mathit{xs}_0$ considered by the solver. This 
 parameter is configurable by the application developer using \Primrose{}, and its impact on \Primrose{}'s selection time is evaluated in section~\ref{chap2:evaluation:efficiency}.
 
 The rule contains a side condition stating that there should be no contradiction between the required semantic property and the precondition of the operation.
@@ -1149,7 +1144,7 @@ The selection process is always completed within 30 seconds using a model \begin
 % In practice, we suggest a model size of five, as this is large enough to admit counterexamples to most conceivable semantic properties that the application developer may write, without a large increase in selection time.
 % Selection time can be improved by reducing the algorithmic complexity of property specifications, even at our suggested model size of five. Using low-complexity property specifications is particularly useful if large model sizes are required, as selection slows down proportional to the complexity of the property specification.
 % The selection time increases when the model and library size increases, we judge these trends practically manageable.
-Although an increase in model size raises selection time quickly, in practice, a model with size of more than five is not required to admit counterexamples for most conceivable semantic properties that the application developer may write. This is based on the small scope hypothesis in Alloy \cite{jackson2012software}.
+Although an increase in model size raises selection time quickly, in practice, a model with size of more than five is not required to admit counterexamples for most conceivable semantic properties that the application developer may write. This is based on the small scope hypothesis in Alloy \citep{jackson2012software}.
 % Increasing the number of container implementations in the library results in a linear increase in selection time, allowing for \Primrose{} to be used for medium-size libraries.
 We conclude that \Primrose{} is feasible for medium-size libraries.
 
@@ -1206,7 +1201,7 @@ To summarise, this study makes the following contributions:
 \begin{itemize}
     \item We present \Primrose{}, a language-agnostic tool for selecting valid container data type implementations based on \emph{properties} used to describe their behaviour and programming interface, and ranking them based on their performance.
     \item We show a new application of refinement types not---as previous work did---for verification purposes, but to raise the level of abstraction for application developers and to improve the runtime performance of applications with container data types.
-    \item We present formal specifications of the Rust container data types from the standard library and customised implementations and used them to valid the implementations by property-based testings. These specifications could also be used in the future to formally verify the correctness of their Rust implementations.
+    \item We present formal specifications of Rust container data types from the standard library and customised implementations and used them to validate the implementations by property-based testings. These specifications could also be used in the future to formally verify the correctness of their Rust implementations.
 \end{itemize}
 
 We have applied techniques from verification and formal methods in a new way, raising the level of abstraction by freeing developers from the burden of choosing concrete container implementations.

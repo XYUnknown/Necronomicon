@@ -76,7 +76,7 @@ As a metaphorical illustration, the core idea of our attempt for conceptually mo
 \label{chap3:introduction}
 Distributed computing has extensive application in areas such as cloud computing, big data processing, web services, and blockchain systems, driving the development of modern, large-scale, and resilient software systems. Distributed systems offer many significant advantages such as scalability, fault tolerance, resource sharing, and geographical distribution. 
 
-However, compared to monolithic systems, distributed systems are more complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. Therefore, it is common practice to start with a monolithic design when implementing a system, as this approach simplifies the initial implementation and deployment process. Such a monolithic system needs to later be re-structured and migrated into a distributed design when it needs to be expanded into a larger scale. However, it still requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
+However, compared to monolithic systems, distributed systems are more complex and challenging to design, implement, test and debug due to the necessity for coordination, synchronisation, and communication among distributed components. Therefore, it is common practice to start with a monolithic design when implementing a system, as this approach simplifies the initial implementation and deployment process. Such a monolithic system needs to later be re-structured and migrated into a distributed design when it needs to be expanded to a larger scale. However, it still requires non-trivial effort to be put into the migration of a monolithic system into a distributed design.
 
 \subsection{Contributions}
 To address these issues in the design and implementation of a distributed system as well as migrating a monolithic systems into a distributed setting, we propose our design of a UMI library in Rust. The design of the UMI library shares the same underlying idea of the \emph{remote procedural call} (RPC)~\citep{10.5555/910306}, where a method invocation on an object can be executed on a different node within the same network, abstracting over the underlying message-passing details. Such a design allows programmers to model a distributed system focusing on \emph{what} functional features are required instead of \emph{how} these functional features are achieved via complicated network communications. Moreover, it allows applications to be migrated from a monolithic design to a distributed architecture without massive changes to source code or the needs of high-level expertise in microservices. In addition, by choosing Rust as the language for implementing the UMI framework, we are able to avoid distributed memory management hassles like distributed garbage collection while extending Rust's memory safety and data-racing free guarantees into the distributed setting.
@@ -89,7 +89,7 @@ In summary, we make following contributions:
 \end{itemize}
 
 \subsection{Limitations}
-There are some limitations of this project worth mentioning upfront. Firstly, the UMI framework does not handle network communication errors. Since technically it is difficult to handle these errors in a distributed program while maintaining the same interface of its monolithic counterpart without the language feature throwing and handling exceptions. Also, as we plan to integrate this framework within micro-services platforms, where server errors are managed by cloud service providers. Supervision strategies can be employed to take snapshots and restart from failures, ensuring these issues do not pose a critical problem for the UMI framework's design. 
+There are some limitations of this project worth mentioning upfront. Firstly, the UMI framework does not handle network communication errors. Since technically it is difficult to handle these errors in a distributed program while maintaining the same interface of its monolithic counterpart without the language feature throwing and handling exceptions. Also, we plan to integrate this framework within micro-services platforms, where server errors are managed by cloud service providers. Supervision strategies can be employed to take snapshots and restart from failures, ensuring these issues do not pose a critical problem for the UMI framework's design. 
 
 In addition, both the implementation and the formalisation of the UMI framework are deterministic and sequential. In the current stage, such a design decision is sufficient to demonstrate of core concepts of the UMI framework including location transparency and memory safety. However, as potential future work, it would be nice to model the UMI framework that accounts for concurrency.
 
@@ -99,7 +99,7 @@ Before stepping into the detailed discussion of the UMI library, in the next sec
 
 \section{Background}
 \label{chap3:background}
-In distributed computing, a RPC allows a method invocation to be executed on another computer on a shared network. One application of RPC is that in an object-oriented programming paradigm, it enables a method to be invoked on an object stored on a different machine and exchange data across the network. Such a remote method invocation has the same coding as a local invocation, without the programmer explicitly coding the details for the remote interaction.
+In distributed computing, a RPC allows a method invocation to be executed on another computer on a shared network. One application of RPC is that in an object-oriented programming paradigm, it enables a method to be invoked on an object stored on a different machine and exchange data across the network. Such a remote method invocation has the same encoding as a local invocation, without the programmer explicitly coding the details for the remote interaction.
 However, it is hard to support \emph{location transparency}, i.e., in most existing frameworks (e.g., Java RMI), remote invocations do not have \emph{the same semantics} as local invocations. In addition, \emph{memory management} is hard in a distributed setting, for example, distributed garbage collection is complicated.
 
 Rust~\citep{10.5555/3271463} is a high-level system programming language which \emph{guarantees memory safety} and \emph{prevents data races} by its \emph{ownership system} for memory management and \emph{borrow checker} for tracking object lifetime of all references in a program during compilation.
@@ -109,7 +109,7 @@ Since Rust's semantics guarantees memory safety, we can extend such guarantees t
 \label{chap3:background:rpc}
 A RPC allows a computer program to request a service from another program located in a different address space, which could be on the same machine or on a different machine across a network. It is a form of client-server communication, where the requesting program is the client, and the service-providing program is the server.
 
-The basic idea behind a RPC system is to make a remote invocation appear like a local invocation, abstracting away the underlying communication mechanisms like message passing and network protocols and simplifying distributed computing by providing a familiar programming model. When a client program calls a procedure, a RPC system will handle the task of transferring the procedure call request to the remote server, along with any necessary parameters or data. The server then executes the requested procedure and sends the results back to the client.
+The basic idea behind a RPC system is to make a remote invocation appear like a local invocation, abstracting away the underlying communication mechanisms like message passing and network protocols and simplifying distributed computing by providing a familiar programming model. When a client program calls a procedure, a RPC system will handle the task of transferring the procedure call request to the remote server, along with any necessary parameters or states. The server then executes the requested procedure and sends the results back to the client.
 
 RPCs are particularly useful in distributed systems, where different components of an application are running on separate processes or machines. It allows these components to communicate and share resources efficiently, as if they were part of a single program. There are many common applications of RPCs. For instance, RPCs are used in distributed file systems, such as Network File System (NFS), to enable clients to access and manipulate files on remote servers transparently. In remote database access, RPCs facilitate remote access to databases, allowing client applications to execute queries and retrieve data from remote database servers. In designing web services, RPCs form the basis of many web service protocols, such as SOAP (Simple Object Access Protocol), which allows applications to communicate over the internet using XML-based messaging. In modern microservices architectures, RPCs are often used for inter-process communication between different microservices, enabling them to collaborate and share functionality. In object-oriented programming, RPCs are commonly implemented as remote method invocations (RMI), enabling objects on different machines to interact with each other. The core feature of RMIs is that objects can interact with each other by invoking methods and passing data across the network. This is the application domain that we focus on in this study.
 
@@ -131,7 +131,7 @@ In the section, we present our implementation of the UMI framework as a library 
 
 \subsection{Overview}
 \label{chap3:impl:overview}
-To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolithic program into a distributed setting, by adding the \emph{macro}s provided by the UMI library. In this example program which allocates instances of the \texttt{struct} \texttt{A} and calls methods on them, the macro \texttt{\#[proxy\_me]} implicitly translates the declared type \texttt{A} from a \texttt{struct} that can only refer to local resources to an \texttt{enum} that can either hold local resources or be a \emph{proxy} that refers to resources held on a remote node. The initialisation method is translated by the macro \texttt{\#[umi\_init]} to create an instance of the \texttt{enum} \texttt{A} instead of an instance of the \texttt{struct} \texttt{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \texttt{A} and an invocation on a proxy of \texttt{A}. To create a proxy instance, the macro \texttt{remote!(address, ...)} is used, while the syntax of the initialisation of a local instance is unchanged. The invocations of the methods defined for translated \texttt{struct} \texttt{A} take the same form of the invocation of those original methods. \begin{highlightnew} We need to use different macros to identify the syntactic scopes of different code blocks in a piece of Rust program to produce corresponding translations.\end{highlightnew}
+To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolithic program into a distributed setting, by adding the \emph{macro}s provided by the UMI library. In this example program which allocates instances of the \lstinline{struct} \lstinline{A} and calls methods on them, the macro \lstinline{#[proxy_me]} implicitly translates the declared type \lstinline{A} from a \lstinline{struct} that can only refer to local resources to an \lstinline{enum} that can either hold local resources or be a \emph{proxy} that refers to resources held on a remote node. The initialisation method is translated by the macro \lstinline{#[umi_init]} to create an instance of the \lstinline{enum} \lstinline{A} instead of an instance of the \lstinline{struct} \lstinline{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \lstinline{A} and an invocation on a proxy of \lstinline{A}. To create a proxy instance, the macro \lstinline{remote!(address, ...)} is used, while the syntax of the initialisation of a local instance is unchanged. The invocations of the methods defined for translated \lstinline{struct} \lstinline{A} take the same form of the invocation of those original methods. \begin{highlightnew}We have to use different macros to identify syntactic scopes of different code blocks in a piece of Rust program to correctly produce the corresponding translations.\end{highlightnew}
 
 An invocation on a proxy is encapsulated into a serialised message and sent to the destination node of which the address is the address stored in the proxy, and then the message is deserialised and the invocation is executed at the destination. After the execution, the result of the invocation is again put into a serialised message and passed back to the calling node to be deserialised.
 \begin{figure}[t]
@@ -182,22 +182,22 @@ fn main() {
 
 \subsection{The Design of the Translation}
 \label{chap3:impl:proxy}
-As we have seen in the example discussed above, the syntax of a monolithic program is translated into a distributed program by a set of macros. For a declared \texttt{struct}, the macro \texttt{\#[proxy\_me]} performs the translation:
+As we have seen in the example discussed above, the syntax of a monolithic program is translated into a distributed program by a set of macros. For a declared \lstinline{struct}, the macro \lstinline{#[proxy_me]} performs the translation:
 \[
 \texttt{struct}\; A\;\{\; \mathit{fields}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{Local}\;(\;\mathit{fields}\;), \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
-where the \textit{Address} is the address of the node which stores the resource of a proxy, the \textit{ID} is the identifier of a proxy's resource in the resource table that will be discussed in section~\ref{chap3:impl:resource}, and \textit{IsOwner} denotes whether a proxy is an owned reference or a borrow reference.
-This macro can translates an \texttt{enum} to allow it to represent a proxy by adding a new constructor which is the proxy:
+where the \textit{Address} is the type of address of the node which stores the resource of a proxy, the \textit{ID} is the identifier of a proxy's resource in the resource table that will be discussed in section~\ref{chap3:impl:resource}, and \textit{IsOwner} denotes whether a proxy is an owned reference or a borrow reference.
+This macro can translates an \lstinline{enum} to allow it to represent a proxy by adding a new constructor which is the proxy:
 \[
 \texttt{enum}\; A\;\{\; \mathit{variants}\;\} \leadsto \texttt{enum}\; A\;\{\; \mathit{variants}, \mathit{Remote}\;(\;\mathit{Address}, \mathit{ID}, \mathit{IsOwner}\;)\;\} 
 \]
 
-The translation of a \texttt{enum} does not affect its initialisation method, however, the translation of a \texttt{struct} requires its initialisation method to be changed accordingly --- instead of creating an instance of a type which is a \texttt{struct}, an instance of a \textit{Local} variant of an \texttt{enum} is created. For instance, in the example shown in figure~\ref{chap3:impl:overview:fig}, the \texttt{new(arg:u32)} method is translated by \texttt{\#[umi\_init]} into:
+The translation of a \lstinline{enum} does not affect its initialisation method, however, the translation of a \lstinline{struct} requires its initialisation method to be changed accordingly --- instead of creating an instance of a type which is a \lstinline{struct}, an instance of a \textit{Local} variant of an \lstinline{enum} is created. For instance, in the example shown in figure~\ref{chap3:impl:overview:fig}, the \lstinline{new(arg:u32)} method is translated by \lstinline{#[umi_init]} into:
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 new(arg: u32) -> A { A::Local {arg: arg} }
 \end{lstlisting}
 
-The macro \texttt{\#[umi\_struct\_method]} performs the translation of other methods of a \texttt{struct}. For instance, the method \texttt{foo1(\&self, a:A)} is translated into:
+The macro \lstinline{#[umi_struct_method]} performs the translation of other methods of a \lstinline{struct}. For instance, the method \lstinline{foo1(&self, a:A)} is translated into:
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 fn foo1(&self, a: A) {
   match &self {
@@ -205,9 +205,9 @@ fn foo1(&self, a: A) {
     Remote(...) => { /* remote do something */ }
 }}
 \end{lstlisting}
-Note that within the pattern matching block for the \emph{Remote} variant, the invocation is firstly put into a message and serialised. Then the serialised message is passed to the addressed stored in the proxy, and get deserialised and executed. The result is again put into a message and get serialised. Once it is returned back to the original node, the result is extracted from the deserialised message. Such a communication process between nodes via sending and receiving serialisation/deserialisation messages is completely generated by the macro, freeing programmers from dealing with the message passing complexity.
+Note that within the pattern matching block for the \emph{Remote} variant, the invocation is firstly put into a message and serialised. Then the serialised message is passed to the address stored in the proxy, and gets deserialised and executed. The result is again put into a message and get serialised. Once it is returned back to the original node, the result is extracted from the deserialised message. Such a communication process between nodes via sending and receiving serialisation/deserialisation messages is completely generated by the macro, freeing programmers from dealing with the message passing complexity.
 
-As for a method of a translated \texttt{enum}, the macro \texttt{\#[umi\_enum\_method]} adds an additional pattern matching block for the proxy variant to the existing pattern matching.
+As for a method of a translated \lstinline{enum}, the macro \lstinline{#[umi_enum_method]} adds an additional pattern matching block for the proxy variant to the existing pattern matching.
 
 \subsection{Resource Management}
 \label{chap3:impl:resource}
@@ -240,23 +240,23 @@ In Rust, if some resources are owned by a reference on the same node, and the re
 To achieve this goal, on each UMI server, we design a \emph{resource table} shown in figure~\ref{chap3:impl:tables} on the left, which has the same lifetime as the server. We used it to identify and manage local resources involved in remote computations. Note that the ID in an entry of the table is the ID field in a corresponding proxy, which is globally unique.
 If a variable is created locally, it will be put into the table once it is passed into a remote computation. The entry will not be removed until the remote computation finishes. If a variable is created via a remote call, it will be put into table on creation and will be deallocated when its remote owner decides that it should be dropped.
 
-Secondly, we need to make all nodes aware of all methods that can be invoked on a proxy in order to make computations available on all nodes. To achieve this goal, we register all methods that are available for remote invocations in a \emph{method registration table} shown in figure~\ref{chap3:impl:tables} on the right, using the \texttt{register!(name, arg\_types, return\_type)} macro. The method registration table holds the full path name, argument types, and return type of methods. When a serialised invocation message, which takes the form of a plain string, is received by a node, the method to be invoked is deserialised and reconstructed according to the type information recorded in the registration table.
+Secondly, we need to make all nodes aware of all methods that can be invoked on a proxy in order to make computations available on all nodes. To achieve this goal, we use the \lstinline{register!(name, arg_types, return_type)} macro to register all methods that are available for remote invocations in a \emph{method registration table} shown in figure~\ref{chap3:impl:tables} on the right. The method registration table holds the full path name, argument types, and return type of methods. When a serialised invocation message, which takes the form of a plain string, is received by a node, the method to be invoked is deserialised and reconstructed according to the type information recorded in the registration table.
 
 \subsection{Passing Remote Invocations via Messages}
 \label{impl:message}
 As briefly discussed in section~\ref{chap3:impl:overview} and section~\ref{chap3:impl:resource}, remote invocations and results of executions are implicitly communicated via serialised and deserialised messages among nodes. We make use of the Serde~\citep{serde} framework to serialise and deserialise these messages and Rust data structures.
 
-There are different types of messages for passing remote invocations. For instance, a remote invocation sent to an receiving node is represented as an invocation message which taking the form of \texttt{Message::Invoke(fname, variables, invoke\_op)}, where \texttt{fname} is the full path name of the method, each variable is annotated with its ownership information (owned or immutably/mutably borrowed), and \texttt{invoke\_op} specifies the ownership information of the return value. The result of the execution of a remote invocation is passed back to the calling node via a return message taking the form of \texttt{Message::Return(return\_var)}, where the \texttt{return\_var} is also annotated with its ownership information. Another important type of messages is the deallocation message which takes the form of \texttt{Message::Drop(id)}, where the \texttt{id} corresponds to an entry key in the resource table shown in figure~\ref{chap3:impl:tables}. Such a message instructs some remotely owned resources to be deallocated.
+There are different types of messages for passing remote invocations. For instance, a remote invocation sent to an receiving node is represented as an invocation message which taking the form of \lstinline{Message::Invoke(fname, variables, invoke_op)}, where \lstinline{fname} is the full path name of the method, each variable is annotated with its ownership information (owned or immutably/mutably borrowed), and \lstinline{invoke_op} specifies the ownership information of the return value. The result of the execution of a remote invocation is passed back to the calling node via a return message taking the form of \lstinline{Message::Return(return_var)}, where the \lstinline{return_var} is also annotated with its ownership information. Another important type of messages is the deallocation message which takes the form of \lstinline{Message::Drop(id)}, where the \lstinline{id} corresponds to an entry key in the resource table shown in figure~\ref{chap3:impl:tables}. Such a message instructs some remotely owned resources to be deallocated.
 
 \subsection{Extending Borrow Checking into Distributed Settings}
 \label{chap3:impl:borrow}
-To execute a deserialised remote method invocation on the node which receives the invocation, the first step is to gather serialised data as well as the ownership information of each variable involved in the method. In this step, we do not perform any reconstruction of these variables; instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. Such an format is implemented as \texttt{Argument}, which keeps the information of the variables related to borrow checking, and stores the data of the variable. The detailed implementation of this step is shown in listing~\ref{chap3:impl:lst:invoke:owned}, listing~\ref{chap3:impl:lst:invoke:rremote}, and listing~\ref{chap3:impl:lst:invoke:mrremote}.
+To execute a deserialised remote method invocation on the node which receives the invocation, the first step is to gather serialised data as well as the ownership information of each variable involved in the method. In this step, we do not perform any reconstruction of these variables; instead, variables are simply prepared in an appropriate format that can be reconstructed during the execution of the method. Such an format is implemented as \lstinline{Argument}, which keeps the information of the variables related to borrow checking, and stores the data of the variable. The detailed implementation of this step is shown in listing~\ref{chap3:impl:lst:invoke:owned}, listing~\ref{chap3:impl:lst:invoke:rremote}, and listing~\ref{chap3:impl:lst:invoke:mrremote}.
 
-A serialised variable has a label indicating that if it is a piece of data copied or moved from the caller (\texttt{OwnedLocal}), a remote reference owned by the caller (\texttt{OwnedRemote}), a remote reference immutably borrowed by the caller (\texttt{RefRemote}), or a remote reference mutably borrowed by the caller (\texttt{MutRefRemote}).
+A serialised variable has a label indicating whether it is a piece of data copied or moved from the caller (\lstinline{OwnedLocal}), a remote reference owned by the caller (\lstinline{OwnedRemote}), a remote reference immutably borrowed by the caller (\lstinline{RefRemote}), or a remote reference mutably borrowed by the caller (\lstinline{MutRefRemote}).
 
 As shown in listing~\ref{chap3:impl:lst:invoke:owned}, if a variable is serialised data, which is copied or moved from the caller, it will be kept as serialised, since the deserialisation and reconstruction process will happen during the invocation of the method (line 5 --- line 6).
 If a variable is a proxy which is located at the receiver, then it will be obtained from the resource table shown in figure~\ref{chap3:impl:tables}. According to its ownership information, if it is moved, then the corresponding entry will be removed from the resource table (line 7 --- line 11).
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \texttt{OwnedLocal} and \texttt{OwnedRemote}}, label=chap3:impl:lst:invoke:owned]
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \lstinline{OwnedLocal} and \lstinline{OwnedRemote}}, label=chap3:impl:lst:invoke:owned]
 Message::Invoke(fname, variables, invoke_op) => {
   let mut arguments: Vec<Argument> = Vec::new();
   for v in &variables {
@@ -275,7 +275,7 @@ Message::Invoke(fname, variables, invoke_op) => {
 \end{lstlisting}
 
 If it is immutably borrowed, as shown in listing~\ref{chap3:impl:lst:invoke:rremote}. then the corresponding entry will be immutably borrowed from the table (line 5 --- line 13).
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \texttt{RefRemote}}, label=chap3:impl:lst:invoke:rremote]
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \lstinline{RefRemote}}, label=chap3:impl:lst:invoke:rremote]
 Message::Invoke(fname, variables, invoke_op) => {
   let mut arguments: Vec<Argument> = Vec::new();
   for v in &variables {
@@ -296,7 +296,7 @@ Message::Invoke(fname, variables, invoke_op) => {
 \end{lstlisting}
 
  If it is mutably borrowed, then the corresponding entry will be mutably borrowed from the table and updated after the execution (line 5 --- line 14). 
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \texttt{MutRefRemote}}, label=chap3:impl:lst:invoke:mrremote]
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Gathering variables from an invocation message: \lstinline{MutRefRemote}}, label=chap3:impl:lst:invoke:mrremote]
 Message::Invoke(fname, variables, invoke_op) => {
   let mut arguments: Vec<Argument> = Vec::new();
   for v in &variables {
@@ -317,13 +317,13 @@ Message::Invoke(fname, variables, invoke_op) => {
   }}} ... }
 \end{lstlisting}
 
-If an argument is a proxy that is not located at the caller, as shown in three \texttt{else}-cases demonstrated in listing~\ref{chap3:impl:lst:invoke:owned} (line 12 --- line 14), listing~\ref{chap3:impl:lst:invoke:rremote} (line 14 --- line 16), and listing~\ref{chap3:impl:lst:invoke:mrremote} (line 15 --- line 17), then the proxy will be passed into the method without any additional modification.
+If an argument is a proxy that is not located at the caller, as shown in three \lstinline{else}-cases demonstrated in listing~\ref{chap3:impl:lst:invoke:owned} (line 12 --- line 14), listing~\ref{chap3:impl:lst:invoke:rremote} (line 14 --- line 16), and listing~\ref{chap3:impl:lst:invoke:mrremote} (line 15 --- line 17), then the proxy will be passed into the method without any additional modification.
 
-Once the information about all variables is gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return:owned} and listing~\ref{chap3:impl:lst:exec-return:r:mr}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables} on the right. During the execution of the method via \texttt{f.call(arguments)} shown in line 6, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
+Once the information about all variables is gathered and processed, the invocation will be executed and the result will then be sent back to the caller. The implementation of the execution of this invocation is shown in listing~\ref{chap3:impl:lst:exec-return:owned} and listing~\ref{chap3:impl:lst:exec-return:r:mr}. The method information, mainly ownership and type information of the arguments, and return value of a method are retrieved from the registration table shown in figure~\ref{chap3:impl:tables} on the right. During the execution of the method via \lstinline{f.call(arguments)} shown in line 6, serialised arguments and boxed argument entries retrieved from the resource table are reconstructed according to the registered type information.
 
 The result of an execution is provided in two formats, serialised data and a boxed data entry. These two formats are used according to the required ownership information of the return value. 
-As shown in listing~\ref{chap3:impl:lst:exec-return:owned}, if the method produces an owned result annotated with \texttt{InvokeOp::Owned}, whether the serialised data \texttt{res} represents some local resources or a proxy, it will be kept as the serialised form and sent back via a return message (line 8 --- line 10). If the method is an initialisation call sent by the macro \texttt{remote!(...)} annotated with \texttt{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and a unique \texttt{id} will be generated. In the return message, the address of the receiver, the \texttt{id}, and the ownership status which is \texttt{true} are included for the caller to construct a proxy that owns such a data entry on the receiver (line 11 --- line 16).
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result: \texttt{Owned} and \texttt{Init}}, label=chap3:impl:lst:exec-return:owned]
+As shown in listing~\ref{chap3:impl:lst:exec-return:owned}, if the method produces an owned result annotated with \lstinline{InvokeOp::Owned}, whether the serialised data \lstinline{res} represents some local resources or a proxy, it will be kept as the serialised form and sent back via a return message (line 8 --- line 10). If the method is an initialisation call sent by the macro \lstinline{remote!(...)} annotated with \lstinline{InvokeOp::Init}, the boxed entry data will be inserted into the resource table and a unique \lstinline{id} will be generated. In the return message, the address of the receiver, the \lstinline{id}, and the ownership status which is \lstinline{true} are included for the caller to construct a proxy that owns such a data entry on the receiver (line 11 --- line 16).
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result: \lstinline{Owned} and \lstinline{Init}}, label=chap3:impl:lst:exec-return:owned]
 Message::Invoke(fname, variables, invoke_op) => { ...
   let f: &str = &*fname; 
   match lrtable.get(f) {
@@ -348,9 +348,9 @@ Message::Invoke(fname, variables, invoke_op) => { ...
 \end{lstlisting}
 
 For a return value that is an immutably or mutably borrowed reference, as shown in listing~\ref{chap3:impl:lst:exec-return:r:mr} there are two situations. 
-If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by a generated unique \texttt{id}. Such an \texttt{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference (line 9 --- line 13 and line 18 --- line 22). 
+If the borrowed reference is local to the receiver, the reference itself will be inserted into the resource table identified by a generated unique \lstinline{id}. Such an \lstinline{id} and the address of the receiver will be sent back to the caller for creating an proxy that mirrors this borrowed reference (line 9 --- line 13 and line 18 --- line 22). 
 However, if a borrowed reference is not local to the receiver, meaning it already mirrors a reference on a different node, then it will not be stored in the resource table, instead, the serialised version of it will be sent back to the caller in a return message (line 14 --- line 15 and line 23 --- line 24).
-\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result: \texttt{Ref} and \texttt{MutRef}}, label=chap3:impl:lst:exec-return:r:mr]
+\begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={Executing an invocation and returning the result: \lstinline{Ref} and \lstinline{MutRef}}, label=chap3:impl:lst:exec-return:r:mr]
 Message::Invoke(fname, variables, invoke_op) => { ...
   let f: &str = &*fname; 
   match lrtable.get(f) {
@@ -386,7 +386,7 @@ Message::Invoke(fname, variables, invoke_op) => { ...
 \label{chap3:impl:lifetime}
 Recall that in section~\ref{chap3:impl:resource}, we have briefly introduced storing and deallocating remotely owned resources on a node. In this section we discuss the design and implementation of a remote deallocation in detail. 
 
-In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \texttt{a\_proxy} is initialised, some resources are allocated to the receiver node with the address \texttt{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \texttt{a\_proxy} reaches the end of its lifetime (line 10).
+In a monolithic Rust program, when a variable that owns some resources reaches the end of its lifetime, in most cases, out of a program's scope, the resources it owns will be automatically deallocated. We extend this feature to the distributed setting. As illustrated in listing~\ref{chap3:impl:lst:drop-eg}, when the given proxy \lstinline{a_proxy} is initialised, some resources are allocated to the receiver node with the address \lstinline{addr} (line 7). Although these resources do not have an owner on the same node, they should not be deallocated until its remote owner \lstinline{a_proxy} reaches the end of its lifetime (line 10).
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={An example of a remote deallocation}, label=chap3:impl:lst:drop-eg]
 // on caller
 fn main() {
@@ -400,7 +400,7 @@ fn main() {
 } // a_proxy is out of scope, its data on the remote machine is dropped
 \end{lstlisting}
 
-For monolithic programs, the deallocation is achieved via the \texttt{drop} method in the destructor trait \texttt{Drop}, which in most cases is automatically implemented for Rust types. We extend this \texttt{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}. When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources.
+For monolithic programs, the deallocation is achieved via the \lstinline{drop} method in the destructor trait \lstinline{Drop}, which in most cases is automatically implemented for Rust types. We extend this \lstinline{drop} method to handle the deallocation of remotely owned resources. The implementation is shown in listing~\ref{chap3:impl:lst:drop}. When a proxy that owns some resources on a node reaches the end of its lifetime, a serialised deallocation message is automatically sent to the node that holds these resources.
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily, caption={The implementation of a remote deallocation}, label=chap3:impl:lst:drop]
 impl Drop for #name {
   fn drop(&mut self) {
@@ -413,7 +413,7 @@ impl Drop for #name {
 }}}
 \end{lstlisting} 
 
-As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \texttt{id} will be removed from the resource table (i.e., the \texttt{mvtable} in the listing). 
+As shown below, once a deallocation message is received by the targeted receiver, the entry with the corresponding \lstinline{id} will be removed from the resource table (i.e., the \lstinline{mvtable} in the listing). 
 \begin{lstlisting}[language=Rust, style=boxed, basicstyle=\footnotesize\ttfamily]
 Message::Drop(id) => { mvtable.remove(&id); }
 \end{lstlisting}
@@ -648,7 +648,7 @@ The rules \textsc{Borrow (s1)} and \textsc{Borrow (s2)} show the evaluation of i
 A remote assignment to an owned reference $\mathscr{l}^\bullet@n' \metaDef v'$ on the node $n$ assigns a new value $v'$ to its remotely owned reference on the node $n'$, which is shown in the rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}. The first step is again leaving a hole awaiting to be filled on the configuration stack and passing the assignment to the node $n'$ to be evaluated. In the next step, the evaluation of the assignment on the node $n'$ modifies the program state on $n'$ by recursively deallocates the old value $v$ which is stored in the location $\mathscr{l}$. And then the location $\mathscr{l}$ on the node $n'$ is assigned with the new value $v'$. Since the assignment produces only a unit value $\texttt{()}$, it will be passed back and fill in the hole on the configuration stack.
 \begin{mathparpagebreakable}
     \inferrule*[right={(Assign Borrowed (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}^\circ@n'\metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
 
     \inferrule*[right={(Assign Borrowed (s2))}]{ }
         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
@@ -657,13 +657,13 @@ A remote assignment to an owned reference $\mathscr{l}^\bullet@n' \metaDef v'$ o
 The evaluation of a remote assignment to a borrowed reference is similar shown in rules \textsc{Assign Borrowed (s1)} and \textsc{Assign Borrowed (s2)}.. Note that again, since dFR extends FR without any modification of FR's type system, same to assignments in FR, remote assignments to immutable references in dFR are also prohibited by the type system.
 \begin{mathparpagebreakable}
     \inferrule*[right={(Assign Borrowed (s1))}]{ }
-        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}@n'^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
+        {\mathcal{D} \otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, \mathscr{l}^\circ@n' \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v')}
 
     \inferrule*[right={(Assign Borrowed (s2))}]{ }
         {\mathcal{D}\otimes (n' \mapsto \mathcal{S}\otimes \mathscr{l} \mapsto (v, m)), \mathcal{C} \concat (n, ?) \concat (n', \mathscr{l}^\circ \metaDef v') \longrightarrow \\ \mathcal{D}\otimes (n' \mapsto \mathcal{S} \setminus v \otimes \mathscr{l} \mapsto (v', m)), \mathcal{C} \concat (n, \texttt{()})}
 \end{mathparpagebreakable}
 
-Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a remote declaration is more complicated. The first step shown in \textsc{Decl (s1)} leaves a hole to be filled by the resulting term in the substitution of the declared variable $x$. Then the declaration is passed to the node $n'$ to be evaluated. Shown in  \textsc{Decl (s2)}, once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable $x$ on the node $n$ will be substituted with the remote owned reference $\mathscr{l}@n'^\bullet$.
+Demonstrated in \textsc{Decl (s1)} and \textsc{Decl (s2)}, the evaluation of a remote declaration is more complicated. The first step shown in \textsc{Decl (s1)} leaves a hole to be filled by the resulting term in the substitution of the declared variable $x$. Then the declaration is passed to the node $n'$ to be evaluated. Shown in  \textsc{Decl (s2)}, once a fresh location $\mathscr{l}$ on the node $n'$ is allocated with the value $v$, the owned reference $\mathscr{l}^\bullet$ will then be passed back to the node $n$ and all occurrences of the declared variable $x$ on the node $n$ will be substituted with the remote owned reference $\mathscr{l}^\bullet@n'$.
 \begin{mathparpagebreakable}
     \inferrule*[right={(Decl (s1))}]{ }
         {\mathcal{D}, \mathcal{C} \concat (n, \texttt{let mut}@n'\; x = v; t) \longrightarrow\\ \mathcal{D}, \mathcal{C} \concat (n, t[?/x]) \concat (n', \texttt{let mut } x = v; x)}
@@ -754,12 +754,12 @@ Before giving the definition of the location transparency theorem, we define a r
 \end{highlightnew}
 
 \begin{theorem}[Location Transparency]
-\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. $\leadsto$ is a relation that \emph{fuses} two reduction steps of an operation in dFR. We make locations on all nodes distinct to simplify the proof.
+\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. \begin{highlightnew}$\leadsto$ is a relation that \emph{fuses} two reduction steps of an operation in dFR.\end{highlightnew} We make locations on all nodes distinct to simplify the proof.
 % &\forall t \in \Pi_{\mathit{ref}}.\; \phi_\mathcal{D}, [t] \longrightarrow \mathcal{D}, [v] \iff \phi_\mathcal{S},  t|_@ \longrightarrow \mathcal{S}, v' \land \mathcal{S} = |\mathcal{D}| \land v' = v\\
 \begin{gather*}
-    \forall t \in \mathcal{T}.\; \mathcal{D}, [(n, t)] \leadsto \mathcal{D'}, [(n, v)] \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
+    \forall t \in \mathcal{T}.\; \mathcal{D}, \begin{highlightnew}C \concat (n, t)\end{highlightnew} \leadsto \mathcal{D'}, \begin{highlightnew}C \concat(n, v)\end{highlightnew} \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
 \end{gather*}
-\begin{highlightnew}Note that the notation $[(n, v)]$ means a singleton configuration stack.\end{highlightnew} In addition, $|\cdot|$ and $\cdot|_@$ are operators that erase addresses of nodes from distributed program states and terms defined as:
+where $|\cdot|$ and $\cdot|_@$ are operators that erase addresses of nodes from distributed program states and terms defined as:
 \begin{align*}
     &|\mathcal{D}| = \bigcup_{\forall n \in \textbf{dom} \mathcal{D}} \mathcal{D}(n)\\
     &(\texttt{let mut}@n\;x=t; t)|_@ =  \texttt{let mut}\;x=t; t
@@ -781,7 +781,9 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state: 
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Copy (s1)} and \textsc{Copy (s2)}, the distributed execution of a remote copy term gives:
-\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, !\mathscr{l}^\bullet@n')] \leadsto \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), [(n, v@n')]\]
+\begin{align*}
+   &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , C \concat (n, !\mathscr{l}^\bullet@n') \leadsto\\ &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v, m))), C \concat (n, v@n') 
+\end{align*}
 Following FR's reduction rule \textsc{Copy}, the monolithic execution of the flattened remote copy term gives:
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
@@ -793,7 +795,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, !\mathscr{l}^\bullet@n')] \leadsto \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\mathcal{D}, C \concat (n, !\mathscr{l}^\bullet@n') \leadsto \mathcal{D'}, C \concat (n, v@n') \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  !\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
 \end{gather*}
 
 
@@ -820,7 +822,7 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Move (s1)} and \textsc{Move (s2)}, the distributed execution of a remote move term gives:
-\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \#\mathscr{l}^\bullet@n')] \leadsto \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), [(n, v@n')]\]
+\[\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , C \concat (n, \#\mathscr{l}^\bullet@n') \leadsto \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto \bot), C \concat (n, v@n')\]
 Following FR's reduction rule \textsc{Move}, the monolithic execution of the flattened remote move term gives:
 \[\mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot), v\]
 After the evaluation, the updated distributed program state and monolithic program state are shown as below:
@@ -829,7 +831,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \[|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad\quad v@n'|_@ = v\]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \#\mathscr{l}^\bullet@n')] \leadsto \mathcal{D'}, [(n, v@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
+\mathcal{D}, C \concat (n, \#\mathscr{l}^\bullet@n') \leadsto \mathcal{D'}, C \concat (n, v@n') \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, \#\mathscr{l}^\bullet@n'|_@ \longrightarrow \mathcal{S'}, v \land |\mathcal{D}'| = \mathcal{S}' \land v@n'|_@ = v
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -868,7 +870,7 @@ We assume that before the evaluation, given the distributed program state $\math
 \]
 Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the distributed execution of a remote heap allocation term gives:
 \[
-\mathcal{D}, [(n, \texttt{box}@n'\;v)] \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), [(n, \mathscr{l}^\bullet@n')]
+\mathcal{D}, C \concat (n, \texttt{box}@n'\;v) \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), C \concat (n, \mathscr{l}^\bullet@n')
 \]
 \begin{highlightnew}
 By lemma~\ref{chap3:loc-lemma-1}, we have:
@@ -883,7 +885,7 @@ After the evaluation, the updated distributed program state and monolithic progr
 \mathcal{D}' = \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))) \quad\quad 
 \mathcal{S}' = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))
 \]
-The updated distributed program state can be flatten into:
+The updated distributed program state is flattened into:
 \[|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top))\]
 Since we have $|\mathcal{D}| = \mathcal{S}$, we can conclude that the flattened updated distributed program state and the updated monolithic program state are equal:
 \[|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}'\]
@@ -891,7 +893,7 @@ Also, the flattened remote owned reference obtained from the distributed executi
 \[\mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet\]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{box}@n'\;v)] \leadsto \mathcal{D'}, [(n, \mathscr{l}^\bullet)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
+\mathcal{D}, C \concat (n, \texttt{box}@n'\;v) \leadsto \mathcal{D'}, C \concat (n, \mathscr{l}^\bullet) \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S'}, \mathscr{l}^\bullet \land |\mathcal{D}'| = \mathcal{S}' \land \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -921,13 +923,13 @@ Since $|\mathcal{D}| = S$, we can conclude that:
 \end{highlightnew}
 
 \begin{proof}[Case \textsc{\emph{Borrow}}]
-We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, $\mathscr{l}$ is a location with an allocated value:
+We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state, and $\mathscr{l}$ is a location with an allocated value:
 \[
 |\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \in \textbf{dom}\; \mathcal{D}(n')
 \]
 Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}, the distributed execution of a remote borrow term gives:
 \[
-\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \leadsto \mathcal{D}, [(n, \mathscr{l}^\circ@n')]
+\mathcal{D}, C \concat (n, \&[\texttt{mut} \mathscr{l}^\bullet@n')] \leadsto \mathcal{D}, C \concat (n, \mathscr{l}^\circ@n')
 \]
 \begin{highlightnew}
 By lemma~\ref{chap3:loc-lemma-2}, we have:
@@ -943,7 +945,7 @@ To conclude, after the evaluation, the distributed program state and the monolit
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')] \leadsto \mathcal{D}, [(n, \mathscr{l}^\circ)] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
+\mathcal{D}, C \concat (n, \&[\texttt{mut}]\mathscr{l}^\bullet@n')  \leadsto \mathcal{D}, C \concat (n, \mathscr{l}^\circ) \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ \land |\mathcal{D}| = \mathcal{S} \land \mathscr{l}^\circ@n'|_@ = \mathscr{l}^\circ
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -966,9 +968,9 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Assign Owned (s1)} and \textsc{Assign Owned (s2)}, the distributed execution of a remote assignment to an owned reference gives:
-\begin{gather*}
-  \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\bullet@n' \metaDef v')] \\\leadsto\\ \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')]  
-\end{gather*}
+\begin{align*}
+  &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , C \concat (n, \mathscr{l}^\bullet@n' \metaDef v') \leadsto\\ &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), C \concat (n, \texttt{()}@n') 
+\end{align*}
 Following FR's reduction rule \textsc{Assign Owned}, the monolithic execution of the flattened remote assignment to an owned reference gives:
 \[
 \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
@@ -984,7 +986,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \mathscr{l}^\bullet@n' \metaDef v')] \leadsto \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\mathcal{D}, C \concat (n, \mathscr{l}^\bullet@n' \metaDef v') \leadsto \mathcal{D'}, C \concat (n, \texttt{()}@n') \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\bullet@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -1009,9 +1011,9 @@ We assume that before the evaluation, given the distributed program state and mo
 We can say that, initially, the flattened distributed program state equals to the monolithic program state:
 \[|\mathcal{D}| = \mathcal{S}\]
 Following the dFR's reduction rule \textsc{Assign Borrowed (s1)} and \textsc{Assign Borrowed (s2)}, the distributed execution of a remote assignment to a (mutably) borrowed reference gives:
-\begin{gather*}
-   \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , [(n, \mathscr{l}^\circ@n' \metaDef v')] \\\leadsto\\ \mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), [(n, \texttt{()}@n')] 
-\end{gather*}
+\begin{align*}
+   &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v,m))) , C \concat (n, \mathscr{l}^\circ@n' \metaDef v') \leadsto\\ &\mathcal{D}_0 \otimes (n' \mapsto (\mathscr{l} \mapsto (v',m))), C \concat (n, \texttt{()}@n')
+\end{align*}
 Following FR's reduction rule \textsc{Assign Borrowed}, the monolithic execution of the flattened remote assignment to a (mutably) borrowed reference gives:
 \[
 \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v, m)), (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S}_0 \otimes (\mathscr{l} \mapsto (v', m)), \texttt{()}
@@ -1027,7 +1029,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \mathscr{l}^\circ@n' \metaDef v')] \leadsto \mathcal{D'}, [(n, \texttt{()}@n')] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
+\mathcal{D}, C \concat (n, \mathscr{l}^\circ@n' \metaDef v') \leadsto \mathcal{D'}, C \concat (n, \texttt{()}@n') \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S},  (\mathscr{l}^\circ@n' \metaDef v')|_@ \longrightarrow \mathcal{S'}, \texttt{()} \land |\mathcal{D}'| = \mathcal{S}' \land \texttt{()}@n'|_@ = \texttt{()}
 \end{gather*}
 \end{proof}
 \begin{proof}[Case \textsc{\emph{Decl}}]
@@ -1036,9 +1038,9 @@ We assume that before the evaluation, given the distributed program state $\math
 |\mathcal{D}| = \mathcal{S} \quad\quad \mathscr{l} \notin \textbf{dom}\; \mathcal{D}(n')
 \]
 Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, the distributed execution of a remote declaration gives:
-\[
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), [(n, t[\mathscr{l}^\bullet@n'/x])]
-\]
+\begin{align*}
+&\mathcal{D}, C \concat (n, \texttt{let}\;\texttt{mut}@n'\;x = v;t) \leadsto\\ &\mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), C \concat (n, t[\mathscr{l}^\bullet@n'/x])
+\end{align*}
 \begin{highlightnew}
 By lemma~\ref{chap3:loc-lemma-1}, we have:
 \[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
@@ -1058,7 +1060,7 @@ To conclude, after the evaluation, the flattened updated distributed program sta
 \]
 Hence:
 \begin{gather*}
-\mathcal{D}, [(n, \texttt{let}\;\texttt{mut}@n'\;x = v;t)] \leadsto \mathcal{D'}, [(n, t[\mathscr{l}^\bullet@n'/x])] \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[\mathscr{l}^\bullet/x] \land |\mathcal{D}'| = \mathcal{S}' \land t[\mathscr{l}^\bullet@n'/x]|_@ = t[\mathscr{l}^\bullet/x]
+\mathcal{D}, C \concat (n, \texttt{let}\;\texttt{mut}@n'\;x = v;t) \leadsto \mathcal{D'}, C \concat (n, t[\mathscr{l}^\bullet@n'/x]) \land |\mathcal{D}| = \mathcal{S} \\\Rightarrow\\ \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S'}, t[\mathscr{l}^\bullet/x] \land |\mathcal{D}'| = \mathcal{S}' \land t[\mathscr{l}^\bullet@n'/x]|_@ = t[\mathscr{l}^\bullet/x]
 \end{gather*}
     % \begin{align*}
     % &\text{We assume:}\\
@@ -1113,7 +1115,7 @@ Due to the reality of lack of a concise formalism of the source-level Rust that 
 In this chapter, we firstly present our design, implementation, and formalisation of a UMI framework for Rust. This UMI framework allows programmers to express distributed computation in the same form of monolithic computation, abstracting away the internet communication complications and message passing details. To demonstrate as a distributed extension of Rust, our UMI framework extends Rust's memory safety guarantees into a distributed setting, we present the formalism of a core calculus focusing on the core features relating to distributed memory management mechanisms in the UMI framework. We present FR, which is a core calculus of the surface language of Rust, formalising the key concepts of Rust's ownership and lifetime in memory management. Then we extend FR into dFR, to include distributed features of the UMI framework. By showing that distributed programs written in dFR preserves the semantics of monolithic programs written in FR via proving a location transparency theorem, we can conclude that the memory safety guarantees provided by Rust can be extended to distributed programs written with our UMI framework.
 
 \begin{highlightnew}
-In the future, we would like to conduct some quantitative evaluations for the UMI framework. For instance, we could measure the performance overhead distributed programs written using the UMI framework comparing to those written with TCP requests or using other libraries such as tarpc. In addition, conducting user studies can be beneficial for assessing how straightforward the UMI framework is to use when writing distributed programs.
+In the future, we would like to conduct some quantitative evaluations for the UMI framework. For instance, we could measure the performance overhead of distributed programs written using the UMI framework comparing to those using TCP requests or using other libraries such as tarpc. In addition, conducting user studies can be beneficial for assessing how straightforward the UMI framework is to use when writing distributed programs.
 \end{highlightnew}
 
 \noindent
