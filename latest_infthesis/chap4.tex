@@ -70,7 +70,7 @@ And at last we remembered that the daemoniac \emph{shoggoths} --- given life, th
 
 In chapter~\ref{chap1}, we briefly discussed that conceptually it is intriguing to explore the relationship between syntax and semantics within the context of strategic rewriting. Since term rewriting, as a technique of syntactic transformations, encodes the semantics of some programs, and compositions of each individual term rewriting step form strategies, of which the straightforward syntax is given by a strategic rewriting language, whose semantics featuring non-termination and non-deterministic executions is complicated and worth studying to allow us to formally understand and reason about the composition of these rewrites.
 
-In this chapter, we utilise three formal semantics models of programming languages, namely, denotational semantics, big-step operational semantics, and axiomatic semantics, to analyse a core calculus of a set of strategic rewriting languages, and discuss how these models relate to each other.
+In this chapter, we utilise three formal semantic models of programming languages, namely, denotational semantics, big-step operational semantics, and axiomatic semantics, to analyse a core calculus of a set of strategic rewriting languages, and discuss how these models relate to each other.
 
 \section{Introduction}
 \label{chap4:introduction}
@@ -98,7 +98,7 @@ Similarly, it is easy to compose incompatible rewrites
 that will fail for every possible input expression.
 Finally, even if a rewrite strategy successfully terminates, it may not do what it was supposed to do by rewriting the input expression into an undesired form.
 
-The goal of this chapter is to provide a rigorous treatment of strategic rewriting, that we believe lacks so far. Considering that strategic rewriting has various application domains but has problematic behaviours, a rigorous formal understanding of strategic rewriting is required to model and analyse its semantic subtleties as well as reason about the execution of strategies. Therefore, we present Shoggoth: a formal foundation for reasoning about strategic rewriting.
+The goal of this chapter is to provide a rigorous treatment of strategic rewriting, that we believe is lacking so far. Considering that strategic rewriting has various application domains but has problematic behaviours, a rigorous formal understanding of strategic rewriting is required to model and analyse its semantic subtleties as well as reason about the execution of strategies. Therefore, we present Shoggoth: a formal foundation for reasoning about strategic rewriting.
 
 We start with introducing the formal syntax of \emph{System S}, a formal core strategy language
 originally introduced by \citet{VISSER1998422}. Some example strategies are sketched to give the gist of strategic rewriting as well. We then give a comprehensive semantic
@@ -163,7 +163,7 @@ $\sskip$ can always be executed successfully while executing $\sabort$ would alw
 \caption{The Syntax of System S}
 \label{chap4:syntax:syntax}
 \end{figure}
-\paragraph*{Comparison of the expressiveness to the original System S}One difference between our formalism and the original System S is that we abstract away the term building details for atomic strategies, instead modelling atomic strategies as partial functions. We believe that applying this abstraction does not limit the expressiveness of our system. In fact, the purpose of such design is to allow the flexibility of the term languages, not only limited to the original System S, but also capturing other strategic rewriting languages that use term constructs that are different from System S. Moreover, this design enables us to focus on reasoning about properties of compositions of rewriting strategies that hold independent of the term building behaviour.
+\paragraph*{Comparison of the expressiveness to the original System S}One difference between our formalism and the original System S is that we abstract away the term building details for atomic strategies, instead modelling atomic strategies as partial functions. We believe that applying this abstraction does not limit the expressiveness of our system. In fact, the purpose of such a design is to allow the flexibility of the term languages, not only limited to the original System S, but also capturing other strategic rewriting languages that use term constructs that are different from System S. Moreover, this design enables us to focus on reasoning about properties of compositions of rewriting strategies that hold independent of the term building behaviour.
 
 \paragraph*{Composing strategies}We can compose strategies together with these combinators, traversals and the fixed-point operator to define more strategies. For example, we define a strategy $\try(s)$ using left choice and \sskip which attempts to apply a strategy $s$ to an input expression. If an error occurs, then it will leave the input expression unchanged by executing the strategy \sskip:
 \[\try(s) \metaDef s \lchoice \sskip\]
