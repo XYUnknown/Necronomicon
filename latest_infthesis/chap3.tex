@@ -131,7 +131,7 @@ In the section, we present our implementation of the UMI framework as a library 
 
 \subsection{Overview}
 \label{chap3:impl:overview}
-To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolithic program into a distributed setting, by adding the \emph{macro}s provided by the UMI library. In this example program which allocates instances of the \lstinline{struct} \lstinline{A} and calls methods on them, the macro \lstinline{#[proxy_me]} implicitly translates the declared type \lstinline{A} from a \lstinline{struct} that can only refer to local resources to an \lstinline{enum} that can either hold local resources or be a \emph{proxy} that refers to resources held on a remote node. The initialisation method is translated by the macro \lstinline{#[umi_init]} to create an instance of the \lstinline{enum} \lstinline{A} instead of an instance of the \lstinline{struct} \lstinline{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \lstinline{A} and an invocation on a proxy of \lstinline{A}. To create a proxy instance, the macro \lstinline{remote!(address, ...)} is used, while the syntax of the initialisation of a local instance is unchanged. The invocations of the methods defined for translated \lstinline{struct} \lstinline{A} take the same form of the invocation of those original methods. \begin{highlightnew}We have to use different macros to identify syntactic scopes of different code blocks in a piece of Rust program to correctly produce the corresponding translations.\end{highlightnew}
+To give a high-level overview of the design, in figure~\ref{chap3:impl:overview:fig}, we introduce an example of migrating a monolithic program into a distributed setting, by adding the \emph{macro}s provided by the UMI library. In this example program which allocates instances of the \lstinline{struct} \lstinline{A} and calls methods on them, the macro \lstinline{#[proxy_me]} implicitly translates the declared type \lstinline{A} from a \lstinline{struct} that can only refer to local resources to an \lstinline{enum} that can either hold local resources or be a \emph{proxy} that refers to resources held on a remote node. The initialisation method is translated by the macro \lstinline{#[umi_init]} to create an instance of the \lstinline{enum} \lstinline{A} instead of an instance of the \lstinline{struct} \lstinline{A}. Other methods are also translated by macros to allow both an invocation on a local instance of \lstinline{A} and an invocation on a proxy of \lstinline{A}. To create a proxy instance, the macro \lstinline{remote!(address, ...)} is used, while the syntax of the initialisation of a local instance is unchanged. The invocations of the methods defined for translated \lstinline{struct} \lstinline{A} take the same form of the invocation of those original methods. We have to use different macros to identify syntactic scopes of different code blocks in a piece of Rust program to correctly produce the corresponding translations.
 
 An invocation on a proxy is encapsulated into a serialised message and sent to the destination node of which the address is the address stored in the proxy, and then the message is deserialised and the invocation is executed at the destination. After the execution, the result of the invocation is again put into a serialised message and passed back to the calling node to be deserialised.
 \begin{figure}[t]
@@ -593,10 +593,9 @@ Figure~\ref{syntax:d-syntax-fig} shows the syntax of dFR, which is the syntax of
 \label{syntax:d-syntax-fig}
 \end{figure}
 
-Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are \emph{configuration stacks}. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR. \begin{highlightnew}
+Building upon the program state $\mathcal{S}$ for FR, in figure~\ref{d-state}, we introduce the distributed program state $\mathcal{D}$, which maps addresses of nodes to their program states. The reduction rule takes the form of $\mathcal{D}, \mathcal{C} \longrightarrow \mathcal{D'}, \mathcal{C}'$, where $\mathcal{C}$ and $\mathcal{C}'$ are \emph{configuration stacks}. For each reduction, the term on the top of a configuration stack $\mathcal{C}$ gets evaluated. The element of the configuration stack can either be a pair of an address and a hole ($n, ?$) or a pair of an address and a term ($n, t$). Utilising the distributed program state and the configuration stack, we provide the semantics of dFR.
 We explain the reduction rules for each operation.
 % At the end of this section, figure~\ref{semantics:eval-distributed-1} and figure~\ref{semantics:eval-distributed-2} show all reduction rules of the semantics of dFR.
-\end{highlightnew}
 \begin{figure}
     \begin{align*}
         &\mathcal{D}: \mathcal{N} \rightharpoonup \mathcal{S}
@@ -747,17 +746,50 @@ In the next section, we present and prove a location transparency theorem, which
 \label{chap3:semantics:loc-transp}
 As we have mentioned in previous sections, by extending FR into dFR, the type system and static borrow checking of the validity of owning, immutably borrowing and mutably borrowing resources remain unchanged. By formalising the semantics of FR and dFR, we would like to show that, when we flatten a distributed program in dFR into a monolithic program in FR, the flattened result of the execution of the distributed program should be the same as the result of the execution of the flattened single node program. By demonstrating that the distributed program preserves the original semantics of the monolithic program, we can then conclude that the memory safety guarantees provided by FR's type system and static checking can be extended into distributed program in dFR.
 
-Formally, we state this semantic preservation property of the distributed extension dFR in the \emph{location transparency theorem}~\ref{chap3:thm:loc-transp}. Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient for our claim.
+Formally, we state this semantic preservation property of the distributed extension dFR in the \emph{location transparency theorem}~\ref{chap3:thm:loc-transp}.
 
-\begin{highlightnew}
-Before giving the definition of the location transparency theorem, we define a relation $\leadsto$ that \emph{fuses} two reduction steps of an operation in dFR introduced in section~\ref{chap3:semantics:dfr}. The reduction relation for each dFR operation is decomposed into two steps just for presentational purposes. The location transparency theorem states that fusing two reduction steps of a dFR operation gives the semantics of the operation, which preserves the semantics of its corresponding operation defined in FR as a single step reduction relation.
-\end{highlightnew}
+Before giving the definition of the location transparency theorem, we define a relation $\leadsto$ that \emph{fuses} two reduction steps of an operation in dFR introduced in section~\ref{chap3:semantics:dfr}. The reduction relation for each dFR operation is decomposed into two steps just for presentational purposes. The location transparency theorem states that fusing two reduction steps of a dFR operation gives the semantics of the operation, which preserves the semantics of its corresponding operation defined in FR as a single step reduction relation. Formally, the \emph{fusion relation} is defined as:
+\begin{definition}[Fusion Relation] For any term that contains remote components, for instance, a remote copy, a fusion relation is defined by two reductions in the operational model. For any term that does not contain remote components, for instance, a local term, a fusion relation is just a single reduction.
+\begin{align*}
+& \mathcal{D}, C \concat (n, t) \leadsto \mathcal{D'}, C \concat (n, t')
+\quad \textit{iff} \quad \\
+& \quad \begin{array}{rl}
+ (t\ \textsf{is remote} 
+ \implies &
+\exists t'', C', \mathcal{D''} .\  \\[0.5em]
+& \mathcal{D}, C \concat (n, t) \longrightarrow \mathcal{D''}, C' \concat (n, t'')
+ \\ 
+\wedge &
+\mathcal{D''}, C' \concat (n, t'') \longrightarrow \mathcal{D'}, C \concat (n, t')) \\[1em]
+ \vee
+(\neg(t\ \textsf{is remote}) 
+\implies &
+\mathcal{D}, C \concat (n, t) \longrightarrow \mathcal{D'}, C \concat (n, t'))
+\end{array} 
+% & \mathcal{D}, C \concat (n, t) \leadsto \mathcal{D'}, C \concat (n, v) \quad \textit{iff} \quad \\
+% & \quad \begin{array}{rl}
+%  (t\ \textsf{contains remote components} 
+%  \implies &
+% \exists t', C', \mathcal{D''} .\  \\[0.5em]
+% & \mathcal{D}, C \concat (n, t) \longrightarrow \mathcal{D''}, C' \concat (n, t')
+%  \\ 
+% \wedge &
+% \mathcal{D''}, C' \concat (n, t') \longrightarrow \mathcal{D'}, C \concat (n, v)) \\[1em]
+%  \vee
+% (\neg(t\ \textsf{contains remote components}) 
+% \implies &
+% \mathcal{D}, C \concat (n, t) \longrightarrow \mathcal{D'}, C \concat (n, v))
+% \end{array}
+\end{align*}
+\label{chap3:def:fusion}
+\end{definition}
 
+With the definition of the fusion relation, we state the location transparency theorem as below. Note that the reverse direction of the theorem does not hold. Since to extend a given single node program into a distributed program by allocating the program state on arbitrary nodes and making the term involved in the execution containing remote components that live on arbitrary nodes may not lead to constructing a distributed program that can be successfully executed. However, because our goal is to show that the distributed program preserves the same behaviour as if it is a single node program, having only one direction in the theorem is sufficient for our claim.
 \begin{theorem}[Location Transparency]
-\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. \begin{highlightnew}$\leadsto$ is a relation that \emph{fuses} two reduction steps of an operation in dFR.\end{highlightnew} We make locations on all nodes distinct to simplify the proof.
+\emph{For any term $t$, given an initial distributed program state $\mathcal{D}$ and an initial single node program state $\mathcal{S}$, where the flattened distributed program state equals to the single node program state, if a distributed execution of a term $t$ that may be a remote term or contain remote component with the distributed program state $\mathcal{D}$ results in a distributed program state $\mathcal{D}'$ and a value $v$ which can be either remote or local, then the execution of the flattened term $t$ with the single node program state $\mathcal{S}$ will gives a state $\mathcal{S}'$ and value $v'$, where the flattened resulting distributed program state $|\mathcal{D}'|$ equals to the $S'$ and the flattened value $v$ equals to $v'$. $\leadsto$ is the fusion relation that fuses two reduction steps of an operation in dFR given in definition~\ref{chap3:def:fusion}. We make locations on all nodes distinct to simplify the proof.
 % &\forall t \in \Pi_{\mathit{ref}}.\; \phi_\mathcal{D}, [t] \longrightarrow \mathcal{D}, [v] \iff \phi_\mathcal{S},  t|_@ \longrightarrow \mathcal{S}, v' \land \mathcal{S} = |\mathcal{D}| \land v' = v\\
 \begin{gather*}
-    \forall t \in \mathcal{T}.\; \mathcal{D}, \begin{highlightnew}C \concat (n, t)\end{highlightnew} \leadsto \mathcal{D'}, \begin{highlightnew}C \concat(n, v)\end{highlightnew} \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
+    \forall t \in \mathcal{T}.\; \mathcal{D}, C \concat (n, t) \leadsto \mathcal{D'}, C \concat(n, v) \land |\mathcal{D}| = \mathcal{S} \\ \Rightarrow \\ \mathcal{S},  t|_@ \longrightarrow \mathcal{S'}, v' \land |\mathcal{D}'| = \mathcal{S}' \land v|_@ = v'
 \end{gather*}
 where $|\cdot|$ and $\cdot|_@$ are operators that erase addresses of nodes from distributed program states and terms defined as:
 \begin{align*}
@@ -848,7 +880,6 @@ Hence:
     % &|\mathcal{D}'| = |\mathcal{D}_0| \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}_0 \otimes (\mathscr{l} \mapsto \bot) = \mathcal{S}' \quad \text{and} \quad v@n'|_@ = v
     % \end{align*}
 \end{proof}
-\begin{highlightnew}
 Before proving the case for \textsc{Box}, we introduce a lemma stating a relation between a fresh location in a distributed program state $\mathcal{D}$ and such a location in a monolithic program state $\mathcal{S}$.  
 \begin{lemma}
 \label{chap3:loc-lemma-1}
@@ -861,7 +892,6 @@ According to theorem~\ref{chap3:thm:loc-transp}, locations on all nodes in $\mat
 Since $|\mathcal{D}| = S$, we can conclude that:
 \[\mathscr{l} \notin \textbf{dom}\;\mathcal{S}\]
 \end{proof}
-\end{highlightnew}
 
 \begin{proof}[Case \textsc{\emph{Box}}]
 We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state. In addition, we take a fresh location $\mathscr{l}$:
@@ -872,10 +902,8 @@ Following the dFR's reduction rule \textsc{Box (s1)} and \textsc{Box (s2)}, the 
 \[
 \mathcal{D}, C \concat (n, \texttt{box}@n'\;v) \leadsto \mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, \top))), C \concat (n, \mathscr{l}^\bullet@n')
 \]
-\begin{highlightnew}
 By lemma~\ref{chap3:loc-lemma-1}, we have:
 \[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
-\end{highlightnew}
 Following FR's reduction rule \textsc{Box}, the monolithic execution of the flattened remote heap allocation term gives:
 \[
 \mathcal{S}, (\texttt{box}@n'\;v)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top)), \mathscr{l}^\bullet
@@ -908,7 +936,6 @@ Hence:
     % &|\mathcal{D}'| = |\mathcal{D}| \otimes (\mathscr{l} \mapsto (v, \top)) = \mathcal{S} \otimes (\mathscr{l} \mapsto (v, \top))= \mathcal{S}' \quad \text{and} \quad \mathscr{l}^\bullet@n'|_@ = \mathscr{l}^\bullet
     % \end{align*}
 \end{proof}
-\begin{highlightnew}
 Before proving the case for \textsc{Borrow}, we introduce a lemma stating a relation between an existing location in a distributed program state $\mathcal{D}$ and such a location in a monolithic program state $\mathcal{S}$.  
 \begin{lemma}\label{chap3:loc-lemma-2}
 Given a distributed program state $\mathcal{D}$ and a monolithic program state $\mathcal{S}$, $n$ is a node in the domain of $\mathcal{D}$:
@@ -920,7 +947,6 @@ Given $\mathscr{l}$ is an existing location in $\textbf{dom}\;\mathcal{D}(n)$, i
 Since $|\mathcal{D}| = S$, we can conclude that:
 \[\mathscr{l} \in \textbf{dom}\;\mathcal{S}\]
 \end{proof}
-\end{highlightnew}
 
 \begin{proof}[Case \textsc{\emph{Borrow}}]
 We assume that before the evaluation, given the distributed program state $\mathcal{D}$ and monolithic program state $\mathcal{S}$ where the flatten distributed program state equals to the monolithic program state, and $\mathscr{l}$ is a location with an allocated value:
@@ -931,10 +957,8 @@ Following the dFR's reduction rule \textsc{Borrow (s1)} and \textsc{Borrow (s2)}
 \[
 \mathcal{D}, C \concat (n, \&[\texttt{mut} \mathscr{l}^\bullet@n')] \leadsto \mathcal{D}, C \concat (n, \mathscr{l}^\circ@n')
 \]
-\begin{highlightnew}
 By lemma~\ref{chap3:loc-lemma-2}, we have:
 \[\mathscr{l} \in \textbf{dom}\; \mathcal{S}\] 
-\end{highlightnew}
 Following FR's reduction rule \textsc{Borrow}, the monolithic execution of the flattened remote borrow term gives:
 \[
 \mathcal{S}, (\&[\texttt{mut}]\mathscr{l}^\bullet@n')|_@ \longrightarrow \mathcal{S}, \mathscr{l}^\circ
@@ -1041,10 +1065,8 @@ Following the dFR's reduction rule \textsc{Decl (s1)} and \textsc{Decl (s2)}, th
 \begin{align*}
 &\mathcal{D}, C \concat (n, \texttt{let}\;\texttt{mut}@n'\;x = v;t) \leadsto\\ &\mathcal{D} \mid (n' \mapsto \mathcal{D}(n')\otimes(\mathscr{l} \mapsto (v, k))), C \concat (n, t[\mathscr{l}^\bullet@n'/x])
 \end{align*}
-\begin{highlightnew}
 By lemma~\ref{chap3:loc-lemma-1}, we have:
 \[\mathscr{l} \notin \textbf{dom}\; \mathcal{S}\] 
-\end{highlightnew}
 Following FR's reduction rule \textsc{Decl}, the monolithic execution of the flattened remote declaration gives:
 \[
 \mathcal{S}, (\texttt{let}\;\texttt{mut}@n'\;x = v;t)|_@ \longrightarrow \mathcal{S} \otimes (\mathscr{l} \mapsto (v, k)), t[\mathscr{l}^\bullet/x]
@@ -1114,9 +1136,7 @@ Due to the reality of lack of a concise formalism of the source-level Rust that 
 \label{chap3:conclusion}
 In this chapter, we first present our design, implementation, and formalisation of a UMI framework for Rust. This UMI framework allows programmers to express distributed computation in the same form of monolithic computation, abstracting away the internet communication complications and message passing details. To demonstrate a distributed extension of Rust, our UMI framework extends Rust's memory safety guarantees into a distributed setting, and we present the formalism of a core calculus focusing on the core features relating to distributed memory management mechanisms in the UMI framework. We present FR, which is a core calculus of the surface language of Rust, formalising the key concepts of Rust's ownership and lifetime in memory management. Then we extend FR into dFR, to include distributed features of the UMI framework. By showing that distributed programs written in dFR preserves the semantics of monolithic programs written in FR via proving a location transparency theorem, we can conclude that the memory safety guarantees provided by Rust can be extended to distributed programs written with our UMI framework.
 
-\begin{highlightnew}
 In the future, we would like to conduct some quantitative evaluations for the UMI framework. For instance, we could measure the performance overhead of distributed programs written using the UMI framework comparing to those using TCP requests or using other libraries such as tarpc. In addition, conducting user studies can be beneficial for assessing how straightforward the UMI framework is to use when writing distributed programs.
-\end{highlightnew}
 
 \noindent
 \begin{center}

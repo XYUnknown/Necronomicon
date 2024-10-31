@@ -785,21 +785,21 @@ series = {POPL '16}
     title = {Proptest: A Rust property testing framework},
     url = {https://github.com/altsysrq/proptest},
     year = {2022},
-    note = {Accessed Sep. 2022 \url{https://github.com/altsysrq/proptest}}
+    note = {Accessed Sep. 2022. \url{https://github.com/altsysrq/proptest}}
 }
 @misc{conslist,
     author = {Bodil Stokke},
     title = {im conslist: A Rust cons-list implementation},
     url = {https://docs.rs/im/10.2.0/im/conslist/struct.ConsList.html},
     year = {2022},
-    note = {Accessed Sep. 2022 \url{https://docs.rs/im/10.2.0/im/conslist/struct.ConsList.html}}
+    note = {Accessed Sep. 2022. \url{https://docs.rs/im/10.2.0/im/conslist/struct.ConsList.html}}
 }
 @misc{blog1,
     author = {Douglas A. H. Orr},
     title = {Finding unique items - hash vs sort?},
     url = {https://douglasorr.github.io/2019-09-hash-vs-sort/article.html},
     year = {2019},
-    note = {Accessed Sep. 2022 \url{https://douglasorr.github.io/2019-09-hash-vs-sort/article.html}}
+    note = {Accessed Sep. 2022. \url{https://douglasorr.github.io/2019-09-hash-vs-sort/article.html}}
 }
 
 @misc{blog2,
@@ -807,7 +807,7 @@ series = {POPL '16}
     title = {C++ benchmark – std::vector VS std::list VS std::deque},
     url = {https://baptiste-wicht.com/posts/2012/12/cpp-benchmark-vector-list-deque.html},
     year = {2012},
-    note = {Accessed Sep. 2022 \url{https://baptiste-wicht.com/posts/2012/12/cpp-benchmark-vector-list-deque.html}}
+    note = {Accessed Sep. 2022. \url{https://baptiste-wicht.com/posts/2012/12/cpp-benchmark-vector-list-deque.html}}
 }
 
 @misc{blog3,
@@ -815,7 +815,7 @@ series = {POPL '16}
     title = {vector vs map performance confusion},
     url = {https://stackoverflow.com/questions/24542936/vector-vs-map-performance-confusion},
     year = {2014},
-    note = {Accessed Sep. 2022 \url{https://stackoverflow.com/questions/24542936/vector-vs-map-performance-confusion}}
+    note = {Accessed Sep. 2022. \url{https://stackoverflow.com/questions/24542936/vector-vs-map-performance-confusion}}
 }
 
 @misc{blog4,
@@ -823,7 +823,7 @@ series = {POPL '16}
     title = {Using C++ containers efficiently},
     url = {https://blog.quasar.ai/using-c-containers-efficiently},
     year = {2020},
-    note = {Accessed Sep. 2022 \url{https://blog.quasar.ai/using-c-containers-efficiently}}
+    note = {Accessed Sep. 2022. \url{https://blog.quasar.ai/using-c-containers-efficiently}}
 }
 
 @misc{blog5,
@@ -831,7 +831,7 @@ series = {POPL '16}
     title = {Hashmaps Benchmarks -- Finding the Fastest; Memory Efficient Hashmap},
     url = {https://martin.ankerl.com/2019/04/01/hashmap-benchmarks-01-overview/},
     year = {2019},
-    note = {Accessed Sep. 2022 \url{https://martin.ankerl.com/2019/04/01/hashmap-benchmarks-01-overview/}}
+    note = {Accessed Sep. 2022. \url{https://martin.ankerl.com/2019/04/01/hashmap-benchmarks-01-overview/}}
 }
 
 @article{MILNER1978348,
@@ -975,7 +975,7 @@ series = {PLDI '14}
     title = {RustBelt - Programming Languages \& Verification},
     url = {https://plv.mpi-sws.org/rustbelt/},
     year = {2021},
-    note = {Accessed Sep. 2022 \url{https://plv.mpi-sws.org/rustbelt/}}
+    note = {Accessed Sep. 2022. \url{https://plv.mpi-sws.org/rustbelt/}}
 }
 
 @incollection{WIRSING1990675,
@@ -1208,7 +1208,8 @@ series = {CGO '07}
       year={2021},
       eprint={1903.00982},
       archivePrefix={arXiv},
-      primaryClass={cs.PL}
+      primaryClass={cs.PL},
+      note={\url{https://arxiv.org/abs/1903.00982}}, 
 }
 
 @phdthesis{10.5555/910306, author = {Nelson, Bruce Jay}, title = {Remote procedure call}, year = {1981}, publisher = {Carnegie Mellon University}, address = {USA}, abstract = {Remote procedure call is the synchronous language-level transfer of control between programs in disjoint address spaces whose primary communication medium is a narrow channel. The thesis of this dissertation is that remote procedure call (RPC) is a satisfactory and efficient programming language primitive for constructing distributed systems. A survey of existing remote procedure mechanisms shows that past RPC efforts are weak in addressing the five crucial issues: uniform call semantics, binding and configuration, strong typechecking, parameter functionality, and concurrency and exception control. The body of the dissertation elaborates these issues and defines a set of corresponding essential properties for RPC mechanisms. These properties must be satisfied by any RPC mechanism that is fully and uniformly integrated into a programming language for a homogeneous distributed system. Uniform integration is necessary to meet the dissertation's fundamental goal of syntactic and semantic transparency for local and remote procedures. Transparency is important so that programmers need not concern themselves with the physical distribution of their programs.In addition to these essential language properties, a number of pleasant properties are introduced that ease the work of distributed programming. These pleasant properties are good performance, sound remote interface design, atomic transactions, respect for autonomy, type translation, and remote debugging.With the essential and pleasant properties broadly explored, the detailed design of an RPC mechanism that satisfies all of the essential properties and the performance property is presented. Two design approaches are used: The first assumes full programming language support and involves changes to the language's compiler and binder. The second involves no language changes, but uses a separate translator--a source-to-source RPC compiler--to implement the same functionality.Design decisions crucial to the efficiency of the mechanism are made using a set of RPC performance lessons. These lessons are based on the empirical performance evaluation of a sequence of five working RPC mechanisms, each one faster than its predecessor. Some expected results about the costs of parameter copying, process switching, and runtime type manipulation are confirmed; a surprising result about the price of protocol layering is presented as well. These performance lessons, applied in concert, reduce the roundtrip time for a remote procedure call by a remarkable factor of 35. For moderate speed personal computers communicating over an Ethernet, for example, a simple remote call takes 800 microseconds; on a higher speed personal computer, the same remote call takes 149 microseconds. In both cases the remote call takes about 20 times longer than the same local call. This represents a substantial performance improvement over other operational RPC mechanisms.}, note = {AAI8204168} }
@@ -1924,12 +1925,13 @@ series = {SOSP '23}
 }
 
 @misc{fu2023traced,
-      title={Traced Types for Safe Strategic Rewriting},
+      title={Traced Types for Safe Strategic Rewriting}, 
       author={Rongxiao Fu and Ornela Dardha and Michel Steuwer},
       year={2023},
       eprint={2304.14154},
       archivePrefix={arXiv},
-      primaryClass={cs.PL}
+      primaryClass={cs.PL},
+      note ={\url{https://arxiv.org/abs/2304.14154}}, 
 }
 
 @book{stoy1985denotational,
@@ -2062,7 +2064,7 @@ abstract = {Using a call-by-value functional language as an example, this articl
 @software{serde,
   author = {{serde-rs}},
   title = {Serde},
-  url = {https://serde.rs},
+  note = {\url{https://serde.rs}},
   version = {1.0},
   month        = dec,
   year         = 2023,
@@ -2077,3 +2079,5 @@ abstract = {Using a call-by-value functional language as an example, this articl
   year   = 2024,
   note   = {\emph{This idea was formed during the discussion that happened by the end of the author's PhD viva on September 25, 2024, at University of Edinburgh, Informatics Forum, IF 4.02. Besides Dr. Dominic Orchard and the author, Prof. Dr. Michel Steuwer and Dr. Elizabeth Polgreen also participated in the discussion.}}
 }
+
+@inbook{van_Eijck_Unger_2010, place={Cambridge}, title={Extension and Intension}, booktitle={Computational Semantics with Functional Programming}, publisher={Cambridge University Press}, author={van Eijck, Jan and Unger, Christina}, year={2010}, pages={183–204}}
